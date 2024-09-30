@@ -1,4 +1,4 @@
-# This file defined the postgreSQL container for the DB 
+# This file defines the postgreSQL container for the DB 
 
 version: '3.8'
 services:
