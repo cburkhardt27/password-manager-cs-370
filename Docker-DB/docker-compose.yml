@@ -1,1 +1,33 @@
+# This file defined the postgreSQL container for the DB 
+
+version: '3.8'
+services:
+  db:
+    image: postgres:15
+    container_name: password_db
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: pswdDB
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"  # Exposes port 5432 (PostgreSQL default) to the host machine
+    networks:
+      - password_manager_network
+
+volumes:
+  pg_data:
+
+networks:
+  password_manager_network:
+
+# NOTES 
+# image: Specifies the PostgreSQL version (15 in this case).
+# POSTGRES_USER: The username for the database.
+# POSTGRES_PASSWORD: The password for the database.
+# POSTGRES_DB: The name of the database.
+# volumes: Data is persisted between container restarts via Docker volumes.
+# ports: The container's port 5432 is mapped to the host machine's 5432, allowing other developers to connect to it from their local machine.
+# networks: The container is connected to an internal Docker network for isolation.
 
