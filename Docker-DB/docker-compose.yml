@@ -4,7 +4,7 @@ version: '3.8'
 services:
   db:
     image: postgres:15
-    container_name: password_db
+    container_name: pgcontainer
     environment:
       POSTGRES_USER: myuser
       POSTGRES_PASSWORD: mypassword
