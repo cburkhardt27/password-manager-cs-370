@@ -55,10 +55,10 @@ function LoginPage({ onLogin }) {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    if (password === 'your-master-password') {
+    if (password === 'password') {
       onLogin();
     } else {
-      alert('Incorrect password');
+      alert('Incorrect password. Try Again.');
     }
   };
 
