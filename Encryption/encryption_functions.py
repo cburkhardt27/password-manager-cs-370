@@ -1,6 +1,9 @@
 # This file includes all encryption functionality apart from setup script
 
 import bcrypt
+from hashlib import pbkdf2_hmac
+from Crypto.Cipher import AES
+from base64 import b64encode
 
 #Validate a user’s submitted master password against the stored salted hash
 def query_master_password(submitted_username, submitted_password):
@@ -14,6 +17,33 @@ def query_master_password(submitted_username, submitted_password):
     print("User and password combination not recognized. Please try again \n")
     return False
 
+def encode_new_password(plaintext): # this function not debugged
+    file = open('user_info.txt','r')
+    data = file.readlines()
+    b_user = data[0]
+    b_hashed_mp = data[1].enocde()
+    file.close()    
+    # derive a key that will be used to encrypt/decrypt newpassword
+    # b_user * 3 is the salt; it is multiplied by 3 to meet length expectation (16 bytes)
+    iter = 10000 # standard
+    pass_key = pbkdf2_hmac('sha256', b_hashed_mp, b_user * 3, 10000)
+    b_plaintext = str.encode(plaintext)
+
+    cipher_obj = AES.new(pass_key, AES.MODE_EAX)
+    nonce = cipher_obj.nonce
+    # load data into the cipher
+    ciphertext, tag = cipher_obj.encrypt_and_digest(b_plaintext)
+
+    # understand below code bloc!
+    new_nonce = ciphertext + nonce
+    db_ciphertext = b64encode(new_nonce).decode()
+
+    return db_ciphertext
+
+#Use the user’s plaintext password + the hash of the master password + salt to generate a ciphertext password that can be passed into the SQL database
+#Use secrets library and bcrypt/PBKDF2 library to generate the password using a slow hash (more secure)
+#The database stores only encrypted passwords: these are generated from the “plaintext password” + the “hash of the master password”
+#We encrypt this password because it needs to be converted back to plaintext (encryption is two-way, hash is one-way) when the user wants to see their password
 
 
 
