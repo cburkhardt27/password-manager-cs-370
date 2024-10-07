@@ -1,8 +1,8 @@
-const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const path = require('path');
 
 module.exports = {
-  entry: './src/index.js',  
+  entry: './src/index.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'bundle.js',
@@ -31,15 +31,16 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: './public/index.html',  
+      template: './public/index.html',  // Uses this file as the template
     }),
   ],
   devServer: {
-    contentBase: path.join(__dirname, 'dist'),  // Serve static files from the "dist" directory
-    compress: true,  // Enable gzip compression
-    port: 4001,      // Port to serve the app on
-    open: true,      // Automatically open the browser on server start
-    hot: true,       // Enable Hot Module Replacement
-    watchContentBase: true,  // Watch files in contentBase  
+    contentBase: path.join(__dirname, 'dist'),
+    compress: true,
+    port: 4001,
+    open: true,
+    hot: true,
+    watchContentBase: true,
   },
 };
+

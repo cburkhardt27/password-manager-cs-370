@@ -1,16 +1,22 @@
-// src/App.js
-import React from 'react';
-import Header from './components/Header';
-import Footer from './components/Footer';
+
+import React, { useState } from 'react'; 
+import LoginPage from './pages/LoginPage.js';
+import HomePage from './pages/HomePage.js';
+import Header from './components/Header.js';
+import Footer from './components/Footer.js';
 
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   return (
     <div>
       <Header />
-      <div id="content">
-        <h1>Password Manager</h1>
-        {/* Static password list and folder components go here */}
-      </div>
+      {/* Conditionally render LoginPage or HomePage based on login status */}
+      {!isLoggedIn ? (
+        <LoginPage onLogin={() => setIsLoggedIn(true)} />
+      ) : (
+        <HomePage /> 
+      )}
       <Footer />
     </div>
   );

@@ -1,13 +1,18 @@
-// electron/preload.js
-window.addEventListener('DOMContentLoaded', () => {
-  const replaceText = (selector, text) => {
-    const element = document.getElementById(selector);
-    if (element) element.innerText = text;
-  };
+const { contextBridge, ipcRenderer } = require('electron');
 
-  for (const dependency of ['chrome', 'node', 'electron']) {
-    replaceText(`${dependency}-version`, process.versions[dependency]);
-  }
+// Expose safe APIs using contextBridge
+contextBridge.exposeInMainWorld('electronAPI', {
+  send: (channel, data) => {
+    // Only allow specific channels to be used
+    let validChannels = ['save-data', 'load-data'];
+    if (validChannels.includes(channel)) {
+      ipcRenderer.send(channel, data);
+    }
+  },
+  receive: (channel, func) => {
+    let validChannels = ['data-loaded'];
+    if (validChannels.includes(channel)) {
+      ipcRenderer.on(channel, (event, ...args) => func(...args));
+    }
+  },
 });
-
-  
