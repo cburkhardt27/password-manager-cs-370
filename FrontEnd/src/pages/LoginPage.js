@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 
 const LoginBody = styled.div`
-  background: linear-gradient(135deg, #6b73ff, #000dff);
+  background: linear-gradient(233deg, #A472CB, #5883F2);
   height: 100vh;
   display: flex;
   justify-content: center;
@@ -37,7 +37,7 @@ const PasswordInput = styled.input`
 `;
 
 const LoginButton = styled.button`
-  background-color: #5238f2;
+  background-color: #4F378B;
   border-radius: 50%;
   padding: 10px;
   display: flex;

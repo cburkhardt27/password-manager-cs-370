@@ -3,12 +3,12 @@ import styled from 'styled-components';
 
 const MainBody = styled.div`
   display: flex;
-  background: linear-gradient(135deg, #6b73ff, #000dff);
+  background: linear-gradient(233deg, #A472CB, #5883F2);
   height: 100vh;
 `;
 
 const Sidebar = styled.div`
-  background-color: #20232a;
+  background-color: #36343A;
   width: 250px;
   padding: 20px;
   color: white;
@@ -29,10 +29,10 @@ const SidebarLink = styled.a`
   padding: 10px;
   border-radius: 8px;
   margin-bottom: 15px;
-  background-color: ${props => (props.active ? '#5238f2' : 'transparent')};
+  background-color: ${props => (props.active ? '#5883F2' : 'transparent')};
 
   &:hover {
-    background-color: #5238f2;
+    background-color: #5883F2;
   }
 `;
 
@@ -58,7 +58,7 @@ const SearchInput = styled.input`
 `;
 
 const AddButton = styled.button`
-  background-color: #5238f2;
+  background-color: #36343A;
   padding: 10px 20px;
   border-radius: 30px;
   color: white;
