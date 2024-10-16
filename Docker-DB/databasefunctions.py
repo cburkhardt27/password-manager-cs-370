@@ -1,4 +1,5 @@
 import psycopg2
+from encryption_functions import encode_new_password, decode_vault_password
 
 conn = None
 
@@ -54,3 +55,61 @@ conn.close()
 '''
 CRUD Operations for SPRINT #3 will be implemented here
 '''
+def add_password_entry(username, url, plaintext_password):
+    encrypted_password = encode_new_password(plaintext_password)
+
+    query ="""
+    INSERT INTO passwords (username, url, password)
+    VALUES (%s, %s, %s);
+    """
+
+    try:
+        conn, cur = connect_db("pswdDB", "myuser", "mypassword", "localhost")
+        cur.execute(query, (username, url, encrypted_password))
+        conn.commit()
+        print("Password entry added successfully.")
+    except Exception as e:
+        print(f"Error adding password entry: {e}")
+    finally:
+        cur.close()
+        conn.close()
+
+
+def get_password(username, url):
+    query = """
+    SELECT password FROM passwords
+    WHERE username = %s AND url = %s; 
+    """
+    try:
+        conn, cur = connect_db("pswdDB", "myuser", "mypassword", "localhost")
+        cur.execute(query, (username, url))
+        result = cur.fetchone()
+        if result:
+            encrypted_pswd = result[0]
+            decrypted_pswd = decode_vault_password(encrypted_pswd)
+            return decrypted_pswd
+        else:
+            print("No password found for the given username and url!")
+    except Exception as e:
+        print(f"Error retrieving password entry: {e}")
+    finally:
+        cur.close()
+        conn.close()
+    
+
+def delete_password(username, url):
+    query ="""
+    DELETE FROM passwords
+    WHERE username = %s AND url = %s;
+    """
+    try:
+        conn, cur = connect_db("pswdDB", "myuser", "mypassword", "localhost")
+        cur.execute(query, (username, url))
+        conn.commit()
+        # delete this after tests
+        print("Password entry deleted successfully.")
+    except Exception as e:
+        print(f"Error deleting password entry: {e}")
+    finally:
+        cur.close()
+        conn.close()
