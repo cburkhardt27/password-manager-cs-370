@@ -1,109 +1,94 @@
-import React from 'react';
-import styled from 'styled-components';
+// src/pages/HomePage.js
+import React, { useState } from 'react';
+import { AppBar, Toolbar, Typography, IconButton, Drawer, List, ListItem, ListItemText, TextField, Grid, Button, Paper, ListItemButton } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
+import AddIcon from '@mui/icons-material/Add';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import { styled } from '@mui/system';
 
-const MainBody = styled.div`
-  display: flex;
-  background: linear-gradient(233deg, #A472CB, #5883F2);
-  height: 100vh;
-`;
+const PasswordItem = styled(Paper)(({ theme }) => ({
+  padding: theme.spacing(2),
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  marginBottom: theme.spacing(2),
+}));
 
-const Sidebar = styled.div`
-  background-color: #36343A;
-  width: 250px;
-  padding: 20px;
-  color: white;
-  display: flex;
-  flex-direction: column;
+function HomePage({ onLogout }) {
+  const [passwords, setPasswords] = useState([
+    { id: 1, name: 'emory.edu' },
+    { id: 2, name: 'github.com' },
+  ]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
-  h1 {
-    font-size: 24px;
-    margin-bottom: 20px;
-  }
-`;
+  const handleSearch = (e) => setSearchTerm(e.target.value);
 
-const SidebarLink = styled.a`
-  text-decoration: none;
-  color: white;
-  font-size: 18px;
-  display: block;
-  padding: 10px;
-  border-radius: 8px;
-  margin-bottom: 15px;
-  background-color: ${props => (props.active ? '#5883F2' : 'transparent')};
+  const filteredPasswords = passwords.filter((password) =>
+    password.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
-  &:hover {
-    background-color: #5883F2;
-  }
-`;
-
-const MainContent = styled.div`
-  flex-grow: 1;
-  padding: 20px;
-  color: white;
-`;
-
-const Header = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-`;
-
-const SearchInput = styled.input`
-  width: 300px;
-  padding: 10px;
-  border-radius: 20px;
-  border: none;
-  outline: none;
-`;
-
-const AddButton = styled.button`
-  background-color: #36343A;
-  padding: 10px 20px;
-  border-radius: 30px;
-  color: white;
-  font-size: 16px;
-`;
-
-const PasswordList = styled.div`
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-  padding: 20px;
-`;
-
-const PasswordItem = styled.div`
-  display: flex;
-  justify-content: space-between;
-  background-color: rgba(255, 255, 255, 0.1);
-  padding: 15px;
-  border-radius: 8px;
-  margin-bottom: 10px;
-`;
-
-function HomePage() {
   return (
-    <MainBody>
-      <Sidebar>
-        <h1>Password Manager</h1>
-        <SidebarLink href="#" active>
-          Passwords
-        </SidebarLink>
-        <SidebarLink href="#">Checkup</SidebarLink>
-        <SidebarLink href="#">Settings</SidebarLink>
-      </Sidebar>
-      <MainContent>
-        <Header>
-          <SearchInput placeholder="Search passwords" />
-          <AddButton>Add</AddButton>
-        </Header>
-        <PasswordList>
-          <PasswordItem>
-            <span>emory.edu</span>
-            <button>View</button>
-          </PasswordItem>
-        </PasswordList>
-      </MainContent>
-    </MainBody>
+    <>
+      <AppBar position="static">
+        <Toolbar>
+          <IconButton 
+            edge="start" 
+            color="inherit" 
+            onClick={() => setDrawerOpen(true)}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6" sx={{ flexGrow: 1 }}>
+            Password Manager
+          </Typography>
+          <Button color="inherit" onClick={onLogout}>
+            Logout
+          </Button>
+        </Toolbar>
+      </AppBar>
+
+      <Drawer anchor="left" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
+        <List>
+          {['Passwords', 'Checkup', 'Settings'].map((text) => (
+            <ListItemButton key={text}>
+              <ListItemText primary={text} />
+            </ListItemButton>
+          ))}
+        </List>
+      </Drawer>
+
+      <Grid container spacing={2} padding={2}>
+        <Grid item xs={9}>
+          <TextField
+            label="Search Passwords"
+            fullWidth
+            value={searchTerm}
+            onChange={handleSearch}
+          />
+        </Grid>
+        <Grid item xs={3}>
+          <Button 
+            variant="contained" 
+            startIcon={<AddIcon />} 
+            fullWidth
+          >
+            Add
+          </Button>
+        </Grid>
+
+        <Grid item xs={12}>
+          {filteredPasswords.map((password) => (
+            <PasswordItem key={password.id}>
+              <Typography>{password.name}</Typography>
+              <IconButton>
+                <VisibilityIcon />
+              </IconButton>
+            </PasswordItem>
+          ))}
+        </Grid>
+      </Grid>
+    </>
   );
 }
 

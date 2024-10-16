@@ -1,96 +1,70 @@
+
 import React, { useState } from 'react';
-import styled from 'styled-components';
+import { Box, Button, TextField, Typography, Container, Paper } from '@mui/material';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import { styled } from '@mui/system';
 
-const LoginBody = styled.div`
-  background: linear-gradient(233deg, #A472CB, #5883F2);
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const LoginContainer = styled.div`
-  text-align: center;
-`;
-
-const UserIcon = styled.div`
-  margin-bottom: 20px;
-  svg {
-    fill: white;
-  }
-`;
-
-const LoginForm = styled.form`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const PasswordInput = styled.input`
-  border: none;
-  padding: 10px 20px;
-  border-radius: 30px;
-  width: 300px;
-  font-size: 16px;
-  outline: none;
-  margin-right: 10px;
-`;
-
-const LoginButton = styled.button`
-  background-color: #4F378B;
-  border-radius: 50%;
-  padding: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: white;
-  svg {
-    width: 24px;
-    height: 24px;
-  }
-`;
+// Styled Container for the Login Box
+const LoginPaper = styled(Paper)(({ theme }) => ({
+  padding: theme.spacing(4),
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  backgroundColor: theme.palette.background.paper,
+}));
 
 function LoginPage({ onLogin }) {
   const [password, setPassword] = useState('');
+  const [error, setError] = useState(false);
 
   const handleLogin = (e) => {
     e.preventDefault();
     if (password === 'password') {
       onLogin();
     } else {
-      alert('Incorrect password. Try Again.');
+      setError(true);
     }
   };
 
   return (
-    <LoginBody>
-      <LoginContainer>
-        <UserIcon>
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="100px" height="100px">
-            <path d="M0 0h24v24H0z" fill="none" />
-            <path d="M12 12c2.7 0 4.88-2.19 4.88-4.88S14.7 2.24 12 2.24 7.12 4.43 7.12 7.12 9.3 12 12 12zm0 2.24c-2.67 0-8 1.35-8 4.02v2.12h16v-2.12c0-2.67-5.33-4.02-8-4.02z" />
-          </svg>
-        </UserIcon>
-        <LoginForm onSubmit={handleLogin}>
-          <PasswordInput
-            type="password"
-            placeholder="Input Master Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <LoginButton type="submit">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+    <Container maxWidth="xs">
+      <Box 
+        height="100vh" 
+        display="flex" 
+        alignItems="center" 
+        justifyContent="center"
+      >
+        <LoginPaper elevation={6}>
+          <LockOutlinedIcon sx={{ fontSize: 60, color: 'primary.main', mb: 2 }} />
+          <Typography variant="h5" gutterBottom>
+            Login
+          </Typography>
+          <form onSubmit={handleLogin} style={{ width: '100%' }}>
+            <TextField
+              label="Master Password"
+              type="password"
+              fullWidth
+              margin="normal"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              error={error}
+              helperText={error ? 'Incorrect password. Try again.' : ''}
+              autoFocus
+              required
+            />
+            <Button 
+              type="submit"
+              variant="contained"
+              color="primary"
+              fullWidth
+              sx={{ mt: 2 }}
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-            </svg>
-          </LoginButton>
-        </LoginForm>
-      </LoginContainer>
-    </LoginBody>
+              Login
+            </Button>
+          </form>
+        </LoginPaper>
+      </Box>
+    </Container>
   );
 }
 
