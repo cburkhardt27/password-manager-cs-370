@@ -3,7 +3,7 @@
 import bcrypt
 from hashlib import pbkdf2_hmac
 from Crypto.Cipher import AES
-from base64 import b64encode
+from base64 import b64encode, b64decode
 
 #Validate a user’s submitted master password against the stored salted hash
 def query_master_password(submitted_username, submitted_password):
@@ -34,27 +34,40 @@ def encode_new_password(plaintext): # this function not debugged
     # load data into the cipher
     ciphertext, tag = cipher_obj.encrypt_and_digest(b_plaintext)
 
-    # understand below code bloc!
-    new_nonce = ciphertext + nonce
-    db_ciphertext = b64encode(new_nonce).decode()
+    # store the nonce with the ciphertext
+    cipher_nonce = ciphertext + nonce
+    db_ciphertext = b64encode(cipher_nonce).decode()
 
     return db_ciphertext
 
-#Use the user’s plaintext password + the hash of the master password + salt to generate a ciphertext password that can be passed into the SQL database
-#Use secrets library and bcrypt/PBKDF2 library to generate the password using a slow hash (more secure)
-#The database stores only encrypted passwords: these are generated from the “plaintext password” + the “hash of the master password”
-#We encrypt this password because it needs to be converted back to plaintext (encryption is two-way, hash is one-way) when the user wants to see their password
+# debug and manage error handling
+def decode_vault_password(db_ciphertext):
+    file = open('user_info.txt','r')
+    data = file.readlines()
+    b_hashed_mp = data[1].enocde()
+    file.close()    
 
+    ciphertext = b64decode(db_ciphertext)
+    # re-derive key for decryption
+    nonce = ciphertext[-16:] # the last 16 bytes of the ciphertext
+    # obtain the stored nonce
 
-
-
-
-
+    pass_key = pbkdf2_hmac('sha256', b_hashed_mp, b_user * 3, 10000)
+    # re-derive the cipher
+    cipher_obj = AES.new(pass_key, AES.MODE_EAX, nonce=nonce)
+    # load data into the cipher
+    plaintext = cipher_obj.decrypt(ciphertext[:-16]) # decrypt all but last 16 bytes (the nonce)
+#    try:
+#        cipher_obj.verify(tag)
+#        return plaintext
+#    except ValueError:
+#        print("Data corrupted or internal error\n")
+#        return -1
+    return plaintext
 
 
 
 def main():
-
     return
 
 

@@ -6,7 +6,7 @@
 TO DO:
 
 Create a check to see if a user profile exists, and warn user against ovewriting profile.
-        for security reasons, user shouldn't  be able to overwrite if they don't know the master password
+for security reasons, user shouldn't  be able to overwrite if they don't know the master password
 Clean up/define where user profile gets stored
 Create an alphanumeric check for the user's mater passwrod
 
@@ -55,7 +55,6 @@ def setup_user_master_pass():
 #        if spec_char_NOT_in_string(master_pass):
 #            print("Please include a special character in your passsword.\n")
 # the above functionality didn't work right
-            continue
         else:
             break
     
