@@ -1,33 +1,16 @@
-
 import { createTheme } from '@mui/material/styles';
 
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#6200ee', 
+      main: '#1976d2',  // A blue color for primary
     },
     secondary: {
-      main: '#03dac6', 
-    },
-    background: {
-      default: '#f5f5f5', 
-    },
-    error: {
-      main: '#b00020',
+      main: '#dc004e',  // A pinkish-red color for secondary
     },
   },
   typography: {
-    fontFamily: 'Roboto, "Helvetica Neue", Arial, sans-serif',
-    h1: {
-      fontSize: '2rem',
-      fontWeight: 600,
-    },
-    body1: {
-      fontSize: '1rem',
-    },
-  },
-  shape: {
-    borderRadius: 12, // Consistent border radius from your design
+    fontFamily: 'Roboto, sans-serif',  // Default Material UI font
   },
 });
 

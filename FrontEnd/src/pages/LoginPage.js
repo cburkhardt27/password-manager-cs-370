@@ -1,71 +1,94 @@
-
 import React, { useState } from 'react';
-import { Box, Button, TextField, Typography, Container, Paper } from '@mui/material';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import { Avatar, TextField, IconButton, Box, Container, Typography } from '@mui/material';
+import { ArrowForward } from '@mui/icons-material';
 import { styled } from '@mui/system';
+import { useNavigate } from 'react-router-dom';  // Import useNavigate for navigation
 
-// Styled Container for the Login Box
-const LoginPaper = styled(Paper)(({ theme }) => ({
-  padding: theme.spacing(4),
+// Styled components using Material UI's styled API
+const GradientBackground = styled(Box)({
+  height: '100vh',
   display: 'flex',
-  flexDirection: 'column',
+  justifyContent: 'center',
   alignItems: 'center',
-  backgroundColor: theme.palette.background.paper,
-}));
+  background: 'linear-gradient(210deg, #A472CB, #5883F2)',  // Blue to purple gradient
+});
 
-function LoginPage({ onLogin }) {
+const StyledAvatar = styled(Avatar)({
+  width: '100px',
+  height: '100px',
+  backgroundColor: '#ffffff33',  // Semi-transparent white
+  color: '#FFFFFF',  // White icon
+});
+
+const StyledTextField = styled(TextField)({
+  backgroundColor: '#FFFFFFCC',  // Semi-transparent white background
+  borderRadius: '50px',  // Fully rounded corners
+  maxWidth: '500px',  // Restrict the width
+  '& .MuiOutlinedInput-root': {
+    paddingRight: '10px',  // Ensure there's room for the end adornment (the arrow button)
+  },
+});
+
+const StyledIconButton = styled(IconButton)({
+  backgroundColor: '#5E35B1',
+  color: '#FFFFFF',
+  borderRadius: '50%',
+  '&:hover': {
+    backgroundColor: '#512DA8',
+  },
+});
+
+const LoginPage = () => {
   const [password, setPassword] = useState('');
-  const [error, setError] = useState(false);
+  const navigate = useNavigate();  // React Router's useNavigate hook
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-    if (password === 'password') {
-      onLogin();
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value);
+  };
+
+  const handleLogin = () => {
+    const masterPassword = 'password';  // Replace with your actual password validation logic
+    if (password === masterPassword) {
+      // Navigate to homepage with no passwords
+      navigate('/HomePageNoPasswords');  // Change '/homepage' to the actual route you use for the homepage
     } else {
-      setError(true);
+      alert('Invalid password!');
     }
   };
 
   return (
-    <Container maxWidth="xs">
-      <Box 
-        height="100vh" 
-        display="flex" 
-        alignItems="center" 
-        justifyContent="center"
-      >
-        <LoginPaper elevation={6}>
-          <LockOutlinedIcon sx={{ fontSize: 60, color: 'primary.main', mb: 2 }} />
-          <Typography variant="h5" gutterBottom>
-            Login
-          </Typography>
-          <form onSubmit={handleLogin} style={{ width: '100%' }}>
-            <TextField
-              label="Master Password"
-              type="password"
-              fullWidth
-              margin="normal"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              error={error}
-              helperText={error ? 'Incorrect password. Try again.' : ''}
-              autoFocus
-              required
-            />
-            <Button 
-              type="submit"
-              variant="contained"
-              color="primary"
-              fullWidth
-              sx={{ mt: 2 }}
-            >
-              Login
-            </Button>
-          </form>
-        </LoginPaper>
-      </Box>
-    </Container>
+    <GradientBackground>
+      <Container maxWidth="sm">
+        {/* Avatar */}
+        <Box display="flex" justifyContent="center" mb={4}>
+          <StyledAvatar>
+            <Typography variant="h1">👤</Typography>  {/* Placeholder for avatar */}
+          </StyledAvatar>
+        </Box>
+
+        {/* Password Input */}
+        <Box display="flex" justifyContent="center">
+          <StyledTextField
+            variant="outlined"
+            type="password"
+            placeholder="Input Master Password"
+            value={password}
+            onChange={handlePasswordChange}
+            fullWidth
+            InputProps={{
+              endAdornment: (
+                <StyledIconButton onClick={handleLogin}>
+                  <ArrowForward />
+                </StyledIconButton>
+              ),
+            }}
+          />
+        </Box>
+      </Container>
+    </GradientBackground>
   );
-}
+};
 
 export default LoginPage;
+
+
