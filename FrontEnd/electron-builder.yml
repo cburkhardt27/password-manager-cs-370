@@ -1,20 +1,15 @@
 appId: com.passwordmanager.app
 productName: Password Manager
+directories:
+  output: dist
 files:
-  - dist/**
-  - electron/**
+  - dist/**/*  # Your React build output
+  - electron/**/*  # Your Electron main files
   - package.json
 mac:
   target:
     - dmg
-  category: public.app-category.productivity
 win:
   target:
     - nsis
-  publisherName: Elizabeth
-linux:
-  target:
-    - AppImage
-  category: Utility
-directories:
-  buildResources: assets
+
