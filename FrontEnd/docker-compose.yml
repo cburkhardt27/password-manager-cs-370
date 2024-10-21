@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"  # Map port 3000 on host to container
+    volumes:
+      - .:/app        # Mount local files to container for real-time changes
+      - /app/node_modules  # Ignore node_modules to prevent conflicts
+    stdin_open: true   # Keep container open
+    tty: true          # Allocate a TTY for debugging
+    environment:
+      NODE_ENV: development
