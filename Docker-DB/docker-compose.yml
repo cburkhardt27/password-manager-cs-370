@@ -12,7 +12,7 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql/data
     ports:
-      - "5433:5433"  # Exposes port 5432 (PostgreSQL default) to the host machine
+      - "5432:5432"  # Exposes port 5432 (PostgreSQL default) to the host machine
     networks:
       - password_manager_network
 
