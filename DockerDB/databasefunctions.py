@@ -209,4 +209,7 @@ QUESTIONS:
 - Do we need to verify password for CRUD operations or is the master password 
 used for a one-time verification?
 - Re-evaluate the security of the design of DB functions...
+
+- Stroning the infor in the user_info gtext file to store it in a new table-- independent table
+
 '''

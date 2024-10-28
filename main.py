@@ -6,6 +6,8 @@ from Encryption.encryption_functions import encode_new_password, decode_vault_pa
 from DockerDB.databasefunctions import connect_db, create_passwords_table, add_password_entry, get_password, update_password_entry, delete_password,update_username
 
 
+
+
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://myuser:mypassword@pgcontainer:5432/pswdDB")
 
 def main():
@@ -20,7 +22,7 @@ def main():
 
     # Main command loop
     while True:
-        print("\nPassword Manager")
+        print("\nSelect the action: ")
         print("1. Add Password")
         print("2. Get Password")
         print("3. Update Password")
