@@ -25,9 +25,9 @@ const FormBox = styled(Box)({
   borderRadius: '20px',
   maxWidth: '898px',
   margin: 'auto',
-  marginTop: '100px',  // Add some margin to ensure space at the top
-  height: 'auto',     // Adjust height for flexibility
-  minHeight: '260px', // Increase the height of the form box
+  marginTop: '100px',  // Adding some margin to ensure space at the top
+  height: 'auto',     
+  minHeight: '260px', 
 });
 
 const BackButton = styled(Fab)({
@@ -83,9 +83,8 @@ const AddNewPasswordPage = () => {
   };
 
   const handleCancel = () => {
-    // Clear the form or navigate back to HomePageNoPasswords
-    setFormData({ username: '', password: '', website: '', note: '' });
-    navigate('/HomePageNoPasswords');  // Navigate back to HomePageNoPasswords
+    // Navigate back to HomePageNoPasswords
+    navigate('/HomePageNoPasswords');  
   };
 
   const handleBack = () => {

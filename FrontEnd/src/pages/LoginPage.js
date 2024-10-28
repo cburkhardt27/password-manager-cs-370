@@ -47,10 +47,10 @@ const LoginPage = () => {
   };
 
   const handleLogin = () => {
-    const masterPassword = 'password';  // Replace with your actual password validation logic
+    const masterPassword = 'password';  // Replace with actual password validation logic
     if (password === masterPassword) {
       // Navigate to homepage with no passwords
-      navigate('/HomePageNoPasswords');  // Change '/homepage' to the actual route you use for the homepage
+      navigate('/HomePageNoPasswords');
     } else {
       alert('Invalid password!');
     }

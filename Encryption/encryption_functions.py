@@ -6,15 +6,15 @@ from Crypto.Cipher import AES
 from base64 import b64encode, b64decode
 
 #Validate a user’s submitted master password against the stored salted hash
-def query_master_password(submitted_username, submitted_password):
+def validate_master_password(submitted_username, submitted_password):
     file = open('user_info.txt','r')
     data = file.readlines()
     if data[0] == submitted_username: # if usernames match, check passwords
         if bcrypt.checkpw(submitted_password, data[1]):
-            print("Login successful.\n")
+    #        print("Login successful.\n")
             return True
     file.close()
-    print("User and password combination not recognized. Please try again \n")
+#    print("User and password combination not recognized. Please try again \n")
     return False
 
 def encode_new_password(plaintext): # this function not debugged
@@ -44,6 +44,7 @@ def encode_new_password(plaintext): # this function not debugged
 def decode_vault_password(db_ciphertext):
     file = open('user_info.txt','r')
     data = file.readlines()
+    b_user = data[0]
     b_hashed_mp = data[1].enocde()
     file.close()    
 
