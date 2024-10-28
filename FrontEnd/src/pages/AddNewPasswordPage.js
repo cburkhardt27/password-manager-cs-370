@@ -92,8 +92,7 @@ const AddNewPasswordPage = () => {
     navigate('/HomePageNoPasswords');
   };
 
-  // Password meter parts
-  // Security?
+  // Password security strength meter
   const [password, setPassword] = useState('');
   const [strength, setStrength] = useState(0);
   const [recommend, setRecommend] = useState('Recommendations');
