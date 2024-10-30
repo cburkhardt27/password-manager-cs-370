@@ -212,7 +212,4 @@ used for a one-time verification?
 
 - Stroning the infor in the user_info gtext file to store it in a new table-- independent table
 
-- There is some error with user_info.txt from encode_new_passowrd function. Causes errors with update_password_entry, get_password, add_password_entry,
-  and delete_password. Everething else is working. 
-
 '''
