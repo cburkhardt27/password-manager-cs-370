@@ -5,15 +5,22 @@ from hashlib import pbkdf2_hmac
 from Crypto.Cipher import AES
 from base64 import b64encode, b64decode
 
+act_mp = b'$2b$12$23RLATJ2RFO27LdH2mD6wu9u2mwbnzsvjRFd/oZ5OBfAxkKWQwFWu'
+act_username = 'caburkh'
 #Validate a user’s submitted master password against the stored salted hash
 def validate_master_password(submitted_username, submitted_password):
-    file = open('user_info.txt','r')
-    data = file.readlines()
-    if data[0] == submitted_username: # if usernames match, check passwords
-        if bcrypt.checkpw(submitted_password, data[1]):
+  #  with open('user_info.txt','r') as file:
+  #      act_username = file.readline().strip()
+    #    data = file.read().splitlines()
+    #    act_mp = file.readline()
+    #    print("Submitted user " + submitted_username + " actual user " + act_username)
+    if act_username == submitted_username: # if usernames match, check passwords
+    #    print("Username OK\n")
+        submitted_password_bytes = submitted_password.encode()
+        if bcrypt.checkpw(submitted_password_bytes, act_mp):
     #        print("Login successful.\n")
             return True
-    file.close()
+#    file.close()
 #    print("User and password combination not recognized. Please try again \n")
     return False
 
@@ -69,6 +76,12 @@ def decode_vault_password(db_ciphertext):
 
 
 def main():
+    user_un = input("Enter your existing username: \n")
+    user_mp = input("Enter your existing master password: \n")
+    if (validate_master_password(user_un,user_mp)):
+        print("You're in!\n")
+    else:
+        print("No match!")
     return
 
 
