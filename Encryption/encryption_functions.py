@@ -11,7 +11,7 @@ act_mp = b'$2b$12$23RLATJ2RFO27LdH2mD6wu9u2mwbnzsvjRFd/oZ5OBfAxkKWQwFWu'
 act_username = 'caburkh'
 
 #Validate a user’s submitted master password against the stored salted hash
-def validate_master_password(submitted_username, submitted_password):
+def validate_master_password(submitted_username, submitted_password, act_mp, act_username):
   #  with open('user_info.txt','r') as file:
   #      act_username = file.readline().strip()
     #    data = file.read().splitlines()
@@ -27,7 +27,7 @@ def validate_master_password(submitted_username, submitted_password):
 #    print("User and password combination not recognized. Please try again \n")
     return False
 
-def encode_new_password(plaintext):
+def encode_new_password(plaintext, act_username):
 #    file = open('user_info.txt','r')
 #    data = file.readlines()
 #    b_user = data[0]
@@ -53,7 +53,7 @@ def encode_new_password(plaintext):
     return db_ciphertext
 
 # debug and manage error handling
-def decode_vault_password(db_ciphertext):
+def decode_vault_password(db_ciphertext,act_username):
 #    file = open('user_info.txt','r')
 #    data = file.readlines()
 #    b_user = data[0]

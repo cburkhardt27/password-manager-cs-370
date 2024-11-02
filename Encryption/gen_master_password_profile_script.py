@@ -8,7 +8,6 @@ TO DO:
 Create a check to see if a user profile exists, and warn user against ovewriting profile.
 for security reasons, user shouldn't  be able to overwrite if they don't know the master password
 Clean up/define where user profile gets stored
-Create an alphanumeric check for the user's mater passwrod
 
 '''
 import bcrypt
@@ -18,10 +17,6 @@ from pathlib import Path
 
 def digit_in_string(string_check): # return true if string includes digit
     return any(i.isdigit() for i in string_check)
-
-#def spec_char_NOT_in_string(string_check): # return true if string DOES NOT include alphanumeric
-#    return any(s.isalnum() for s in string_check)
-# double check what an alphanumeric is
 
 def setup_user_master_pass():
     alphanumer_set = ['@','!','#','$','%','^','&','*','(',')','_','-','?']
