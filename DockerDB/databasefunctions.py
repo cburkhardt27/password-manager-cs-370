@@ -169,22 +169,22 @@ def add_password_entry(username, url, plaintext_password):
 
 
 # Retrieve password from vault and decrypt it to plaintext. Params: Username, URL
-def get_password(username, url):
+def get_password(url):
     query = """
-    SELECT password FROM passwords
-    WHERE username = %s AND url = %s; 
+    SELECT username, password FROM passwords
+    WHERE url = %s; 
     """
     conn, cur = connect_db(DB_NAME, DB_USER, DB_PASSWORD, DB_HOST)  # Ensure we get conn and cur
     if conn is None or cur is None:
         print("Failed to connect to the database.")
         return
     try:
-        cur.execute(query, (username, url))
+        cur.execute(query, (url))
         result = cur.fetchone()
         if result:
-            encrypted_pswd = result[0]
+            username, encrypted_pswd = result
             decrypted_pswd = decode_vault_password(encrypted_pswd)
-            return decrypted_pswd
+            return username, decrypted_pswd
         else:
             print("No password found for the given username and URL!")
             return None
