@@ -24,6 +24,7 @@ def digit_in_string(string_check): # return true if string includes digit
 # double check what an alphanumeric is
 
 def setup_user_master_pass():
+    alphanumer_set = ['@','!','#','$','%','^','&','*','(',')','_','-','?']
 
     while True:
         try:
@@ -52,9 +53,8 @@ def setup_user_master_pass():
         if not digit_in_string(master_pass):
             print("Please include a number in your password.\n")
             continue
-#        if spec_char_NOT_in_string(master_pass):
-#            print("Please include a special character in your passsword.\n")
-# the above functionality didn't work right
+        if not any(char in alphanumer_set for char in master_pass):
+            print("Please include an expected special character in your passsword.\n")
         else:
             break
     
