@@ -1,11 +1,17 @@
 import psycopg2
+import bcrypt
 from Encryption.encryption_functions import encode_new_password, decode_vault_password
+
 
 # Connection variables
 DB_NAME = "pswdDB"
 DB_USER = "myuser"
 DB_PASSWORD = "mypassword"
-DB_HOST = "pgcontainer"  # "db" if connecting inside container / "localhost" if connecting from outside Docker
+DB_HOST = "pgcontainer"  # "pgcontainer" when connecting inside container / "localhost" if connecting from outside Docker
+
+# Note: "pgcontainer" is the name I have given to the container I created to host postgresql in my docker application, 
+# make sure to give the container this exact name or you'll have to change this to the name you've assigned the container you created
+
 
 """
 Function checks if a connection has already been established. If one hasn't been established, a new one is made.
@@ -53,6 +59,29 @@ def create_passwords_table(conn):
             cur.close()
 
 
+# Function to create a table to store the masterpassword 
+def create_master_password_table(conn):
+    master_query = """
+    CREATE TABLE IF NOT EXISTS master_password (
+        username VARCHAR(255) NOT NULL,
+        masterpassword BYTEA NOT NULL
+    );
+    """
+    try:
+        if conn is None:
+            raise ValueError("Connection is not established.")
+        cur = conn.cursor()  # Get the cursor from the connection
+        cur.execute(master_query)
+        conn.commit()  # Save the changes to the database
+        print("Table 'master_password' created successfully.")
+    except Exception as e:
+        print(f"Error creating table: {e}")
+    finally:
+        if cur:
+            cur.close()
+# NEED TO CALL THE MASTERPASSWORD CREATE DIFFERENTLY
+
+
 # Establish the database connection
 conn, cur = connect_db(DB_NAME, DB_USER, DB_PASSWORD, DB_HOST)
 if conn is None or cur is None:
@@ -61,14 +90,56 @@ if conn is None or cur is None:
 
 # Create the passwords table
 create_passwords_table(conn)
+create_master_password_table(conn)
 
 # Close the connection
 conn.close()
 
+def add_master_password(username, hashed_mp):
+    insert_query = """
+    INSERT INTO master_password (username, hashed_mp)
+    VALUES (%s, %s);
+    """ 
+    conn, cur = connect_db(DB_NAME, DB_USER, DB_PASSWORD, DB_HOST)  # Ensure we get conn and cur
+    if conn is None or cur is None:
+        print("Failed to connect to the database.")
+        return
+    try:
+        cur.execute(insert_query, (username,hashed_mp))
+        conn.commit()
+        print("Master password stored successfully.")
+    except Exception as e:
+        print(f"Error adding master password: {e}")
+    finally:
+        cur.close()
+        conn.close()
 
-'''
-CRUD Operations for SPRINT #3 & #4 will be implemented here
-'''
+
+def get_master_password():
+    retrieve_query = """
+    SELECT username, masterpassword
+    FROM master_password;
+    """
+    
+    # Connect to the database
+    conn, cur = connect_db(DB_NAME, DB_USER, DB_PASSWORD, DB_HOST)
+    if conn is None or cur is None:
+        print("Failed to connect to the database.")
+        return False
+    
+    try:
+        # Execute the query to retrieve the hashed password and salt
+        cur.execute(retrieve_query)
+        result = cur.fetchone()
+
+        if result is None:
+            print("MP Table is empty")
+            return False
+
+    finally:
+        cur.close()
+        conn.close()
+
 
 
 # Add a new password entry to the vault. Params: Username, URL, Password
