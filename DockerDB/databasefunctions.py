@@ -139,6 +139,8 @@ def get_master_password():
     finally:
         cur.close()
         conn.close()
+
+    username, hashed_mp = result
     
     return username, hashed_mp
 
