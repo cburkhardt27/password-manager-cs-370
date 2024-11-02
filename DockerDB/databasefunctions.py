@@ -64,7 +64,7 @@ def create_master_password_table(conn):
     master_query = """
     CREATE TABLE IF NOT EXISTS master_password (
         username VARCHAR(255) NOT NULL,
-        masterpassword BYTEA NOT NULL
+        hashed_mp BYTEA NOT NULL
     );
     """
     try:
@@ -116,8 +116,10 @@ def add_master_password(username, hashed_mp):
 
 
 def get_master_password():
+    add_master_password("testuser",b'$2b$12$OsDy0n7RAL1BdHyUn77ARuG7rpvBmtILgYW3ep9wL6EE3XRC5eag.')
+    # this is just a hardcode test
     retrieve_query = """
-    SELECT username, masterpassword
+    SELECT username, hashed_mp
     FROM master_password;
     """
     
@@ -131,7 +133,7 @@ def get_master_password():
         # Execute the query to retrieve the hashed password and username
         cur.execute(retrieve_query)
         result = cur.fetchone()
-
+        print("result: ", result)
         if result is None:
             print("MP Table is empty")
             return False
