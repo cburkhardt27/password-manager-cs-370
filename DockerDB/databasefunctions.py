@@ -128,7 +128,7 @@ def get_master_password():
         return False
     
     try:
-        # Execute the query to retrieve the hashed password and salt
+        # Execute the query to retrieve the hashed password and username
         cur.execute(retrieve_query)
         result = cur.fetchone()
 
@@ -139,6 +139,8 @@ def get_master_password():
     finally:
         cur.close()
         conn.close()
+    
+    return username, hashed_mp
 
 
 
