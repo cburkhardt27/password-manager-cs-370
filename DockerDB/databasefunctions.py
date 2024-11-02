@@ -140,15 +140,16 @@ def get_master_password():
         cur.close()
         conn.close()
 
-    username, hashed_mp = result
+    #username, hashed_mp = result
     
-    return username, hashed_mp
-
+    #return username, hashed_mp
+    return result
 
 
 # Add a new password entry to the vault. Params: Username, URL, Password
 def add_password_entry(username, url, plaintext_password):
-    username, hashed_mp = get_master_password()
+    result_tuple = get_master_password()
+    username, hashed_mp = result_tuple
     encrypted_password = encode_new_password(plaintext_password, username)
     query = """
     INSERT INTO passwords (username, url, password)
@@ -185,7 +186,9 @@ def get_password(url):
         if result:
             username, encrypted_pswd = result
 
-            mp_username, hashed_mp = get_master_password()
+            result_tuple = get_master_password()
+            mp_username, hashed_mp = result_tuple
+            
             decrypted_pswd = decode_vault_password(encrypted_pswd,mp_username)
             
             return username, decrypted_pswd
@@ -223,7 +226,9 @@ def delete_password(username, url):
 # Update old password with a new one. Params: Username, URL, New Password 
 def update_password_entry(username, url, new_plaintext_password):
     
-    mp_username, hashed_mp = get_master_password()
+    result_tuple = get_master_password()
+    mp_username, hashed_mp = result_tuple
+
     new_encrypted_password = encode_new_password(new_plaintext_password,mp_username)
 
     query = """
