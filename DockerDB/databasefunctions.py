@@ -148,7 +148,8 @@ def get_master_password():
 
 # Add a new password entry to the vault. Params: Username, URL, Password
 def add_password_entry(username, url, plaintext_password):
-    encrypted_password = encode_new_password(plaintext_password)
+    username, hashed_mp = get_master_password()
+    encrypted_password = encode_new_password(plaintext_password, username)
     query = """
     INSERT INTO passwords (username, url, password)
     VALUES (%s, %s, %s);
@@ -183,7 +184,10 @@ def get_password(url):
         result = cur.fetchone()
         if result:
             username, encrypted_pswd = result
-            decrypted_pswd = decode_vault_password(encrypted_pswd)
+
+            mp_username, hashed_mp = get_master_password()
+            decrypted_pswd = decode_vault_password(encrypted_pswd,mp_username)
+            
             return username, decrypted_pswd
         else:
             print("No password found for the given username and URL!")
@@ -218,7 +222,10 @@ def delete_password(username, url):
 
 # Update old password with a new one. Params: Username, URL, New Password 
 def update_password_entry(username, url, new_plaintext_password):
-    new_encrypted_password = encode_new_password(new_plaintext_password)
+    
+    mp_username, hashed_mp = get_master_password()
+    new_encrypted_password = encode_new_password(new_plaintext_password,mp_username)
+
     query = """
     UPDATE passwords
     SET password = %s, updated_at = CURRENT_TIMESTAMP
