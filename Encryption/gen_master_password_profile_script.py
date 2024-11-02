@@ -57,14 +57,17 @@ def setup_user_master_pass():
     master_pass = master_pass.encode()
     pass_salt = bcrypt.gensalt()
     hashed_mp = bcrypt.hashpw(master_pass,pass_salt)
-    print(hashed_mp)
+    print(username + " " + str(hashed_mp))
+    # return these things to be saved in the database upon setup
+    return hashed_mp, username
+
 
     # save username and master password (hashed!) combination
 #    Path('/programFiles/').mkdir(parents=True, exist_ok=True)
 # the above line was creating a directory, but had permission errors
-    file = open('user_info.txt','w+')
-    file.write(username + '\n' + str(hashed_mp))
-    file.close()
+#    file = open('user_info.txt','w+')
+#    file.write(username + '\n' + str(hashed_mp))
+#    file.close()
 
 if __name__=="__main__":
     setup_user_master_pass()
