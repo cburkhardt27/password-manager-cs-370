@@ -7,6 +7,7 @@ from base64 import b64encode, b64decode
 
 act_mp = b'$2b$12$23RLATJ2RFO27LdH2mD6wu9u2mwbnzsvjRFd/oZ5OBfAxkKWQwFWu'
 act_username = 'caburkh'
+
 #Validate a user’s submitted master password against the stored salted hash
 def validate_master_password(submitted_username, submitted_password):
   #  with open('user_info.txt','r') as file:
@@ -25,11 +26,13 @@ def validate_master_password(submitted_username, submitted_password):
     return False
 
 def encode_new_password(plaintext): # this function not debugged
-    file = open('user_info.txt','r')
-    data = file.readlines()
-    b_user = data[0]
-    b_hashed_mp = data[1].enocde()
-    file.close()    
+#    file = open('user_info.txt','r')
+#    data = file.readlines()
+#    b_user = data[0]
+#    b_hashed_mp = data[1].enocde()
+#    file.close()    
+    b_user = act_username.encode()
+    b_hashed_mp = act_mp
     # derive a key that will be used to encrypt/decrypt newpassword
     # b_user * 3 is the salt; it is multiplied by 3 to meet length expectation (16 bytes)
     iter = 10000 # standard
@@ -49,11 +52,14 @@ def encode_new_password(plaintext): # this function not debugged
 
 # debug and manage error handling
 def decode_vault_password(db_ciphertext):
-    file = open('user_info.txt','r')
-    data = file.readlines()
-    b_user = data[0]
-    b_hashed_mp = data[1].enocde()
-    file.close()    
+#    file = open('user_info.txt','r')
+#    data = file.readlines()
+#    b_user = data[0]
+#    b_hashed_mp = data[1].enocde()
+#    file.close()    
+
+    b_user = act_username.encode()
+    b_hashed_mp = act_mp
 
     ciphertext = b64decode(db_ciphertext)
     # re-derive key for decryption
@@ -76,13 +82,20 @@ def decode_vault_password(db_ciphertext):
 
 
 def main():
-    user_un = input("Enter your existing username: \n")
-    user_mp = input("Enter your existing master password: \n")
-    if (validate_master_password(user_un,user_mp)):
-        print("You're in!\n")
-    else:
-        print("No match!")
-    return
+# debugging encode np
+    cipher_pass = encode_new_password("password!")
+    print(cipher_pass)
+
+    revert_pass = decode_vault_password(cipher_pass)
+    print(revert_pass)
+# debugging validate_mp
+#    user_un = input("Enter your existing username: \n")
+#    user_mp = input("Enter your existing master password: \n")
+#    if (validate_master_password(user_un,user_mp)):
+#        print("You're in!\n")
+#    else:
+#        print("No match!")
+#    return
 
 
 if __name__=="__main__":
