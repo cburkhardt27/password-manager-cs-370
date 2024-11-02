@@ -4,6 +4,8 @@ import bcrypt
 from hashlib import pbkdf2_hmac
 from Crypto.Cipher import AES
 from base64 import b64encode, b64decode
+import secrets
+import string
 
 act_mp = b'$2b$12$23RLATJ2RFO27LdH2mD6wu9u2mwbnzsvjRFd/oZ5OBfAxkKWQwFWu'
 act_username = 'caburkh'
@@ -79,9 +81,18 @@ def decode_vault_password(db_ciphertext):
 #        return -1
     return plaintext
 
+def generate_random_password(length=12):
+    # Define the characters to choose from
+    alphabet = string.ascii_letters + string.digits + string.punctuation
+    # Generate random password
+    password = ''.join(secrets.choice(alphabet) for _ in range(length))
+    return password    
 
 
 def main():
+# debug generate_random_pass
+    random_pass = generate_random_password()
+    print(random_pass)
 # debugging encode / decode sub passwords
     cipher_pass = encode_new_password("password!")
     print(cipher_pass)
