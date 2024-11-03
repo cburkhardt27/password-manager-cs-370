@@ -1,0 +1,43 @@
+services:
+  db:
+    image: postgres:15
+    container_name: pgcontainer
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: pswdDB
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"  # Make the database accessible on the host machine
+
+  app:
+    build: .
+    container_name: pyapp
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: "postgresql://myuser:mypassword@pgcontainer:5432/pswdDB"
+    volumes:
+      - .:/pyapp  # Mount the application code to /pyapp inside the container
+    command: python main.py  # Command to run the Python script 
+
+    stdin_open: true  # Keep stdin open for the terminal input in main.py
+    tty: true         # Allocate a pseudo-TTY
+
+  frontend:
+    build:
+      context: ./FrontEnd 
+      dockerfile: Dockerfile  
+    container_name: frontend_app
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./FrontEnd:/frontend  # Mount the front-end source code for live updates
+    environment:
+      - NODE_ENV=development 
+    command: npm start 
+
+
+volumes:
+  pg_data:
