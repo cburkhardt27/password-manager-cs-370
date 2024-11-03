@@ -31,7 +31,7 @@ services:
       dockerfile: Dockerfile  # Specify your Dockerfile if it's named differently
     container_name: frontend_app
     ports:
-      - "4001:4001"  # Expose the front-end application on port 4001
+      - "3000:3000"  # Expose the front-end application on port 4001
     volumes:
       - ./FrontEnd:/frontend  # Mount the front-end source code for live updates
     environment:
