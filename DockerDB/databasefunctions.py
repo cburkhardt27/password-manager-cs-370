@@ -1,6 +1,7 @@
 import psycopg2
 import bcrypt
 from Encryption.encryption_functions import encode_new_password, decode_vault_password
+from Encryption.gen_master_password_profile_script import setup_user_master_pass
 
 
 # Connection variables
@@ -79,22 +80,20 @@ def create_master_password_table(conn):
     finally:
         if cur:
             cur.close()
-# NEED TO CALL THE MASTERPASSWORD CREATE DIFFERENTLY
 
-
-# Establish the database connection
+# Establish the database connection to initialize the two tables
 conn, cur = connect_db(DB_NAME, DB_USER, DB_PASSWORD, DB_HOST)
 if conn is None or cur is None:
     print("Failed to connect to the database.")
     exit(1)
 
-# Create the passwords table
-create_passwords_table(conn)
+# Create the master_password table and passwords table in this order
 create_master_password_table(conn)
-
+create_passwords_table(conn)
 # Close the connection
 conn.close()
 
+# populate table with the result from setup_user_master_pass() -- RETURNS  ** return hashed_mp, username **
 def add_master_password(username, hashed_mp):
     insert_query = """
     INSERT INTO master_password (username, hashed_mp)
@@ -105,7 +104,9 @@ def add_master_password(username, hashed_mp):
         print("Failed to connect to the database.")
         return
     try:
-        cur.execute(insert_query, (username,hashed_mp))
+        cur.execute(insert_query, (username,hashed_mp)) 
+        # parameters will be the result from setup_user_master_pass() -- RETURNS  ** return hashed_mp, username **
+        
         conn.commit()
         print("Master password stored successfully.")
     except Exception as e:
@@ -116,8 +117,9 @@ def add_master_password(username, hashed_mp):
 
 
 def get_master_password():
-    add_master_password("testuser",b'$2b$12$OsDy0n7RAL1BdHyUn77ARuG7rpvBmtILgYW3ep9wL6EE3XRC5eag.')
-    # this is just a hardcode test
+    add_master_password("usertest_mp",b'$2b$12$OsDy0n7RAL1BdHyUn77ARuG7rpvBmtILgYW3ep9wL6EE3XRC5eag.')
+    # this is just a hardcode test 
+    # substitute this with the result from setup_user_master_pass() -- RETURNS  ** return hashed_mp, username **
     retrieve_query = """
     SELECT username, hashed_mp
     FROM master_password;
@@ -133,7 +135,7 @@ def get_master_password():
         # Execute the query to retrieve the hashed password and username
         cur.execute(retrieve_query)
         result = cur.fetchone()
-        print("result: ", result)
+        print("result: ", result) # DEBUG PRINT
         if result is None:
             print("MP Table is empty")
             return False
@@ -142,16 +144,16 @@ def get_master_password():
         cur.close()
         conn.close()
 
-    #username, hashed_mp = result
+    username, hashed_mp = result
     
-    #return username, hashed_mp
-    return result
+    return username, hashed_mp
+    # return result
 
 
 # Add a new password entry to the vault. Params: Username, URL, Password
 def add_password_entry(username, url, plaintext_password):
-    result_tuple = get_master_password()
-    username, hashed_mp = result_tuple
+    username_master, hashed_mp = get_master_password() # this was the point of confusion -- why is this necessary??
+    # username, hashed_mp = result_tuple
     encrypted_password = encode_new_password(plaintext_password, username)
     query = """
     INSERT INTO passwords (username, url, password)
@@ -181,17 +183,16 @@ def get_password(url):
     conn, cur = connect_db(DB_NAME, DB_USER, DB_PASSWORD, DB_HOST)  # Ensure we get conn and cur
     if conn is None or cur is None:
         print("Failed to connect to the database.")
-        return
+        return None
     try:
-        cur.execute(query, (url))
+        cur.execute(query, (url,))
         result = cur.fetchone()
         if result:
             username, encrypted_pswd = result
 
-            result_tuple = get_master_password()
-            mp_username, hashed_mp = result_tuple
-            
-            decrypted_pswd = decode_vault_password(encrypted_pswd,mp_username)
+            mp_username, hashed_mp = get_master_password()
+           
+            decrypted_pswd = decode_vault_password(encrypted_pswd,mp_username) #TODO Why is this taking the mp_username as param??
             
             return username, decrypted_pswd
         else:
@@ -199,6 +200,7 @@ def get_password(url):
             return None
     except Exception as e:
         print(f"Error retrieving password entry: {e}")
+        return None
     finally:
         cur.close()
         conn.close()
@@ -228,8 +230,8 @@ def delete_password(username, url):
 # Update old password with a new one. Params: Username, URL, New Password 
 def update_password_entry(username, url, new_plaintext_password):
     
-    result_tuple = get_master_password()
-    mp_username, hashed_mp = result_tuple
+    mp_username, hashed_mp  = get_master_password()
+    # mp_username, hashed_mp = result_tuple
 
     new_encrypted_password = encode_new_password(new_plaintext_password,mp_username)
 

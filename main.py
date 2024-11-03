@@ -36,9 +36,9 @@ def main():
             add_password_entry(username, url, plaintext_password)
 
         elif choice == '2':
-            username = input("Enter username: ")
+            # username = input("Enter username: ")
             url = input("Enter URL: ")
-            password = get_password(username, url)
+            username, password = get_password(url)
             if password:
                 print(f"Password for {username} at {url}: {password}")
 
