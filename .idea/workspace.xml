@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="0c3467ba-c08d-465a-9e51-d629ba19c926" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/FrontEnd/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/FrontEnd/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FrontEnd/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/FrontEnd/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FrontEnd/electron/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/FrontEnd/electron/main.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FrontEnd/electron/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/FrontEnd/electron/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FrontEnd/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/FrontEnd/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FrontEnd/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/FrontEnd/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FrontEnd/src/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/FrontEnd/src/package.json" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
+  <component name="ProjectId" id="2n70dxFFQTpp5v1sxfwSLueXBhx" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.databasefunctions.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/joshuaqian/Downloads/CS370/password-manager-cs-370&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;
+  }
+}</component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="0c3467ba-c08d-465a-9e51-d629ba19c926" name="Changes" comment="" />
+      <created>1728308898528</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1728308898528</updated>
+    </task>
+    <servers />
+  </component>
+</project>

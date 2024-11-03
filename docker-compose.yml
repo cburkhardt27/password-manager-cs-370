@@ -25,5 +25,19 @@ services:
     stdin_open: true  # Keep stdin open for the terminal input in main.py
     tty: true         # Allocate a pseudo-TTY
 
+  frontend:
+    build:
+      context: ./FrontEnd  # Path to your front-end directory
+      dockerfile: Dockerfile  # Specify your Dockerfile if it's named differently
+    container_name: frontend_app
+    ports:
+      - "4001:4001"  # Expose the front-end application on port 4001
+    volumes:
+      - ./FrontEnd:/frontend  # Mount the front-end source code for live updates
+    environment:
+      - NODE_ENV=development  # Set environment variable for development mode
+    command: npm start  # Command to start the front-end application
+
+
 volumes:
   pg_data:
