@@ -154,7 +154,7 @@ def get_master_password():
 def add_password_entry(username, url, plaintext_password):
     username_master, hashed_mp = get_master_password() # this was the point of confusion -- why is this necessary??
     # username, hashed_mp = result_tuple
-    encrypted_password = encode_new_password(plaintext_password, username)
+    encrypted_password = encode_new_password(plaintext_password, username_master)
     query = """
     INSERT INTO passwords (username, url, password)
     VALUES (%s, %s, %s);
