@@ -27,16 +27,16 @@ services:
 
   frontend:
     build:
-      context: ./FrontEnd  # Path to your front-end directory
-      dockerfile: Dockerfile  # Specify your Dockerfile if it's named differently
+      context: ./FrontEnd  
+      dockerfile: Dockerfile  
     container_name: frontend_app
     ports:
-      - "3000:3000"  # Expose the front-end application on port 4001
+      - "3000:3000"  
     volumes:
       - ./FrontEnd:/frontend  # Mount the front-end source code for live updates
     environment:
-      - NODE_ENV=development  # Set environment variable for development mode
-    command: npm start  # Command to start the front-end application
+      - NODE_ENV=development  
+    command: npm start  
 
 
 volumes:
