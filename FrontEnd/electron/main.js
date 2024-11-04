@@ -62,7 +62,9 @@ const { PythonShell } = require('python-shell');  // Import python-shell
     try {
       // Call `get_master_password` to retrieve the stored hashed password and username
       const result = await callPythonFunction('get_master_password', []);
-      
+  
+      console.log("Result from get_master_password:", result);
+  
       if (!result || result.length < 2) {
         console.error('No master password found in the database.');
         return { success: false };
@@ -70,11 +72,9 @@ const { PythonShell } = require('python-shell');  // Import python-shell
   
       const [username, storedHashedPassword] = result;
   
-      // Convert stored password from binary string (BYTEA) if needed
-      const storedHashedPasswordBuffer = Buffer.from(storedHashedPassword, 'binary');
-  
-      // Compare the input password with the stored hashed password
-      const isPasswordValid = bcrypt.compareSync(inputPassword, storedHashedPasswordBuffer);
+      // Attempt to directly compare the hashed password without converting to Buffer
+      const isPasswordValid = bcrypt.compareSync(inputPassword, storedHashedPassword);
+      console.log("Is password valid:", isPasswordValid);
   
       return { success: isPasswordValid };
     } catch (error) {
@@ -82,6 +82,7 @@ const { PythonShell } = require('python-shell');  // Import python-shell
       return { success: false, error: error.message };
     }
   });
+  
 
   ipcMain.handle('fetch-passwords', async () => {
     try {
