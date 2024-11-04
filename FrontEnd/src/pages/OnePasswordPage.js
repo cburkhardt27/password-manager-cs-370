@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 const GradientBackground = styled(Box)({
     height: '100vh',
     display: 'flex',
-    background: 'linear-gradient(210deg, #A472CB, #5883F2)',  // Blue to purple gradient
+    background: 'linear-gradient(210deg, #A472CB, #5883F2)', // Blue to purple gradient
 });
 
 const Sidebar = styled(Drawer)({
@@ -26,7 +26,7 @@ const AddButton = styled(Fab)({
     backgroundColor: '#36343A',
     color: '#fff',
     borderRadius: '50px',
-    padding: '0px 50px',  // Wider padding for oval shape
+    padding: '0px 50px', // Wider padding for oval shape
     '&:hover': {
         backgroundColor: '#333',
     },
@@ -54,7 +54,7 @@ const OnePasswordPage = () => {
 
     const handleAddPassword = () => {
         console.log('Add button clicked');
-        // Add logic here for adding a new password
+        // Placeholder for logic to add a new password
     };
 
     const handleViewPassword = (password) => {
@@ -79,7 +79,7 @@ const OnePasswordPage = () => {
                     <List>
                         {/* Highlight "Passwords" to indicate current page */}
                         <ListItem button sx={{ backgroundColor: '#A472CB' }}>
-                            <Lock sx={{ mr: 2, color: '#FFFFFF' }} />  {/* White icon */}
+                            <Lock sx={{ mr: 2, color: '#FFFFFF' }} /> {/* White icon */}
                             <ListItemText primary="Passwords" />
                         </ListItem>
                         <ListItem button>

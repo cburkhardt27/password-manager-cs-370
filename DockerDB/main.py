@@ -20,7 +20,7 @@ def main():
 
     # Main command loop
     while True:
-        print("\nPassword Manager")
+        print("\nSelect the action: ")
         print("1. Add Password")
         print("2. Get Password")
         print("3. Update Password")
@@ -36,9 +36,9 @@ def main():
             add_password_entry(username, url, plaintext_password)
 
         elif choice == '2':
-            username = input("Enter username: ")
+            # username = input("Enter username: ")
             url = input("Enter URL: ")
-            password = get_password(username, url)
+            username, password = get_password(url)
             if password:
                 print(f"Password for {username} at {url}: {password}")
 

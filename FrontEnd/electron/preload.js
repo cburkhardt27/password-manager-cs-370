@@ -10,7 +10,15 @@ contextBridge.exposeInMainWorld('electronAPI', {
    */
   send: (channel, data) => {
     // Define a whitelist of allowed IPC channels
-    const validChannels = ['save-data', 'load-data'];
+    const validChannels = [
+      'save-data',
+      'load-data',
+      'add-password-entry',
+      'get-password',
+      'delete-password',
+      'update-password-entry',
+      'update-username',
+    ];
     
     if (validChannels.includes(channel)) {
       ipcRenderer.send(channel, data);
@@ -27,7 +35,14 @@ contextBridge.exposeInMainWorld('electronAPI', {
    */
   receive: (channel, func) => {
     // Define a whitelist of allowed IPC channels for receiving messages
-    const validChannels = ['data-loaded'];
+    const validChannels = [
+      'data-loaded',
+      'add-password-entry-reply',
+      'get-password-reply',
+      'delete-password-reply',
+      'update-password-entry-reply',
+      'update-username-reply',
+    ];
     
     if (validChannels.includes(channel)) {
       ipcRenderer.on(channel, (event, ...args) => func(...args));
