@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Button, Typography, Modal, Backdrop } from '@mui/material';
 import { styled } from '@mui/system';
-import { useNavigate } from 'react-router-dom';  // Import useNavigate to handle navigation
+import { useNavigate } from 'react-router-dom';
 
 const DeleteModalBox = styled(Box)({
   backgroundColor: '#897F8F',
@@ -11,20 +11,20 @@ const DeleteModalBox = styled(Box)({
   margin: 'auto',
   textAlign: 'center',
   position: 'relative',
-  zIndex: 1400,  // Ensure modal is above backdrop
+  zIndex: 1400,
 });
 
 const BackdropBlur = styled(Backdrop)({
-  zIndex: 1300,  // Ensure it's below the modal content
-  backdropFilter: 'blur(10px)',  // Apply blur effect to the background
-  backgroundColor: 'rgba(0, 0, 0, 0.5)',  // Semi-transparent dark background
+  zIndex: 1300,
+  backdropFilter: 'blur(10px)',
+  backgroundColor: 'rgba(0, 0, 0, 0.5)',
 });
 
 const ModalContainer = styled(Box)({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  height: '100vh',  // Full viewport height to vertically center the modal
+  height: '100vh',
 });
 
 const CancelButton = styled(Button)({
@@ -43,29 +43,36 @@ const DeleteButton = styled(Button)({
   },
 });
 
-const DeletePassword = ({ isOpen, onClose, onDelete, website }) => {
-  const navigate = useNavigate();  // To handle navigation
+const DeletePassword = ({ isOpen, onClose, onDelete, username, website }) => {
+  const navigate = useNavigate();
 
   // Function to handle Cancel button click
   const handleCancel = () => {
-    // Close the modal and navigate back to the ViewPassword page
-    onClose();  // Call the onClose function to close the modal
-    navigate('/ViewPassword');  // Navigate to the ViewPassword page
+    onClose();
+    navigate('/ViewPassword');
   };
 
   // Function to handle Delete button click
-  const handleDelete = () => {
-    // Simulate deletion of password (you can also delete from localStorage if required)
-    localStorage.removeItem('passwordData');  // Remove the data from localStorage
+  const handleDelete = async () => {
+    try {
+      // Call the deletePassword API through Electron's IPC
+      const response = await window.electronAPI.deletePassword(username, website);
 
-    // Navigate back to the HomePageNoPasswords after deletion
-    navigate('/HomePageNoPasswords');
+      if (response.success) {
+        onClose();  // Close the modal
+        navigate('/HomePageNoPasswords');  // Navigate back after deletion
+      } else {
+        console.error('Failed to delete password:', response.error);
+      }
+    } catch (error) {
+      console.error('Error deleting password:', error);
+    }
   };
 
   return (
     <Modal
       open={isOpen}
-      onClose={onClose}  // Close modal on background click or ESC key
+      onClose={onClose}
       closeAfterTransition
       BackdropComponent={BackdropBlur}
       BackdropProps={{ timeout: 500 }}

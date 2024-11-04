@@ -1,29 +1,41 @@
 const { ipcRenderer } = require('electron');
 
 // Define functions to handle specific IPC communications
-const addPassword = (username, url, password) => {
-  ipcRenderer.send('add-password-entry', { username, url, password });
+const addPassword = async (username, url, password) => {
+  try {
+    const response = await window.electronAPI.addPasswordEntry({ username, url, password });
+    console.log('Password added:', response);
+    return response;
+  } catch (error) {
+    console.error('Failed to add password:', error);
+    throw error;
+  }
 };
 
-const getPassword = (username, url) => {
-  ipcRenderer.send('get-password', { username, url });
+const getPassword = async (username, url) => {
+  try {
+    const response = await window.electronAPI.getPassword({ username, url });
+    console.log('Password retrieved:', response);
+    return response;
+  } catch (error) {
+    console.error('Failed to retrieve password:', error);
+    throw error;
+  }
 };
 
-const deletePassword = (username, url) => {
-  ipcRenderer.send('delete-password', { username, url });
+const deletePassword = async (username, url) => {
+  try {
+    const response = await window.electronAPI.deletePassword({ username, url });
+    console.log('Password deleted:', response);
+    return response;
+  } catch (error) {
+    console.error('Failed to delete password:', error);
+    throw error;
+  }
 };
-
-// Define listeners to handle responses from main process
-ipcRenderer.on('add-password-entry-reply', (event, response) => {
-  console.log('Password added:', response);
-});
-
-ipcRenderer.on('get-password-reply', (event, response) => {
-  console.log('Password retrieved:', response);
-});
 
 // Export functions for use in React components
-module.exports = {
+export {
   addPassword,
   getPassword,
   deletePassword,

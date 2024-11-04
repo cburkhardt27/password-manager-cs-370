@@ -10,20 +10,20 @@ const FormBox = styled(Box)({
   width: '500px',
   textAlign: 'center',
   position: 'relative',
-  zIndex: 1400, // Ensure the form is on top of the backdrop
+  zIndex: 1400,
 });
 
 const BackdropBlur = styled(Backdrop)({
-  zIndex: 1300,  // Ensure it's below the modal content
-  backdropFilter: 'blur(10px)',  // Apply blur effect to the background
-  backgroundColor: 'rgba(0, 0, 0, 0.5)',  // Semi-transparent dark background
+  zIndex: 1300,
+  backdropFilter: 'blur(10px)',
+  backgroundColor: 'rgba(0, 0, 0, 0.5)',
 });
 
 const ModalContainer = styled(Box)({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  height: '100vh',  // Full viewport height to vertically center the modal
+  height: '100vh',
 });
 
 const CancelButton = styled(Button)({
@@ -69,10 +69,18 @@ const EditPassword = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSave = () => {
-    // Save the data and return to OnePasswordPage
-    console.log('Saved data:', formData);
-    navigate('/OnePasswordPage', { state: { password: formData } });
+  const handleSave = async () => {
+    const { website: url, username, password: newPassword, note } = formData;
+    try {
+      const response = await window.electronAPI.updatePasswordEntry(username, url, newPassword, note);
+      if (response.success) {
+        navigate('/OnePasswordPage', { state: { password: formData } });
+      } else {
+        console.error('Failed to update password:', response.error);
+      }
+    } catch (error) {
+      console.error('Error updating password:', error);
+    }
   };
 
   const handleGeneratePassword = () => {
@@ -153,3 +161,4 @@ const EditPassword = () => {
 };
 
 export default EditPassword;
+

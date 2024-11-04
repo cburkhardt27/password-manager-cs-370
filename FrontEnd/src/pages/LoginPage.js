@@ -2,30 +2,29 @@ import React, { useState } from 'react';
 import { Avatar, TextField, IconButton, Box, Container, Typography } from '@mui/material';
 import { ArrowForward } from '@mui/icons-material';
 import { styled } from '@mui/system';
-import { useNavigate } from 'react-router-dom';  // Import useNavigate for navigation
+import { useNavigate } from 'react-router-dom';
 
-// Styled components using Material UI's styled API
 const GradientBackground = styled(Box)({
   height: '100vh',
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-  background: 'linear-gradient(210deg, #A472CB, #5883F2)',  // Blue to purple gradient
+  background: 'linear-gradient(210deg, #A472CB, #5883F2)',
 });
 
 const StyledAvatar = styled(Avatar)({
   width: '100px',
   height: '100px',
-  backgroundColor: '#ffffff33',  // Semi-transparent white
-  color: '#FFFFFF',  // White icon
+  backgroundColor: '#ffffff33',
+  color: '#FFFFFF',
 });
 
 const StyledTextField = styled(TextField)({
-  backgroundColor: '#FFFFFFCC',  // Semi-transparent white background
-  borderRadius: '50px',  // Fully rounded corners
-  maxWidth: '500px',  // Restrict the width
+  backgroundColor: '#FFFFFFCC',
+  borderRadius: '50px',
+  maxWidth: '500px',
   '& .MuiOutlinedInput-root': {
-    paddingRight: '10px',  // Ensure there's room for the end adornment (the arrow button)
+    paddingRight: '10px',
   },
 });
 
@@ -40,33 +39,34 @@ const StyledIconButton = styled(IconButton)({
 
 const LoginPage = () => {
   const [password, setPassword] = useState('');
-  const navigate = useNavigate();  // React Router's useNavigate hook
+  const navigate = useNavigate();
 
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
   };
 
-  const handleLogin = () => {
-    const masterPassword = 'password';  // Replace with actual password validation logic
-    if (password === masterPassword) {
-      // Navigate to homepage with no passwords
-      navigate('/HomePageNoPasswords');
-    } else {
-      alert('Invalid password!');
+  const handleLogin = async () => {
+    try {
+      const response = await window.electronAPI.validatePassword(password);
+      if (response.success) {
+        navigate('/HomePageNoPasswords');
+      } else {
+        alert('Invalid password!');
+      }
+    } catch (error) {
+      console.error('Error validating password:', error);
+      alert('An error occurred while validating the password.');
     }
   };
 
   return (
     <GradientBackground>
       <Container maxWidth="sm">
-        {/* Avatar */}
         <Box display="flex" justifyContent="center" mb={4}>
           <StyledAvatar>
-            <Typography variant="h1">👤</Typography>  {/* Placeholder for avatar */}
+            <Typography variant="h1">👤</Typography>
           </StyledAvatar>
         </Box>
-
-        {/* Password Input */}
         <Box display="flex" justifyContent="center">
           <StyledTextField
             variant="outlined"
@@ -90,3 +90,4 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
+

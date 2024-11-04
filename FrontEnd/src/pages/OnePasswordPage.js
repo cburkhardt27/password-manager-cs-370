@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AppBar, TextField, InputAdornment, IconButton, Drawer, List, ListItem, ListItemText, Box, Fab, Button, Typography, Toolbar } from '@mui/material';
 import { Search, Add, Lock, Security, Settings } from '@mui/icons-material';
 import { styled } from '@mui/system';
@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 const GradientBackground = styled(Box)({
     height: '100vh',
     display: 'flex',
-    background: 'linear-gradient(210deg, #A472CB, #5883F2)', // Blue to purple gradient
+    background: 'linear-gradient(210deg, #A472CB, #5883F2)',
 });
 
 const Sidebar = styled(Drawer)({
@@ -26,7 +26,7 @@ const AddButton = styled(Fab)({
     backgroundColor: '#36343A',
     color: '#fff',
     borderRadius: '50px',
-    padding: '0px 50px', // Wider padding for oval shape
+    padding: '0px 50px',
     '&:hover': {
         backgroundColor: '#333',
     },
@@ -42,19 +42,33 @@ const ViewButton = styled(Button)({
 
 const OnePasswordPage = () => {
     const [searchQuery, setSearchQuery] = useState('');
-    const [passwords, setPasswords] = useState([
-        { id: 1, website: 'emory.edu', username: 'user1', password: 'password123', note: 'No note added' },
-    ]);
-
+    const [passwords, setPasswords] = useState([]);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        // Fetch passwords from the database on component mount
+        const fetchPasswords = async () => {
+            try {
+                const response = await window.electronAPI.fetchPasswords();
+                if (response.success) {
+                    setPasswords(response.passwords);
+                } else {
+                    console.error('Failed to fetch passwords:', response.error);
+                }
+            } catch (error) {
+                console.error('Error fetching passwords:', error);
+            }
+        };
+
+        fetchPasswords();
+    }, []);
 
     const handleSearchChange = (event) => {
         setSearchQuery(event.target.value);
     };
 
     const handleAddPassword = () => {
-        console.log('Add button clicked');
-        // Placeholder for logic to add a new password
+        navigate('/AddNewPasswordPage');  // Navigate to add new password page
     };
 
     const handleViewPassword = (password) => {
@@ -70,16 +84,12 @@ const OnePasswordPage = () => {
             {/* Sidebar Navigation */}
             <Sidebar variant="permanent" anchor="left">
                 <Box sx={{ padding: 2 }}>
-                    {/* Sidebar Title */}
                     <Typography variant="h5" sx={{ flexGrow: 1, color: 'white', mb: 3 }}>
                         Password Manager
                     </Typography>
-
-                    {/* Navigation Items */}
                     <List>
-                        {/* Highlight "Passwords" to indicate current page */}
                         <ListItem button sx={{ backgroundColor: '#A472CB' }}>
-                            <Lock sx={{ mr: 2, color: '#FFFFFF' }} /> {/* White icon */}
+                            <Lock sx={{ mr: 2, color: '#FFFFFF' }} />
                             <ListItemText primary="Passwords" />
                         </ListItem>
                         <ListItem button>

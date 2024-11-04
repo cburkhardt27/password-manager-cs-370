@@ -74,12 +74,19 @@ const AddNewPasswordPage = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSave = () => {
-    // Simulate saving the form data to localStorage or state
-    localStorage.setItem('passwordData', JSON.stringify(formData));  // Save the data to localStorage
-
-    // Navigate to OnePasswordPage and pass the saved data
-    navigate('/OnePasswordPage', { state: { website: formData.website, username: formData.username, password: formData.password, note: formData.note } });
+  const handleSave = async () => {
+    const { username, website: url, password, note } = formData;
+    try {
+      const response = await window.electronAPI.addPasswordEntry(username, url, password, note);
+      if (response.success) {
+        navigate('/OnePasswordPage', { state: { website: url, username, password, note } });
+      } else {
+        alert('Failed to save password. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error saving password:', error);
+      alert('An error occurred while saving the password.');
+    }
   };
 
   const handleCancel = () => {

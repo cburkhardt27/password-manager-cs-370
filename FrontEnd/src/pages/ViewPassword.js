@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AppBar, TextField, InputAdornment, IconButton, Drawer, List, ListItem, ListItemText, Box, Button, Fab, Typography, Toolbar } from '@mui/material';
 import { Search, ArrowBack, Lock, Security, Settings } from '@mui/icons-material';
 import { styled } from '@mui/system';
 import { useNavigate, useLocation } from 'react-router-dom';
-import DeletePassword from './DeletePassword.js';  // Import the DeletePassword modal
+import DeletePassword from './DeletePassword.js';
 
 const GradientBackground = styled(Box)({
   height: '100vh',
   display: 'flex',
-  background: 'linear-gradient(210deg, #A472CB, #5883F2)',  // Blue to purple gradient
+  background: 'linear-gradient(210deg, #A472CB, #5883F2)',
 });
 
 const Sidebar = styled(Drawer)({
@@ -64,22 +64,42 @@ const ViewPassword = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const [passwordEntry, setPasswordEntry] = useState(null);
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
 
-  // Fetch the saved password data from location state or from localStorage
-  const passwordEntry = location.state?.passwordEntry || JSON.parse(localStorage.getItem('passwordData'));
+  const username = location.state?.username;
+  const website = location.state?.website;
+
+  useEffect(() => {
+    // Fetch the password entry from the database on component mount
+    const fetchPasswordEntry = async () => {
+      try {
+        const response = await window.electronAPI.getPassword(username, website);
+        if (response.success) {
+          const [retrievedUsername, decryptedPassword] = response.result;
+          setPasswordEntry({ username: retrievedUsername, password: decryptedPassword, website });
+        } else {
+          console.error(response.error);
+        }
+      } catch (error) {
+        console.error('Error fetching password entry:', error);
+      }
+    };
+
+    if (username && website) {
+      fetchPasswordEntry();
+    }
+  }, [username, website]);
 
   const handleBack = () => {
     navigate('/OnePasswordPage');
   };
 
   const handleEdit = () => {
-    // Navigate to the edit page with the current password details
     navigate('/EditPassword', { state: { passwordEntry } });
   };
 
   const handleDelete = () => {
-    // Open the delete modal
     setDeleteModalOpen(true);
   };
 
@@ -87,11 +107,18 @@ const ViewPassword = () => {
     setDeleteModalOpen(false);
   };
 
-  const handleConfirmDelete = () => {
-    // Logic to delete the password (can be done via localStorage or API)
-    localStorage.removeItem('passwordData');  // For now, remove from localStorage
-    setDeleteModalOpen(false);
-    navigate('/OnePasswordPage');  // Navigate back after deletion
+  const handleConfirmDelete = async () => {
+    try {
+      const response = await window.electronAPI.deletePassword(username, website);
+      if (response.success) {
+        setDeleteModalOpen(false);
+        navigate('/OnePasswordPage');
+      } else {
+        console.error('Failed to delete password:', response.error);
+      }
+    } catch (error) {
+      console.error('Error deleting password:', error);
+    }
   };
 
   return (
@@ -176,7 +203,7 @@ const ViewPassword = () => {
           <Box display="flex" gap={3} mb={3}>
             <TextField
               label="Password"
-              value={passwordEntry?.password ? '************' : 'No password provided'}
+              value={passwordEntry ? '************' : 'No password provided'}
               variant="outlined"
               fullWidth
               sx={{ backgroundColor: '#B39DDB', borderRadius: '15px' }}

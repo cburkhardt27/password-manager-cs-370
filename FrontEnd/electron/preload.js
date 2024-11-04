@@ -50,4 +50,32 @@ contextBridge.exposeInMainWorld('electronAPI', {
       console.warn(`Blocked attempt to listen on invalid channel: ${channel}`);
     }
   },
+
+  /**
+   * Convenience methods to interact with specific CRUD operations
+   */
+  fetchPasswords: () => ipcRenderer.invoke('fetch-passwords'),
+  validatePassword: (password) => ipcRenderer.invoke('validate-password', password),
+  addPasswordEntry: (username, url, password, note) => ipcRenderer.invoke('add-password-entry', username, url, password, note),
+  getPassword: (username, url) => ipcRenderer.invoke('get-password', username, url),
+  deletePassword: (username, url) => ipcRenderer.invoke('delete-password', username, url),
+  updatePasswordEntry: (username, url, newPassword, note) => ipcRenderer.invoke('update-password-entry', username, url, newPassword, note),
+  updateUsername: (data) => ipcRenderer.invoke('update-username', data),
+
+
+  // Methods for receiving specific replies
+  onAddPasswordReply: (callback) =>
+    ipcRenderer.once('add-password-entry-reply', (event, ...args) => callback(...args)),
+
+  onGetPasswordReply: (callback) =>
+    ipcRenderer.once('get-password-reply', (event, ...args) => callback(...args)),
+
+  onDeletePasswordReply: (callback) =>
+    ipcRenderer.once('delete-password-reply', (event, ...args) => callback(...args)),
+
+  onUpdatePasswordReply: (callback) =>
+    ipcRenderer.once('update-password-entry-reply', (event, ...args) => callback(...args)),
+
+  onUpdateUsernameReply: (callback) =>
+    ipcRenderer.once('update-username-reply', (event, ...args) => callback(...args)),
 });

@@ -1,5 +1,6 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
+const bcrypt = require('bcryptjs');
 const { PythonShell } = require('python-shell');  // Import python-shell
 
 // Use dynamic import to load electron-is-dev
@@ -48,7 +49,7 @@ const { PythonShell } = require('python-shell');  // Import python-shell
   // Define a function to call the Python script
   function callPythonFunction(functionName, args) {
     return new Promise((resolve, reject) => {
-      PythonShell.run('/Users/lizzz/Desktop/password-manager-cs-370/Docker-DB/databasefunctions.py', {
+      PythonShell.run('/Users/lizzz/Desktop/password-manager-cs-370/DockerDB/databasefunctions.py', {
         args: [functionName, ...args]
       }, (err, results) => {
         if (err) reject(err);
@@ -57,13 +58,48 @@ const { PythonShell } = require('python-shell');  // Import python-shell
     });
   }
 
-  // IPC handlers
-  ipcMain.handle('add-password-entry', async (event, username, url, password) => {
+  ipcMain.handle('validate-password', async (event, inputPassword) => {
     try {
-      const result = await callPythonFunction('add_password_entry', [username, url, password]);
+      // Call `get_master_password` to retrieve the stored hashed password and username
+      const result = await callPythonFunction('get_master_password', []);
+      
+      if (!result || result.length < 2) {
+        console.error('No master password found in the database.');
+        return { success: false };
+      }
+  
+      const [username, storedHashedPassword] = result;
+  
+      // Convert stored password from binary string (BYTEA) if needed
+      const storedHashedPasswordBuffer = Buffer.from(storedHashedPassword, 'binary');
+  
+      // Compare the input password with the stored hashed password
+      const isPasswordValid = bcrypt.compareSync(inputPassword, storedHashedPasswordBuffer);
+  
+      return { success: isPasswordValid };
+    } catch (error) {
+      console.error('Error validating password:', error);
+      return { success: false, error: error.message };
+    }
+  });
+
+  ipcMain.handle('fetch-passwords', async () => {
+    try {
+      const result = await callPythonFunction('get_all_passwords', []);
+      return { success: true, passwords: result };
+    } catch (error) {
+      console.error('Error fetching passwords:', error);
+      return { success: false, error: error.message };
+    }
+  });
+
+  // IPC handlers
+  ipcMain.handle('add-password-entry', async (event, username, url, plaintext_password, note) => {
+    try {
+      const result = await callPythonFunction('add_password_entry', [username, url, plaintext_password, note]);
       return { success: true, result };
     } catch (error) {
-      console.error('Error adding password:', error);
+      console.error('Error adding password entry:', error);
       return { success: false, error: error.message };
     }
   });
@@ -88,12 +124,12 @@ const { PythonShell } = require('python-shell');  // Import python-shell
     }
   });
 
-  ipcMain.handle('update-password-entry', async (event, username, url, newPassword) => {
+  ipcMain.handle('update-password-entry', async (event, username, url, newPassword, note) => {
     try {
-      const result = await callPythonFunction('update_password_entry', [username, url, newPassword]);
+      const result = await callPythonFunction('update_password_entry', [username, url, newPassword, note]);
       return { success: true, result };
     } catch (error) {
-      console.error('Error updating password:', error);
+      console.error('Error updating password entry:', error);
       return { success: false, error: error.message };
     }
   });
