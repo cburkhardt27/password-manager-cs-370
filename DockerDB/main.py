@@ -39,6 +39,7 @@ def main():
             # username = input("Enter username: ")
             url = input("Enter URL: ")
             username, password = get_password(url)
+            #   THIS NOT DEBUGGED IF USERNAME/PASSWORD DOES NOT EXIST FOR A GIVEN URL
             if password:
                 print(f"Password for {username} at {url}: {password}")
 
