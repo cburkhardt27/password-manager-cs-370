@@ -1,9 +1,6 @@
-import React, { useState } from 'react';
-// Delete unused
-import {Divider, AppBar, TextField, InputAdornment, IconButton, Drawer, List, ListItem, ListItemText, Box, Button, Fab, Typography, Toolbar } from '@mui/material';
-import { Search, ArrowBack, Lock, Security, Settings } from '@mui/icons-material';
+import React from 'react';
+import {Divider, Box, Button, Typography } from '@mui/material';
 import { styled } from '@mui/system';
-import { useNavigate } from 'react-router-dom';  // Import useNavigate
 
 const Overlay = styled(Divider)({
   position: 'fixed',
@@ -24,7 +21,6 @@ const DeletePopup = styled(Box)({
   margin: 'auto',
   marginTop: '100px',  // Add some margin to ensure space at the top
   height: 'auto',     // Adjust height for flexibility
-  // minHeight: '260px', // Increase the height of the form box
 });
 
 const CancelButton = styled(Button)({
@@ -43,7 +39,7 @@ const DeleteButton = styled(Button)({
   },
 });
 
-const DeleteAllPasswordsPage = () => {
+const DeleteAllPasswords = ({ handleCancel }) => {
   return (
     <Overlay>
       <DeletePopup>
@@ -53,7 +49,7 @@ const DeleteAllPasswordsPage = () => {
           </Typography>
         </Box>
         <Box display="flex" justifyContent="space-between">
-            <CancelButton variant="contained">
+            <CancelButton variant="contained" onClick={handleCancel}>
               Cancel
             </CancelButton>
             <DeleteButton variant="contained">
@@ -65,4 +61,4 @@ const DeleteAllPasswordsPage = () => {
   )
 }
 
-export default DeleteAllPasswordsPage // Rename pop-up?
+export default DeleteAllPasswords // Rename pop-up?

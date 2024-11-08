@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import { AppBar, TextField, InputAdornment, IconButton, Drawer, List, ListItem, ListItemText, Box, Button, Fab, Typography, Toolbar } from '@mui/material';
-import { Search, ArrowBack, Lock, Security, Settings, ForkRight, Delete } from '@mui/icons-material';
+import { Search, Lock, Security, Settings, CloseFullscreen } from '@mui/icons-material';
 import { styled } from '@mui/system';
 import { useNavigate } from 'react-router-dom';  // Import useNavigate
-import DeleteAllPasswordsModal from '../components/DeleteAllPasswordsModal';
-// Make this modal.
 
 const GradientBackground = styled(Box)({
   height: '100vh',
@@ -27,12 +25,12 @@ const FormBox = styled(Box)({
   borderRadius: '20px',
   maxWidth: '898px',
   margin: 'auto',
-  marginTop: '100px',  // Add some margin to ensure space at the top
+  marginTop: '20px', // Add some margin to ensure space at the top
   height: 'auto',     // Adjust height for flexibility
 });
 
-const SettingsButton = styled(Button)({
-  backgroundColor: '#5A83F2',
+const CheckupButton = styled(Button)({
+  backgroundColor: '#8B8B8B',
   color: '#fff',
   textTransform: 'none',
   borderRadius: '50px',
@@ -43,11 +41,10 @@ const SettingsButton = styled(Button)({
   },
 });
 
-const SettingsPage = () => {
-  const [isDeleteAll, setDeleteAll] = useState(false);
+const CheckupPage = () => {
   const navigate = useNavigate(); // Hook for navigation
-  
-    const handlePassword = () => {
+
+  const handlePassword = () => {
     // Navigate to the ViewPasswordPage
     navigate('/ViewPassword');
   };
@@ -57,32 +54,33 @@ const SettingsPage = () => {
     navigate('/CheckupPage');
   };
 
-  const handleDeleteAll = () => {
-    setDeleteAll(!isDeleteAll);
-  }
+  const handleSettings = () => {
+    // Navigate to the CheckupPage
+    navigate('/SettingsPage');
+  };
 
   return (
     <GradientBackground>
       {/* Sidebar Navigation */}
       <Sidebar variant="permanent" anchor="left">
-      <Box sx={{ padding: 2 }}>
+        <Box sx={{ padding: 2 }}>
           {/* Sidebar Title */}
           <Typography variant="h5" sx={{ flexGrow: 1, color: 'white', mb: 3 }}>
             Password Manager
           </Typography>
-          
+
           {/* Navigation Items */}
           <List>
             <ListItem button onClick={handlePassword}>
-              <Lock sx={{ mr: 2, color: '#8B8B8B' }} /> 
+              <Lock sx={{ mr: 2, color: '#8B8B8B' }} />
               <ListItemText primary="Passwords" />
             </ListItem>
-            <ListItem button onClick={handleCheckup}>
-              <Security sx={{ mr: 2, color: '#8B8B8B' }} />
+            <ListItem button onClick={handleCheckup} sx={{ backgroundColor: '#A472CB' }}>
+              <Security sx={{ mr: 2, color: '#FFFFFF' }} />
               <ListItemText primary="Checkup" />
             </ListItem>
-            <ListItem button sx={{ backgroundColor: '#A472CB' }}>
-              <Settings sx={{ mr: 2, color: '#FFFFFF' }} />
+            <ListItem button onClick={handleSettings}>
+              <Settings sx={{ mr: 2, color: '#8B8B8B' }} />
               <ListItemText primary="Settings" />
             </ListItem>
           </List>
@@ -115,22 +113,21 @@ const SettingsPage = () => {
           </Toolbar>
         </AppBar>
 
-        {/* Settings */}
-        {/* Reset master password option? */}
+        {/* Check Strength */}
+        <div style={{ margin: '100px' }} />
         <FormBox mt={1}>
           <Box display="flex" alignItems="center">
             <Box>
               <Typography variant="h5" sx={{ mb: 3, color: 'white' }} align="left">
-                Delete all Password Manager data
+                Password Uniqueness
               </Typography>
               <Typography variant="h6" sx={{ mb: 0, color: '#DDDDDD' }} align="left">
-                Passwords and other data will be permanently deleted
+                RECOMMENDATION
               </Typography>
             </Box>
-            <SettingsButton variant="contained" onClick={handleDeleteAll} sx={{ marginLeft: 'auto' }}>
-              Delete Data
-            </SettingsButton>
-            {isDeleteAll && <DeleteAllPasswordsModal handleCancel={handleDeleteAll}/>}
+            <CheckupButton variant="contained" onClick={handleCheckup} sx={{ marginLeft: 'auto' }}>
+              <CloseFullscreen sx={{ color: '#FFFFFF' }} />
+            </CheckupButton>
           </Box>
         </FormBox>
       </Box>
@@ -138,4 +135,4 @@ const SettingsPage = () => {
   )
 };
 
-export default SettingsPage;
+export default CheckupPage;
