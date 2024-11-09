@@ -36,10 +36,9 @@ else
     exit 1
 fi
 
-# Might not be necessary
-# # Create an executable package
-# echo "Building the executable..."
-# docker-compose exec app python setup.py build  # Adjust this command based on your packaging method
+# Run the Python script inside the 'app' container
+echo "Running the Python backend script..."
+docker-compose exec app python main.py
 
 # if [ $? -eq 0 ]; then
 #     echo "Executable built successfully."
