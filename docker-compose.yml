@@ -43,7 +43,5 @@ services:
     stdin_open: true  # Keep stdin open for the terminal input in main.py
     tty: true         # Allocate a pseudo-TTY
 
-
-
 volumes:
   pg_data:

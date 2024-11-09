@@ -149,32 +149,49 @@ def get_master_password():
     return username, hashed_mp
     # return result
 
-
-# Add a new password entry to the vault. Params: Username, URL, Password
+# Add a new password entry to the vault. Params: Username, URL, Password -- check whether there's a url already existing
 def add_password_entry(username, url, plaintext_password):
-    username_master, hashed_mp = get_master_password() # this was the point of confusion -- why is this necessary??
-    # username, hashed_mp = result_tuple
+    username_master, hashed_mp = get_master_password()
+    
     encrypted_password = encode_new_password(plaintext_password, username_master)
-    query = """
+    
+    check_query = """
+    SELECT COUNT(*) FROM passwords WHERE url = %s;
+    """
+    insert_query = """
     INSERT INTO passwords (username, url, password)
     VALUES (%s, %s, %s);
     """
+    
     conn, cur = connect_db(DB_NAME, DB_USER, DB_PASSWORD, DB_HOST)  # Ensure we get conn and cur
     if conn is None or cur is None:
         print("Failed to connect to the database.")
         return
+
     try:
-        cur.execute(query, (username, url, encrypted_password))
+        # Check if the URL already exists in the database
+        cur.execute(check_query, (url,))
+        count = cur.fetchone()[0]
+        
+        if count > 0:
+            print("Error: A password entry already exists for the given URL.")
+            return
+
+        # Insert new password entry if it doesn't exist
+        cur.execute(insert_query, (username, url, encrypted_password))
         conn.commit()
         print("Password entry added successfully.")
+        
     except Exception as e:
         print(f"Error adding password entry: {e}")
     finally:
-        cur.close()
-        conn.close()
+        if cur:
+            cur.close()
+        if conn:
+            conn.close()
 
 
-# Retrieve password from vault and decrypt it to plaintext. Params: Username, URL
+# Retrieve password from vault and decrypt it to plaintext. Params: URL
 def get_password(url):
     query = """
     SELECT username, password FROM passwords
@@ -192,11 +209,11 @@ def get_password(url):
 
             mp_username, hashed_mp = get_master_password()
            
-            decrypted_pswd = decode_vault_password(encrypted_pswd,mp_username) #TODO Why is this taking the mp_username as param??
-            
+            decrypted_pswd = decode_vault_password(encrypted_pswd,mp_username) 
+
             return username, decrypted_pswd
         else:
-            print("No password found for the given username and URL!")
+            print("Error: URL provided does not exist!")
             return None
     except Exception as e:
         print(f"Error retrieving password entry: {e}")
