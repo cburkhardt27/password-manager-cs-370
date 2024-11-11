@@ -292,7 +292,11 @@ def get_repeated_passwords():
                 for passwordTuple in allPasswords:
                     if passwordTuple[1] == password:
                         repeated_paswords.append(passwordTuple)
-        return repeated_passwords
+        if repeated_passwords is None:
+            print("There are no repeated passwords")
+            return None
+        else: 
+            return repeated_passwords
     except Exception as e:
         print(f"Error getting the repeated passwords: {e}")
            
