@@ -1,5 +1,7 @@
 import psycopg2
 import bcrypt
+import io
+import contextlib
 from Encryption.encryption_functions import encode_new_password, decode_vault_password
 from Encryption.gen_master_password_profile_script import setup_user_master_pass
 
@@ -302,6 +304,56 @@ def update_username(current_username, new_username, url):
     finally:
         cur.close()
         conn.close()
+
+#Returns a list of tuples where each tuple has every password and it's corresponding url/username in the database 
+def get_all_passwords():
+    table_name = "passwords"
+    conn, cur = connect_db(DB_NAME, DB_USER, DB_PASSWORD, DB_HOST)
+    query = f"SELECT url FROM {table_name}" 
+    cur.execute(query)
+    if conn is None or cur is None:
+        print("Failed to connect to the database.")
+        return
+    try:
+        passwords = []
+        urls = [row[0] for row in cur.fetchall()]
+        if urls is None:
+            print("There are no passwords")
+        else:
+            for url in urls:
+                with contextlib.redirect_stdout(io.StringIO()):
+                    username, password = get_password(url)
+                ptuple = (url, username, password)
+                passwords.append(ptuple)
+            return passwords
+    except Exception as e:
+        print(f"Error getting all the passowrds: {e}")
+    finally:
+        cur.close()
+        conn.close()
+
+#Returns a list of tuples where each tuple has every repeated password and it's corresponding url/username in the database
+def get_repeated_passwords():
+    allPasswords = get_all_passwords()
+
+    password_counts = {}
+    repeated_passwords = []
+
+    for passwordTuple in allPasswords:
+        if passwordTuple[2] in password_counts:
+            password_counts[passwordTuple[2]] += 1
+        else:
+            password_counts[passwordTuple[2]] = 1
+
+
+    for password, count in password_counts.items():
+        if count > 1:
+            for passwordTuple in allPasswords:
+                if passwordTuple[2] == password:
+                    repeated_passwords.append(passwordTuple)
+            
+
+    return repeated_passwords
 
 
 if __name__ == "__main__":
