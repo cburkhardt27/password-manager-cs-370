@@ -3,7 +3,7 @@ print("Starting the Password Manager...")
 import sys
 import os
 from Encryption.encryption_functions import encode_new_password, decode_vault_password
-from DockerDB.databasefunctions import connect_db, create_passwords_table, add_password_entry, get_password, update_password_entry, delete_password,update_username, display_all_passwords
+from DockerDB.databasefunctions import connect_db, create_passwords_table, add_password_entry, get_password, update_password_entry, delete_password,update_username, display_all_passwords, get_repeated_passwords
 
 
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://myuser:mypassword@pgcontainer:5432/pswdDB")
