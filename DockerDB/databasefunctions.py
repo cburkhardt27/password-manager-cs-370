@@ -327,33 +327,34 @@ def get_all_passwords():
                 passwords.append(ptuple)
             return passwords
     except Exception as e:
-        print(f"Error getting all the passowrds: {e}")
+        print(f"Error getting all the passwords: {e}")
     finally:
         cur.close()
         conn.close()
 
 #Returns a list of tuples where each tuple has every repeated password and it's corresponding url/username in the database
 def get_repeated_passwords():
-    allPasswords = get_all_passwords()
+    try:
+        allPasswords = get_all_passwords()
 
-    password_counts = {}
-    repeated_passwords = []
-
-    for passwordTuple in allPasswords:
-        if passwordTuple[2] in password_counts:
-            password_counts[passwordTuple[2]] += 1
-        else:
-            password_counts[passwordTuple[2]] = 1
-
-
-    for password, count in password_counts.items():
-        if count > 1:
-            for passwordTuple in allPasswords:
-                if passwordTuple[2] == password:
-                    repeated_passwords.append(passwordTuple)
-            
-
-    return repeated_passwords
+        password_counts = {}
+        repeated_passwords = []
+        
+        for passwordTuple in allPasswords:
+            if passwordTuple[2] in password_counts:
+                password_counts[passwordTuple[2]] += 1
+            else:
+                password_counts[passwordTuple[2]] = 1
+                
+        for password, count in password_counts.items():
+            if count > 1:
+                for passwordTuple in allPasswords:
+                    if passwordTuple[2] == password:
+                        repeated_passwords.append(passwordTuple)
+                        
+        return repeated_passwords
+    except Exception as e:
+        print(f"Error getting the repeated passwords: {e}")
 
 
 if __name__ == "__main__":
