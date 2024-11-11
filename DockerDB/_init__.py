@@ -7,6 +7,8 @@ from .databasefunctions import (
     get_password,
     update_password_entry,
     delete_password,
-    update_username
+    update_username,
+    get_all_passwords, 
+    get_repeated_passwords
 )
 '''
