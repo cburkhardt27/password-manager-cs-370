@@ -10,7 +10,8 @@ from sqlite_db_functions import (
     add_password_entry,
     get_password,
     delete_password,
-    display_all_passwords
+    display_all_passwords,
+    get_repeated_passwords 
 )
 from Encryption.encryption_functions import decode_vault_password
 from Encryption.gen_master_password_profile_script import setup_user_master_pass
@@ -157,5 +158,30 @@ def display_all_passwords_endpoint():
         cur.close()
         conn.close()
 
+#Endpoint to get repeated passwords
+@app.route('/get_repeated_passwords', methods=['GET'])
+def get_repeated_passwords_endpoint():
+    conn, cur = connect_db()
+    if conn is None:
+        return jsonify({"error": "Failed to connect to the database"}), 500
+    
+    try: 
+        #Uses sqlite db function to get all repeated passwords
+        results = get_repeated_passwords(conn)
+        if results:
+            repeated_passwords = []
+            mp_username, _ = get_master_password(conn)
+            for username, encrypted_pswd in results:
+                decrypted_pswd = decode_vault_password(encrypted_pswd, mp_username)
+                repeated_passwords.append({"username": username, "password": decrypted_pswd})
+            return jsonify(repeated_passwords), 200
+        else:
+            return jsonify({"message": "No repeated passwords"}), 404
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    finally:
+        cur.close()
+        conn.close()
+                                        
 if __name__ == '__main__':
     app.run(port=5000)
