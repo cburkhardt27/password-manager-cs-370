@@ -310,11 +310,11 @@ def get_all_passwords():
     table_name = "passwords"
     conn, cur = connect_db(DB_NAME, DB_USER, DB_PASSWORD, DB_HOST)
     query = f"SELECT url FROM {table_name}" 
-    cur.execute(query)
     if conn is None or cur is None:
         print("Failed to connect to the database.")
         return
     try:
+        cur.execute(query)
         passwords = []
         urls = [row[0] for row in cur.fetchall()]
         if urls is None:
