@@ -1,6 +1,7 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
-const { spawn } = require('child_process');
+const { app, BrowserWindow } = require('electron');
 const path = require('path');
+const { spawn } = require('child_process');
+const isDev = require('electron-is-dev');
 
 let mainWindow;
 let flaskProcess;
@@ -28,13 +29,25 @@ function createWindow() {
   });
 }
 
-// Start Flask server when the app is ready
+// Start Flask server as a background process
+function startFlaskProcess() {
+  flaskProcess = spawn('python', ['-u', path.join(__dirname, '/Users/lizzz/Desktop/password-manager-cs-370/SQLiteDB/pyserver_flask.py')]);
+
+  flaskProcess.stdout.on('data', (data) => {
+    console.log(`Flask: ${data}`);
+  });
+
+  flaskProcess.stderr.on('data', (data) => {
+    console.error(`Flask error: ${data}`);
+  });
+}
+
 app.whenReady().then(() => {
-  flaskProcess = spawn('python', ['-u', 'path/to/your_flask_app.py']);
+  startFlaskProcess(); // Start Flask process when Electron app is ready
   createWindow();
 });
 
-// Clean up Flask server on app quit
+// Terminate Flask server when the app quits
 app.on('will-quit', () => {
   if (flaskProcess) flaskProcess.kill();
 });
@@ -50,5 +63,4 @@ app.on('activate', () => {
     createWindow();
   }
 });
-
 

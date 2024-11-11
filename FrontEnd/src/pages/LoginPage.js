@@ -47,8 +47,18 @@ const LoginPage = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await window.electronAPI.validatePassword(password);
-      if (response.success) {
+      // Make a POST request to the Flask endpoint to validate the password
+      const response = await fetch(`${window.electronAPI.flaskUrl}/validate_password`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ password }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
         navigate('/HomePageNoPasswords');
       } else {
         alert('Invalid password!');
@@ -90,4 +100,5 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
+
 
