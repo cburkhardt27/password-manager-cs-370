@@ -27,7 +27,8 @@ def main():
         print("4. Delete Password")
         print("5. Update Username")
         print("6: View All Passwords")
-        print("7. Exit")
+        print("7: Get Repeated Passwords")
+        print("8. Exit")
         choice = input("Choose an option: ")
 
         if choice == '1':
@@ -66,6 +67,12 @@ def main():
             break
 
         elif choice == '7':
+            repeated_passwords = get_repeated_passwords()
+            print("Repeated Passwords:")
+            for tuple in repeated_passwords:
+                print(f"Password: {tuple[1]} for User: {tuple[0]}")
+
+        elif choice == '8':
             print("Exiting...")
             break
 
