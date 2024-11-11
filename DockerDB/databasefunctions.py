@@ -276,6 +276,27 @@ def display_all_passwords():
         cur.close()
         conn.close()
 
+# returns repeated every passwords and its corresponding user 
+def get_repeated_passwords():
+    try: 
+        allPasswords = display_all_passwords()
+        password_counts = {}
+        repeated_passwords = []
+        for passwordTuple in allPasswords:
+            if passwordTuple[1] in password_counts:
+                password_counts[passwordTuple[1]] += 1
+            else:
+                password_counts[passwordTuple[1]] = 1
+        for password, count in password_counts.items():
+            if count > 1:
+                for passwordTuple in allPasswords:
+                    if passwordTuple[1] == password:
+                        repeated_paswords.append(passwordTuple)
+        return repeated_passwords
+    except Exception as e:
+        print(f"Error getting the repeated passwords: {e}")
+           
+
 # Update old password with a new one. Params: Username, URL, New Password 
 def update_password_entry(username, url, new_plaintext_password):
     
