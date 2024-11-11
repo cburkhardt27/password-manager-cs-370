@@ -3,7 +3,7 @@ print("Starting the Password Manager...")
 import sys
 import os
 from Encryption.encryption_functions import encode_new_password, decode_vault_password
-from DockerDB.databasefunctions import connect_db, create_passwords_table, add_password_entry, get_password, update_password_entry, delete_password,update_username
+from DockerDB.databasefunctions import connect_db, create_passwords_table, add_password_entry, get_password, update_password_entry, delete_password,update_username, display_all_passwords
 
 
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://myuser:mypassword@pgcontainer:5432/pswdDB")
@@ -26,7 +26,8 @@ def main():
         print("3. Update Password")
         print("4. Delete Password")
         print("5. Update Username")
-        print("6. Exit")
+        print("6: View All Passwords")
+        print("7. Exit")
         choice = input("Choose an option: ")
 
         if choice == '1':
@@ -60,7 +61,11 @@ def main():
             url = input("Enter URL: ")
             update_username(current_username, new_username, url)
 
-        elif choice == '6':
+        elif choice == '6': #display all passwords
+            display_all_passwords()
+            break
+
+        elif choice == '7':
             print("Exiting...")
             break
 
