@@ -26,7 +26,9 @@ def main():
         print("3. Update Password")
         print("4. Delete Password")
         print("5. Update Username")
-        print("6. Exit")
+        print("6. Get All Passwords")
+        print("7. Get Repeated Passwords")
+        print("8. Exit")
         choice = input("Choose an option: ")
 
         if choice == '1':
@@ -61,6 +63,17 @@ def main():
             update_username(current_username, new_username, url)
 
         elif choice == '6':
+            allPasswords = get_all_passwords()
+            for tuple in allPasswords:
+                print(f"Password for {tuple[1]} at {tuple[0]} : {tuple[2]}")    
+        
+        elif choice == '7':
+            repeated_passwords = get_repeated_passwords()
+            print("Repeated Passwords:")
+            for tuple in repeated_passwords:
+                print(f"Password for {tuple[1]} at {tuple[0]} : {tuple[2]}")
+
+        elif choice == '8':
             print("Exiting...")
             break
 
