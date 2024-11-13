@@ -19,6 +19,13 @@ from Encryption.gen_master_password_profile_script import setup_user_master_pass
 DB_NAME = "pswdDB"
 app = Flask(__name__)
 
+
+#PRINTING & DEBUGGING
+@app.route('/hello_world', methods=['GET'])
+def hello_world():
+    print("HELLO WORLD! I NEED THIS TO WORK!")
+    return "HELLO WORLD! PLEASE WORK!!"
+
 # Function to establish database connection
 def connect_db():
     try:
