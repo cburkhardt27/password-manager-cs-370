@@ -1,6 +1,13 @@
 # These are the database functions exactly as implemented in databasefunctions.py but using an SQLite database 
 # instead of the SQL database hosted in a container
 
+# Add Encryption to system path.
+import sys
+import os
+
+base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, base_path)
+
 import sqlite3
 from Encryption.encryption_functions import encode_new_password, decode_vault_password
 from Encryption.gen_master_password_profile_script import setup_user_master_pass

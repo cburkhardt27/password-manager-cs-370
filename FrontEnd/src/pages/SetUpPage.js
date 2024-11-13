@@ -35,7 +35,7 @@ const SetUpPage = () => {
     const checkExistingProfile = async () => {
       try {
         console.log("Checking if profile exists...");
-        const response = await fetch(`${window.electronAPI.flaskUrl}/get_master_password`);
+        const response = await fetch(`${window.api.flaskUrl}/get_master_password`);
         console.log(response);
 
 
@@ -74,7 +74,7 @@ const SetUpPage = () => {
 
     try {
       console.log("Attempting setup with data:", { username, password });
-      const response = await fetch(`${window.electronAPI.flaskUrl}/add_master_password`, {
+      const response = await fetch(`${window.api.flaskUrl}/add_master_password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),

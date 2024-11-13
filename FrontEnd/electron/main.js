@@ -24,7 +24,7 @@ let flaskProcess;
       mainWindow.loadURL('http://localhost:3000');
       mainWindow.webContents.openDevTools();
     } else {
-      mainWindow.loadFile(path.join(__dirname, '../dist/index.html'));
+      mainWindow.loadFile(path.join(__dirname, '../public/index.html')); // Unsure for build?
     }
 
     mainWindow.on('closed', () => {
@@ -33,7 +33,17 @@ let flaskProcess;
   }
 
   function startFlaskProcess() {
-    flaskProcess = spawn('python', ['-u', path.join(__dirname, '/Users/lizzz/Desktop/password-manager-cs-370/SQLiteDB/pyserver_flask.py')]);
+    // Virtual environment.
+    const venvPath = path.join(__dirname, '../../venv');
+    let pythonPath;
+    if (process.platform !== 'darwin') {
+      pythonPath = path.join(venvPath, 'Scripts', 'python'); // Windows
+    } else {
+      pythonPath = path.join(venvPath, 'bin', 'python'); // Mac
+    }
+    const flaskAppPath = path.join(__dirname, '../../SQLiteDB/pyserver_flask.py');
+
+    flaskProcess = spawn(pythonPath, ['-u', flaskAppPath]);
 
     flaskProcess.stdout.on('data', (data) => {
       console.log(`Flask: ${data}`);

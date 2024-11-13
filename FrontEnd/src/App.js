@@ -23,7 +23,7 @@ function App() {
     // Check if a profile already exists when the app starts
     const checkExistingProfile = async () => {
       try {
-        const response = await fetch(`${window.electronAPI.flaskUrl}/get_master_password`);
+        const response = await fetch(`${window.api.flaskUrl}/get_master_password`);
         if (response.ok) {
           const result = await response.json();
           if (result.username) {
