@@ -36,7 +36,9 @@ const SetUpPage = () => {
       try {
         console.log("Checking if profile exists...");
         const response = await fetch(`${window.electronAPI.flaskUrl}/get_master_password`);
-        
+        console.log(response);
+
+
         if (response.ok) {
           const result = await response.json();
           if (result.username) {
