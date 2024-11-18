@@ -79,7 +79,14 @@ def decode_vault_password(db_ciphertext,act_username):
 #    except ValueError:
 #        print("Data corrupted or internal error\n")
 #        return -1
-    return plaintext
+#    print("decoding password!")
+#    print(type(plaintext))
+    str_plaintext = str(plaintext)
+#    print(type(str_plaintext))
+    str_plaintext= str_plaintext[2:] # cut out b'
+    str_plaintext= str_plaintext[:-1] # cut out the last '
+ #   print(str_plaintext)
+    return str_plaintext
 
 def generate_random_password(length=12):
     # Define the characters to choose from
@@ -94,10 +101,10 @@ def main():
     random_pass = generate_random_password()
     print(random_pass)
 # debugging encode / decode sub passwords
-    cipher_pass = encode_new_password("password!")
+    cipher_pass = encode_new_password("password!", act_username)
     print(cipher_pass)
 
-    revert_pass = decode_vault_password(cipher_pass)
+    revert_pass = decode_vault_password(cipher_pass, act_username)
     print(revert_pass)
 # debugging validate_mp
 #    user_un = input("Enter your existing username: \n")
