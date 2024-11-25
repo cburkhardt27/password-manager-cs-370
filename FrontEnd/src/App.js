@@ -15,6 +15,12 @@ import CheckupPage from './pages/CheckupPage.js';
 import CheckupStrengthPage from './pages/CheckupStrengthPage.js';
 import CheckupUniquePage from './pages/CheckupUniquePage.js';
 
+// BEAUTTAH ADDED THIS FOR DEBUGGING
+window.api = {
+  flaskUrl: 'http://localhost:5000'
+};
+
+
 function App() {
   const [profileExists, setProfileExists] = useState(false);
   const [loading, setLoading] = useState(true);

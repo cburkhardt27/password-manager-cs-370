@@ -62,7 +62,7 @@ def decode_vault_password(db_ciphertext,act_username):
 
     b_user = act_username.encode()
     b_hashed_mp = act_mp
-
+    
     ciphertext = b64decode(db_ciphertext)
     # re-derive key for decryption
     nonce = ciphertext[-16:] # the last 16 bytes of the ciphertext

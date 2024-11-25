@@ -4,6 +4,12 @@ import { ArrowForward } from '@mui/icons-material';
 import { styled } from '@mui/system';
 import { useNavigate } from 'react-router-dom';
 
+// BEAUTTAH ADDED THIS FOR DEBUGGING
+window.api = {
+  flaskUrl: 'http://localhost:5000'
+};
+
+
 const GradientBackground = styled(Box)({
   height: '100vh',
   display: 'flex',
@@ -45,29 +51,30 @@ const LoginPage = () => {
     setPassword(event.target.value);
   };
 
-  const handleLogin = async () => {
-    try {
-      // Make a POST request to the Flask endpoint to validate the password
-      const response = await fetch(`${window.electronAPI.flaskUrl}/validate_password`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ password }),
-      });
+  
+const handleLogin = async (username, password) => {
+  try {
+    console.log("Attempting login with data:", { username, password });
 
-      const result = await response.json();
+    const response = await fetch(`${window.api.flaskUrl}/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password }),
+    });
 
-      if (result.success) {
-        navigate('/HomePageNoPasswords');
-      } else {
-        alert('Invalid password!');
-      }
-    } catch (error) {
-      console.error('Error validating password:', error);
-      alert('An error occurred while validating the password.');
+    const data = await response.json();
+    if (response.ok) {
+      console.log("Login successful:", data);
+      // Proceed to the next part of your app after successful login
+      navigate('/HomePageNoPasswords');
+    } else {
+      console.error("Error during login:", data.message);
+      // Handle login failure (e.g., show error message to user)
     }
-  };
+  } catch (error) {
+    console.error("Error during login:", error);
+  }
+};
 
   return (
     <GradientBackground>

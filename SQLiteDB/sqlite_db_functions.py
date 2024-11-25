@@ -1,21 +1,12 @@
-# These are the database functions exactly as implemented in databasefunctions.py but using an SQLite database 
+# These are the database functions exactly as implemented in databasefunctions.py but using an SQLite database
 # instead of the SQL database hosted in a container
-
-# Add Encryption to system path.
-import sys
-import os
-
-base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0, base_path)
 
 import sqlite3
 from Encryption.encryption_functions import encode_new_password, decode_vault_password
 from Encryption.gen_master_password_profile_script import setup_user_master_pass
 
-
 # Connection variable (only one is needed for sqlite)
-DB_NAME = "pswdDB"
-
+DB_NAME = "pswdDB.sqlite"
 
 """
 Function checks if a connection has already been established. If one hasn't been established, a new one is made.
@@ -58,6 +49,7 @@ def create_passwords_table(conn):
         if 'cur' in locals():
             cur.close()
 
+
 # Function to create a table to store the master password
 def create_master_password_table(conn):
     master_query = """
@@ -74,25 +66,32 @@ def create_master_password_table(conn):
         conn.commit()  # Save the changes to the database
         print("Table 'master_password' created successfully.")
 
+
     except Exception as e:
         print(f"Error creating table: {e}")
     finally:
         if 'cur' in locals():
             cur.close()
 
+
 # Establish the database connection to initialize the two tables
 conn, cur = connect_db(DB_NAME)  # Only DB_NAME is needed for SQLite
+
 
 if conn is None or cur is None:
     print("Failed to connect to the database.")
     exit(1)
 
+
 # Create the master_password table and passwords table in this order
 create_master_password_table(conn)
 create_passwords_table(conn)
 
+
 # Close the connection
 conn.close()
+
+
 
 
 # populate table with the result from setup_user_master_pass() -- RETURNS ** return hashed_mp, username **
@@ -116,42 +115,47 @@ def add_master_password():
         cur.close()
         conn.close()
 
+
 add_master_password()  # call the script to prompt user first
+
 
 def get_master_password():
     retrieve_query = """
     SELECT username, hashed_mp
     FROM master_password;
     """
-    
+   
     # Connect to the database
     conn, cur = connect_db(DB_NAME)  # Only DB_NAME is needed for SQLite
     if conn is None or cur is None:
         print("Failed to connect to the database.")
         return False
-    
+   
     try:
         # Execute the query to retrieve the hashed password and username
         cur.execute(retrieve_query)
         result = cur.fetchone()
-        print("result: ", result)  # DEBUG PRINT
+        # print("result: ", result)  # DEBUG PRINT
         if result is None:
             print("MP Table is empty")
             return False
+
 
     finally:
         cur.close()
         conn.close()
 
+
     username, hashed_mp = result
     return username, hashed_mp
+
 
 # Add a new password entry to the vault. Params: Username, URL, Password -- check whether there's a URL already existing
 def add_password_entry(username, url, plaintext_password):
     username_master, hashed_mp = get_master_password()
-    
+   
     encrypted_password = encode_new_password(plaintext_password, username_master)
-    
+   
     check_query = """
     SELECT COUNT(*) FROM passwords WHERE url = ?;
     """
@@ -159,12 +163,12 @@ def add_password_entry(username, url, plaintext_password):
     INSERT INTO passwords (username, url, password)
     VALUES (?, ?, ?);
     """
-    
+   
     conn, cur = connect_db(DB_NAME)  # Only DB_NAME is needed for SQLite
     if conn is None or cur is None:
         print("Failed to connect to the database.")
         return
-    
+   
     try:
         # Check if the URL already exists
         cur.execute(check_query, (url,))
@@ -172,18 +176,19 @@ def add_password_entry(username, url, plaintext_password):
         if count > 0:
             print("A password entry for this URL already exists.")
             return
-        
+       
         # Insert the new password entry
         cur.execute(insert_query, (username, url, encrypted_password))
         conn.commit()
         print("Password entry added successfully.")
-    
+   
     except Exception as e:
         print(f"Error adding password entry: {e}")
-    
+   
     finally:
         cur.close()
         conn.close()
+
 
 # Retrieve password from vault and decrypt it to plaintext. Params: URL
 def get_password(url):
@@ -201,9 +206,12 @@ def get_password(url):
         if result:
             username, encrypted_pswd = result
 
+
             mp_username, hashed_mp = get_master_password()
 
+
             decrypted_pswd = decode_vault_password(encrypted_pswd, mp_username)
+
 
             return username, decrypted_pswd
         else:
@@ -236,6 +244,7 @@ def delete_password(username, url):
         cur.close()
         conn.close()
 
+
 # Display all passwords
 def display_all_passwords():
     query = """
@@ -265,24 +274,16 @@ def display_all_passwords():
         cur.close()
         conn.close()
 
-# returns repeated every passwords and its corresponding user 
+
+# returns repeated every passwords and its corresponding user
 def get_repeated_passwords():
-    try: 
+    try:
         allPasswords = display_all_passwords()
         password_counts = {}
         repeated_passwords = []
         for passwordTuple in allPasswords:
             if passwordTuple[1] in password_counts:
                 password_counts[passwordTuple[1]] += 1
-            else:
-                password_counts[passwordTuple[1]] = 1
-        for password, count in password_counts.items():
-            if count > 1:
-                for passwordTuple in allPasswords:
-                    if passwordTuple[1] == password:
-                        repeated_paswords.append(passwordTuple)
-        if repeated_passwords is None:
-            print("There are no repeated passwords")
             return None
         else: 
             return repeated_passwords
