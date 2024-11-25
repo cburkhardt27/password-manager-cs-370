@@ -107,7 +107,7 @@ def add_master_password():
         print("Failed to connect to the database.")
         return
     try:
-        cur.execute(insert_query, (username, hashed_mp))
+        cur.execute(insert_query, (username, hashed_mp)) # is this going into type string and type string? that's what we want
         conn.commit()
         print("Master password stored successfully.")
     except Exception as e:
@@ -116,7 +116,7 @@ def add_master_password():
         cur.close()
         conn.close()
 
-add_master_password()  # call the script to prompt user first
+add_master_password()  # call the script to prompt user first # what is this?? 
 
 def get_master_password():
     retrieve_query = """
@@ -150,7 +150,7 @@ def get_master_password():
 def add_password_entry(username, url, plaintext_password):
     username_master, hashed_mp = get_master_password()
     
-    encrypted_password = encode_new_password(plaintext_password, username_master)
+    encrypted_password = encode_new_password(plaintext_password, username_master, hashed_mp)
     
     check_query = """
     SELECT COUNT(*) FROM passwords WHERE url = ?;
@@ -203,7 +203,7 @@ def get_password(url):
 
             mp_username, hashed_mp = get_master_password()
 
-            decrypted_pswd = decode_vault_password(encrypted_pswd, mp_username)
+            decrypted_pswd = decode_vault_password(encrypted_pswd, mp_username, hashed_mp)
 
             return username, decrypted_pswd
         else:

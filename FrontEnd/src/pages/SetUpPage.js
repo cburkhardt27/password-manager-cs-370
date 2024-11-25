@@ -68,11 +68,13 @@ const SetUpPage = () => {
     }
 
     if (profileExists) {
+      // if they want to overwrite the profile, they msut be able to provide the master password first.
       const confirmOverwrite = window.confirm("A profile already exists. Proceeding will overwrite the current profile. Continue?");
       if (!confirmOverwrite) return;
     }
 
     try {
+    // we're adding a plaintext master password. We need to use the script and/or validation that is provided for in encryption functions 
       console.log("Attempting setup with data:", { username, password });
       const response = await fetch(`${window.api.flaskUrl}/add_master_password`, {
         method: 'POST',

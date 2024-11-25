@@ -47,14 +47,22 @@ def initialize_tables():
 # Endpoint to add master password
 @app.route('/add_master_password', methods=['POST'])
 def add_master_password_endpoint():
-    hashed_mp, username = setup_user_master_pass()
+#    hashed_mp, username = setup_user_master_pass()
+#    print(hashed_mp)
+#    type(hashed_mp)
+#    print(username)
+#    type(username)
+
     conn, cur = connect_db()
     if conn is None:
         return jsonify({"error": "Failed to connect to the database"}), 500
 
     try:
         # Use the function from sqlite_db_functions to add the master password
-        add_master_password(conn, username, hashed_mp)
+        # this is an error! add_master_password doesn't take arguments
+        # you're also double calling setup_user_master_pass()
+    #    add_master_password(conn, username, hashed_mp)
+        add_master_password()
         return jsonify({"message": "Master password stored successfully"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -71,8 +79,10 @@ def get_master_password_endpoint():
 
     try:
         # Use the function from sqlite_db_functions to get the master password
-        username, hashed_mp = get_master_password(conn)
+    #    username, hashed_mp = get_master_password(conn)
+        username, hashed_mp = get_master_password()
         if username and hashed_mp:
+            # jsonify error, cannot return bytes. I think this might be a problem with the table's setup?
             return jsonify({"username": username, "hashed_mp": hashed_mp}), 200
         else:
             return jsonify({"error": "Master password not found"}), 404
@@ -92,6 +102,8 @@ def add_password_endpoint():
     add_password_entry(username, url, plaintext_password)
 
     return jsonify({"message": "Password entry added successfully"}), 200
+# so this is wrong ^^ this atomatically returns the above message EVEN if the url link already exists
+# we need multiple cases here (or we're double logging when using CLI interface)
 
 # Endpoint to get a password entry by URL
 @app.route('/get_password', methods=['GET'])
@@ -103,11 +115,16 @@ def get_password_endpoint():
 
     try:
         # Use the function from sqlite_db_functions to get the password entry
-        result = get_password(conn, url)
+    #    result = get_password(conn, url)
+        result = get_password(url)
+        # we're doing decrytpion twice! it's confusing
+        # get_password returns the decrypted value
         if result:
-            username, encrypted_pswd = result
-            mp_username, _ = get_master_password(conn)
-            decrypted_pswd = decode_vault_password(encrypted_pswd, mp_username)
+        #    username, encrypted_pswd = result
+        #    mp_username, hashed_mp = get_master_password(conn)
+        #    mp_username, hashed_mp = get_master_password()
+        #    decrypted_pswd = decode_vault_password(encrypted_pswd, mp_username,hashed_mp)
+            username, decrypted_pswd = result
             return jsonify({"username": username, "password": decrypted_pswd}), 200
         else:
             return jsonify({"error": "Password not found for the given URL"}), 404
