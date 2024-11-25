@@ -10,8 +10,8 @@ from flask import Flask, request, jsonify
 # base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # sys.path.insert(0, base_path)
 
-from .encryption_functions import encode_new_password, decode_vault_password
-from .gen_master_password_profile_script import setup_user_master_pass
+from encryption_functions import encode_new_password, decode_vault_password
+from gen_master_password_profile_script import setup_user_master_pass
 
 app = Flask(__name__)
 
@@ -68,10 +68,9 @@ def create_master_password_table(conn):
 
 
 # Test
-@app.route('/test', methods=['POST'])
-def test():
-    print("test")
-    return jsonify({"test": "success"})
+@app.route('/api/test', methods=['GET'])
+def test_get():
+  return jsonify({"username": "name", "password": "pass"})
 
 # Initialize tables API
 @app.route('/init_db', methods=['POST'])
