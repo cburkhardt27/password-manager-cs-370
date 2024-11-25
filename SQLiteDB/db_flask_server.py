@@ -1,6 +1,14 @@
 import sys
 import sqlite3
 from flask import Flask, request, jsonify
+
+# Add Encryption to system path.
+import sys
+import os
+
+base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, base_path)
+
 from Encryption.encryption_functions import encode_new_password, decode_vault_password
 from Encryption.gen_master_password_profile_script import setup_user_master_pass
 
@@ -114,11 +122,12 @@ def get_master_password():
         result = cur.fetchone()
         if result:
             username, hashed_mp = result
-            return jsonify({"username": username, "hashed_mp": hashed_mp}), 200
+            return username, hashed_mp
         else:
-            return jsonify({"error": "Master password not found"}), 404
+            return None, None
     except Exception as e:
-        return jsonify({"error": f"Error retrieving master password: {e}"}), 500
+        print(f"Error retrieving master password: {e}")
+        return None, None
     finally:
         cur.close()
         conn.close()
