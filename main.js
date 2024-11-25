@@ -21,7 +21,7 @@ const createWindow = () => {
 function startFlask() {
   // Virtual environment, Windows.
   const venvPath = path.join(__dirname, 'win_venv') // Windows.
-  const pythonPath = path.join(venvPath, 'Scripts', 'python') // Windows
+  const pythonPath = path.join(venvPath, 'Scripts', 'python.exe') // Windows
   const flaskPath = path.join(__dirname, 'db/db_flask_server.py')
 
   flaskProcess = spawn(pythonPath, ['-u', flaskPath])
