@@ -25,6 +25,11 @@ const StyledTextField = styled(TextField)({
   marginBottom: '20px',
 });
 
+// ADDED THIS FOR DEBUGGING
+window.api = {
+  flaskUrl: 'http://localhost:5000'
+};
+
 const SetUpPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');

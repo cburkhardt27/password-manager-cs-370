@@ -12,7 +12,13 @@ sys.path.insert(0, base_path)
 from Encryption.encryption_functions import encode_new_password, decode_vault_password
 from Encryption.gen_master_password_profile_script import setup_user_master_pass
 
+from flask import Flask
+from flask_cors import CORS
+
 app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes and origins
+
+#app = Flask(__name__)
 
 DB_NAME = "pswdDB.sqlite"
 

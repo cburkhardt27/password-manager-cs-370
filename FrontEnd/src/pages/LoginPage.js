@@ -4,7 +4,7 @@ import { ArrowForward } from '@mui/icons-material';
 import { styled } from '@mui/system';
 import { useNavigate } from 'react-router-dom';
 
-// BEAUTTAH ADDED THIS FOR DEBUGGING
+// ADDED THIS FOR DEBUGGING
 window.api = {
   flaskUrl: 'http://localhost:5000'
 };
