@@ -52,10 +52,11 @@ def create_passwords_table(conn):
 
 # Function to create a table to store the master password
 def create_master_password_table(conn):
+    # changed hashed_mp to Text instead of Bytes
     master_query = """
     CREATE TABLE IF NOT EXISTS master_password (
         username TEXT NOT NULL,
-        hashed_mp BLOB NOT NULL
+        hashed_mp TEXT NOT NULL
     );
     """
     try:
@@ -210,7 +211,7 @@ def get_password(url):
             mp_username, hashed_mp = get_master_password()
 
 
-            decrypted_pswd = decode_vault_password(encrypted_pswd, mp_username)
+            decrypted_pswd = decode_vault_password(encrypted_pswd, mp_username, hashed_mp)
 
 
             return username, decrypted_pswd
@@ -230,7 +231,7 @@ def delete_password(username, url):
     DELETE FROM passwords
     WHERE username = ? AND url = ?;
     """
-    conn, cur = connect_db(DB_NAME)  # Only DB_NAME is needed for SQLite
+    conn, cur = connect_db(DB_NAME)
     if conn is None or cur is None:
         print("Failed to connect to the database.")
         return
@@ -250,7 +251,7 @@ def display_all_passwords():
     query = """
     SELECT username, password FROM passwords;
     """
-    conn, cur = connect_db(DB_NAME)  # Only DB_NAME is needed for SQLite
+    conn, cur = connect_db(DB_NAME)
     if conn is None or cur is None:
         print("Failed to connect to the database.")
         return None
@@ -261,7 +262,7 @@ def display_all_passwords():
             passwords = []
             mp_username, hashed_mp = get_master_password()
             for username, encrypted_pswd in results:
-                decrypted_pswd = decode_vault_password(encrypted_pswd, mp_username)
+                decrypted_pswd = decode_vault_password(encrypted_pswd, mp_username, hashed_mp)
                 passwords.append((username, decrypted_pswd))
             return passwords
         else:
