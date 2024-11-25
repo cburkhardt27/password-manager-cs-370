@@ -121,8 +121,17 @@ def get_master_password():
         cur.execute(retrieve_query)
         result = cur.fetchone()
         if result:
-            username, hashed_mp = result
-            return username, hashed_mp
+            print("RESULT DEBUG\n")
+            username, password = result
+            print(username)
+            print(type(username))
+            print(password)
+            print(type(password))
+
+            print("leaving original function")
+            username, hashed_mp = result # username == bytestream // hashed_mp == 200
+            return jsonify({"username": username, "hashed_mp": hashed_mp}), 200
+#            return username, hashed_mp
         else:
             return None, None
     except Exception as e:
@@ -141,7 +150,12 @@ def add_password_entry():
     url = data.get('url')
     plaintext_password = data.get('password')
 
-    username_master, hashed_mp = get_master_password()
+    response, status = get_master_password()
+    
+    response_data = response.get_json()  # Get JSON data
+    username_master = response_data.get('username')
+    hashed_mp = response_data.get('hashed_mp')
+
     encrypted_password = encode_new_password(plaintext_password, username_master, hashed_mp)
 
     check_query = """
@@ -190,8 +204,14 @@ def get_password():
         result = cur.fetchone()
         if result:
             username, encrypted_pswd = result
-            mp_username, hashed_mp = get_master_password()
-            decrypted_pswd = decode_vault_password(encrypted_pswd, mp_username, hashed_mp)
+            
+            response, status = get_master_password()
+
+            response_data = response.get_json()  # Get JSON data
+            username_master = response_data.get('username')
+            hashed_mp = response_data.get('hashed_mp')
+
+            decrypted_pswd = decode_vault_password(encrypted_pswd, username_master, hashed_mp)
             return jsonify({"username": username, "password": decrypted_pswd}), 200
         else:
             return jsonify({"error": "Password not found for the given URL"}), 404
@@ -243,9 +263,14 @@ def display_all_passwords():
         results = cur.fetchall()
         if results:
             passwords = []
-            mp_username, hashed_mp = get_master_password()
+            response, status = get_master_password()
+
+            response_data = response.get_json()  # Get JSON data
+            username_master = response_data.get('username')
+            hashed_mp = response_data.get('hashed_mp')
+
             for username, encrypted_pswd in results:
-                decrypted_pswd = decode_vault_password(encrypted_pswd, mp_username, hashed_mp)
+                decrypted_pswd = decode_vault_password(encrypted_pswd, username_master, hashed_mp)
                 passwords.append((username, decrypted_pswd))
             return jsonify({"passwords": passwords}), 200
         else:
