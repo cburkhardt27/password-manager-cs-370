@@ -16,10 +16,9 @@ document.getElementById('login').addEventListener('click', async () => {
   }*/
 
   try {
-    const result = await window.api.initDB();
-    document.getElementById('output').innerText = 'Initialized!'
+    const result = await window.api.initDB()
+    return result.data
   } catch (error) {
     console.error('Error in renderer init-db:', error)
-    document.getElementById('output').innerText = 'Error in renderer!'
   }
 });

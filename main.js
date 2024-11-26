@@ -10,7 +10,8 @@ const createWindow = () => {
     width: 800,
     height: 600,
     webPreferences: {
-      nodeIntegration: true,
+      nodeIntegration: false,
+      contextIsolation: true,
       preload: path.join(__dirname, 'preload.js')
     }
   })
@@ -25,6 +26,10 @@ function startFlask() {
   const flaskPath = path.join(__dirname, 'db/db_flask_server.py')
 
   flaskProcess = spawn(pythonPath, ['-u', flaskPath])
+
+  flaskProcess.stdout.on('data', (data) => {
+    console.log(`Python stdout: ${data}`);
+  });
 }
 
 app.whenReady().then(() => {
@@ -52,8 +57,8 @@ app.on('window-all-closed', () => {
 // Initializes the database, creates the master password and password table.
 ipcMain.handle('init-db', async (event) => {
   try {
-    const response = await axios.post('http://localhost:5000/test') // broken
-    return response // Return to renderer?
+    const response = await axios.post('http://localhost:5000/init_db')
+    return "Initialized!"
   } catch (error) {
     console.error('Error in main init-db:', error)
     throw error

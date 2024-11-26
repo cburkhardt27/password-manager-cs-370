@@ -29,6 +29,7 @@ def connect_db():
 
 # Helper function to create passwords table
 def create_passwords_table(conn):
+    print("creating passwrods table")
     create_table_query = """
     CREATE TABLE IF NOT EXISTS passwords (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -51,6 +52,7 @@ def create_passwords_table(conn):
 
 # Helper function to create master password table
 def create_master_password_table(conn):
+    print("creating master password table")
     master_query = """
     CREATE TABLE IF NOT EXISTS master_password (
         username TEXT NOT NULL,
@@ -66,20 +68,22 @@ def create_master_password_table(conn):
     finally:
         cur.close()
 
-
 # Test
 @app.route('/api/test', methods=['GET'])
 def test_get():
-  return jsonify({"username": "name", "password": "pass"})
+  return jsonify({"username": "michi", "password": "secret"})
 
 # Initialize tables API
 @app.route('/init_db', methods=['POST'])
 def init_db():
+    print("called init db") # test
     conn, cur = connect_db()
     if conn is None or cur is None:
+        print("tried to return connection error") # test
         return jsonify({"error": "Failed to connect to the database"}), 500
 
     try:
+        print("calling helper functions") # test
         create_master_password_table(conn)
         create_passwords_table(conn)
         return jsonify({"message": "Tables initialized successfully"}), 200
