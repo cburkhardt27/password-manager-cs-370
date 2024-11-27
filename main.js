@@ -3,8 +3,6 @@ const path = require('node:path')
 const { spawn } = require('child_process');
 const axios = require('axios')
 
-let flaskProcess // flaskprocess as a variable.
-
 const createWindow = () => {
   const win = new BrowserWindow({
     width: 800,
@@ -19,6 +17,8 @@ const createWindow = () => {
   win.loadFile('index.html')
 }
 
+let flaskProcess 
+
 function startFlask() {
   // Virtual environment, Windows.
   const venvPath = path.join(__dirname, 'win_venv') // Windows.
@@ -28,30 +28,48 @@ function startFlask() {
   flaskProcess = spawn(pythonPath, ['-u', flaskPath])
 
   flaskProcess.stdout.on('data', (data) => {
-    console.log(`Python stdout: ${data}`);
-  });
+    console.log(`Python stdout: ${data}`)
+    if (data.includes('* Serving Flask app \'db_flask_server\'')) {
+      initDB()
+    }
+  })
 }
 
 app.whenReady().then(() => {
-  startFlask()
-  createWindow()
+  try {
+    // startFlask includes flask and initDB() 
+    startFlask()
+    createWindow()
 
-  app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow()
-    }
-  })
+    app.on('activate', () => {
+      if (BrowserWindow.getAllWindows().length === 0) {
+        createWindow()
+      }
+    })
+  } catch (error) {
+    console.error('Error in main init-db:', error)
+    throw error
+  }
 })
 
 app.on('will-quit', () => {
   if (flaskProcess) flaskProcess.kill();
-});
+})
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
   }
 })
+
+const initDB = () => {
+  try {
+    axios.post('http://localhost:5000/init_db')
+  } catch (error) {
+    console.error('Error in main init-db:', error)
+    throw error
+  }
+}
 
 // IPC.
 // Initializes the database, creates the master password and password table.
@@ -64,3 +82,6 @@ ipcMain.handle('init-db', async (event) => {
     throw error
   }
 })
+
+// 
+// All the python print statements?

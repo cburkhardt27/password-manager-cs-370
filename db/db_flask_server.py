@@ -1,7 +1,7 @@
 import sqlite3
 from flask import Flask, request, jsonify
 
-# Same folder
+# Same folder so irrelevant.
 
 # Add Encryption to system path.
 # import sys
@@ -29,7 +29,6 @@ def connect_db():
 
 # Helper function to create passwords table
 def create_passwords_table(conn):
-    print("creating passwrods table")
     create_table_query = """
     CREATE TABLE IF NOT EXISTS passwords (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -52,7 +51,6 @@ def create_passwords_table(conn):
 
 # Helper function to create master password table
 def create_master_password_table(conn):
-    print("creating master password table")
     master_query = """
     CREATE TABLE IF NOT EXISTS master_password (
         username TEXT NOT NULL,
@@ -76,14 +74,11 @@ def test_get():
 # Initialize tables API
 @app.route('/init_db', methods=['POST'])
 def init_db():
-    print("called init db") # test
     conn, cur = connect_db()
     if conn is None or cur is None:
-        print("tried to return connection error") # test
         return jsonify({"error": "Failed to connect to the database"}), 500
 
     try:
-        print("calling helper functions") # test
         create_master_password_table(conn)
         create_passwords_table(conn)
         return jsonify({"message": "Tables initialized successfully"}), 200
@@ -293,6 +288,7 @@ def display_all_passwords():
 
 
 # Find and return repeated passwords
+# connection to database?
 @app.route('/get_repeated_passwords', methods=['GET'])
 def get_repeated_passwords():
     try:
