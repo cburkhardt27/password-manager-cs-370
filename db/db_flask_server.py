@@ -69,7 +69,11 @@ def create_master_password_table(conn):
 # Test
 @app.route('/api/test', methods=['GET'])
 def test_get():
+<<<<<<< HEAD
   return jsonify({"username": "michi", "password": "secret"})
+=======
+  return jsonify({"username": "name", "password": "pass"})
+>>>>>>> 6312e2800c2bd57c2be13ddbe75a26d924db8a02
 
 # Initialize tables API
 @app.route('/init_db', methods=['POST'])
