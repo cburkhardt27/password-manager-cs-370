@@ -6,7 +6,10 @@ def digit_in_string(string_check):
     return any(i.isdigit() for i in string_check)
 
 
-def setup_user_master_pass():
+def setup_user_master_pass(username, master_pass):
+    """
+    Username and master password setup should be done in react.js
+    """
     """
     Sets up the user master password by:
     - Prompting for a username and password.
@@ -15,6 +18,8 @@ def setup_user_master_pass():
 
     Returns:
         tuple: A tuple containing the hashed master password as a string and the username.
+    """
+
     """
     alphanumer_set = ['@', '!', '#', '$', '%', '^', '&', '*', '(', ')', '_', '-', '?']
 
@@ -53,7 +58,8 @@ def setup_user_master_pass():
             continue
         else:
             break
-
+    """
+    
     # Hash master password securely with salt using bcrypt
     master_pass = master_pass.encode()
     pass_salt = bcrypt.gensalt()

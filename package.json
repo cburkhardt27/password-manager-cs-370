@@ -2,17 +2,44 @@
   "name": "sprint-final",
   "version": "1.0.0",
   "description": "Password manager final sprint",
-  "main": "main.js",
+  "main": "./main/main.js",
   "scripts": {
     "start:electron": "electron .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start:forge": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
   },
-  "author": "",
+  "author": "Password People",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^33.2.0"
+    "@babel/preset-env": "^7.26.0",
+    "@babel/preset-react": "^7.25.9",
+    "@electron-forge/cli": "^7.6.0",
+    "@electron-forge/maker-deb": "^7.6.0",
+    "@electron-forge/maker-dmg": "^7.6.0",
+    "@electron-forge/maker-rpm": "^7.6.0",
+    "@electron-forge/maker-squirrel": "^7.6.0",
+    "@electron-forge/maker-zip": "^7.6.0",
+    "@electron-forge/plugin-auto-unpack-natives": "^7.6.0",
+    "@electron-forge/plugin-fuses": "^7.6.0",
+    "@electron-forge/plugin-webpack": "^7.6.0",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^9.2.1",
+    "electron": "^33.2.0",
+    "html-webpack-plugin": "^5.6.3",
+    "webpack": "^5.96.1",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^5.1.0"
   },
   "dependencies": {
-    "axios": "^1.7.8"
+    "@emotion/react": "^11.13.5",
+    "@emotion/styled": "^11.13.5",
+    "@mui/icons-material": "^6.1.9",
+    "@mui/material": "^6.1.9",
+    "axios": "^1.7.8",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^7.0.1",
+    "react-scripts": "^5.0.1"
   }
 }
