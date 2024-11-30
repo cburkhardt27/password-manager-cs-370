@@ -28,8 +28,14 @@ const createWindow = async () => {
     win.setTitle(title)
   })
 
-  // await win.loadFile('main/index.html')
-  await win.loadURL(`file://${path.join(__dirname, '../out', 'index.html')}`)
+  if (app.isPackaged) {
+    win.loadFile('./pack/index.html')
+    // file:///C:/Users/michi/password/sprint-final/out/sprint-final-win32-x64/resources/app.asar/file:/C:/Users/michi/password/sprint-final/out/sprint-final-win32-x64/resources/app.asar/pack/index.html
+    // await win.loadFile('./index.html')
+  } else {
+    // Not packaged.
+    await win.loadURL(`file://${path.join(__dirname, '../pack', 'index.html')}`)
+  }
 }
 
 let flaskProcess

@@ -11,7 +11,7 @@ module.exports = {
     },
 
     output: {
-        path: path.join(__dirname, 'out'),
+        path: path.join(__dirname, 'pack'),
         filename: '[name].js',
         library: {
             type: 'umd',

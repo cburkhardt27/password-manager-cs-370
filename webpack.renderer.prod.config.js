@@ -9,7 +9,7 @@ module.exports = {
     entry: './renderer/index.js',
 
     output: {
-        path: path.join(__dirname, 'out'),
+        path: path.join(__dirname, 'pack'),
         filename: 'renderer.js',
         library: {
             type: 'umd',

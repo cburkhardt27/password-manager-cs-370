@@ -5,7 +5,7 @@ module.exports = {
   packagerConfig: {
     asar: true,
     extraResource: [
-      "./db/dist/db_flask_server.exe" // testing sqlite
+      "./db/dist/db_flask_server.exe"
     ]
   },
   rebuildConfig: {},
