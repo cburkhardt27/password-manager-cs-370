@@ -1,16 +1,7 @@
 import sqlite3
 from flask import Flask, json, request, jsonify
 
-# Same folder so irrelevant.
-
-# Add Encryption to system path.
-# import sys
-# import os
-
-# base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-# sys.path.insert(0, base_path)
-
-from encryption_functions import encode_new_password, decode_vault_password
+from encryption_functions import encode_new_password, decode_vault_password, validate_master_password
 from gen_master_password_profile_script import setup_user_master_pass
 
 app = Flask(__name__)
@@ -71,39 +62,6 @@ def create_master_password_table(conn):
 def test_get():
   return jsonify({"username": "name", "password": "pass"})
 
-
-@app.route('/amp_test', methods=['POST'])
-def test_post():
-    data = json.loads(request.data)
-    username = data.get("username")
-    hashed_mp = data.get("master_pass")
-
-    '''
-    hashed_mp = data.get('master_pass')
-    username = data.get('username')
-    # hashed_mp, username = setup_user_master_pass(master_pass, user)
-    '''
-    insert_query = """
-    INSERT INTO master_password (username, hashed_mp)
-    VALUES (?, ?);
-    """
-
-    conn, cur = connect_db()
-    if conn is None or cur is None:
-        return jsonify({"error": "Failed to connect to the database"}), 500
-
-    try:
-        cur.execute(insert_query, (username, hashed_mp))
-        conn.commit()
-        return get_master_password()
-        # return jsonify({"message": "Master password stored successfully"}), 200
-    except Exception as e:
-        print('add master password test done')
-        return jsonify({"error": f"Error adding master password: {e}"}), 500
-    finally:
-        cur.close()
-        conn.close()
-
 # Initialize tables API
 @app.route('/init_db', methods=['POST'])
 def init_db():
@@ -120,18 +78,18 @@ def init_db():
     finally:
         conn.close()
         
-# Store the master password
+# Store the master password. Fixed. Works once.
 @app.route('/add_master_password', methods=['POST'])
 def add_master_password():
-    # Get the json, pass through setup.
     data = request.get_json()
-    master_pass = data.get('master_pass')
-    user = data.get('username')
-    hashed_mp, username = setup_user_master_pass(master_pass, user)
+    master_pass = data.get("master_pass")
+    username = data.get("username")
+    hashed_mp, username = setup_user_master_pass(master_pass, username)
     insert_query = """
     INSERT INTO master_password (username, hashed_mp)
     VALUES (?, ?);
     """
+
     conn, cur = connect_db()
     if conn is None or cur is None:
         return jsonify({"error": "Failed to connect to the database"}), 500
@@ -139,6 +97,7 @@ def add_master_password():
     try:
         cur.execute(insert_query, (username, hashed_mp))
         conn.commit()
+        return get_master_password()
         return jsonify({"message": "Master password stored successfully"}), 200
     except Exception as e:
         print('add master password test done')
@@ -147,8 +106,26 @@ def add_master_password():
         cur.close()
         conn.close()
 
-# Retrieve the master password
-@app.route('/get_master_password', methods=['GET'])
+# Validate login
+@app.route('/validate_login', methods=['POST'])
+def validate_login():
+    # input_data = request.get_json()
+    '''
+    input_master_pass = input_data.get("master_pass")
+    input_username = input_data.get("username")
+
+    valid_data = get_master_password()
+    valid_master_pass = valid_data.get("master_pass")
+    valid_username = valid_data.get("username")
+    '''
+
+    # valid = validate_master_password(input_username, input_master_pass, valid_username, valid_master_pass)
+    valid = validate_master_password('testUserFront', 'password123A!Front', 'testUserFront', '$2b$12$LJSfoIUM8/0FiuujxPeYyeEUPhlrgqI0D0v2JUjkPjH7jsKkdKcMi')
+
+    return jsonify({"login": valid})
+
+# Retrieve the master password. Don't delete!
+# @app.route('/get_master_password', methods=['GET'])
 def get_master_password():
     retrieve_query = """
     SELECT username, hashed_mp

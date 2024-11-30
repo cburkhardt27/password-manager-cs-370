@@ -28,16 +28,28 @@ const createWindow = async () => {
     win.setTitle(title)
   })
 
-  ipcMain.handle('test-master-pass', async (event) => {
+  ipcMain.handle('test-master-pass', async (event, username, master_pass) => {
     const data = {
-      master_pass: 'password123A!',
-      username: 'testUser;'
+      master_pass: master_pass,
+      username: username
     }
     try {
-      const response = await axios.post('http://localhost:5000/amp_test', data)
+      const response = await axios.post('http://localhost:5000/add_master_password', data)
       console.log(response.data)
     } catch (error) {
-      console.error('Error in main test-m-p:', error)
+      throw error
+    }
+  })
+
+  ipcMain.handle('test-login', async (event, username, master_pass) => {
+    const data = {
+      master_pass: master_pass,
+      username: username
+    }
+    try {
+      const response = await axios.post('http://localhost:5000/validate_login', data)
+      console.log(response.data)
+    } catch (error) {
       throw error
     }
   })
@@ -133,37 +145,6 @@ ipcMain.handle('init-db', async (event) => {
     return 'Initialized!'
   } catch (error) {
     console.error('Error in main init-db:', error)
-    throw error
-  }
-})
-
-// Non-async.
-ipcMain.on('test-master-pass-out', async (event) => {
-  const data = {
-    master_pass: 'password123A!',
-    username: 'testUser;'
-  }
-  try {
-    // Not in win win.setTitle('test-master-pass-IN')
-    const response = await axios.post('https://localhost:5000/add_master_password', data)
-    return 'Done!'
-  } catch (error) {
-    console.error('Error in main test-m-p:', error)
-    throw error
-  }
-})
-
-ipcMain.handle('test-master-pass-OLD', async (event) => {
-  const data = {
-    master_pass: 'password123A!',
-    username: 'testUser;'
-  }
-  try {
-    // Not in win win.setTitle('test-master-pass-IN')
-    const response = await axios.post('http://localhost:5000/amp_test', data)
-    return 'Done!'
-  } catch (error) {
-    console.error('Error in main test-m-p:', error)
     throw error
   }
 })

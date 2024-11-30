@@ -72,4 +72,4 @@ def setup_user_master_pass(master_pass, username):
     return hashed_mp, username
 
 if __name__ == "__main__":
-    setup_user_master_pass("password123Q!", "testusername")
+    setup_user_master_pass("test_pass", "test_user")

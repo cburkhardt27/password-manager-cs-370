@@ -12,7 +12,7 @@ act_username = 'caburkh'
 
 import bcrypt
 
-def validate_master_password(submitted_username, submitted_password, act_username,act_mp):
+def validate_master_password(submitted_username, submitted_password, act_username, act_mp):
     """
     Validates a user's submitted master password against the stored salted hash.
 
@@ -25,6 +25,7 @@ def validate_master_password(submitted_username, submitted_password, act_usernam
     Returns:
         bool: True if the submitted username and password match the stored values, False otherwise.
     """
+
     # Ensure act_mp is in bytes format
     if isinstance(act_mp, str):
         act_mp = act_mp.encode()
@@ -157,7 +158,6 @@ def generate_random_password(length=12):
     # Generate random password
     password = ''.join(secrets.choice(alphabet) for _ in range(length))
     return password    
-
 
 def main():
 # debug generate_random_pass
