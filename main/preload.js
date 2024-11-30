@@ -1,6 +1,6 @@
 const { contextBridge, ipcRenderer } = require('electron')
 
-// Overlap?
+// Delete!
 /*
 contextBridge.exposeInMainWorld('api', {
   'set-title': () => ipcRenderer.send('set-title'),

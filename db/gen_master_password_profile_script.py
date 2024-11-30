@@ -6,7 +6,7 @@ def digit_in_string(string_check):
     return any(i.isdigit() for i in string_check)
 
 
-def setup_user_master_pass(username, master_pass):
+def setup_user_master_pass(master_pass, username):
     """
     Username and master password setup should be done in react.js
     """
@@ -67,8 +67,9 @@ def setup_user_master_pass(username, master_pass):
     print(f"Username: {username}, Hashed Password: {hashed_mp}")
     print(type(username))
     print(type(hashed_mp))
+    
     # Return hashed password as a string and the username
     return hashed_mp, username
 
 if __name__ == "__main__":
-    setup_user_master_pass()
+    setup_user_master_pass("password123Q!", "testusername")

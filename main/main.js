@@ -28,6 +28,20 @@ const createWindow = async () => {
     win.setTitle(title)
   })
 
+  ipcMain.handle('test-master-pass', async (event) => {
+    const data = {
+      master_pass: 'password123A!',
+      username: 'testUser;'
+    }
+    try {
+      const response = await axios.post('http://localhost:5000/amp_test', data)
+      console.log(response.data)
+    } catch (error) {
+      console.error('Error in main test-m-p:', error)
+      throw error
+    }
+  })
+
   if (app.isPackaged) {
     win.loadFile('./pack/index.html')
     // file:///C:/Users/michi/password/sprint-final/out/sprint-final-win32-x64/resources/app.asar/file:/C:/Users/michi/password/sprint-final/out/sprint-final-win32-x64/resources/app.asar/pack/index.html
@@ -40,12 +54,13 @@ const createWindow = async () => {
 
 let flaskProcess
 
-function startFlaskPython() {
+const startFlaskPython = () => {
   // Virtual environment, Windows.
   const venvPath = path.join(__dirname, '../win_venv') // Windows.
   const pythonPath = path.join(venvPath, 'Scripts', 'python.exe') // Windows.
   const flaskPath = path.join(__dirname, '../db/db_flask_server.py')
 
+  // Py.
   flaskProcess = spawn(pythonPath, ['-u', flaskPath])
 
   flaskProcess.stdout.on('data', (data) => {
@@ -115,23 +130,40 @@ const initDB = () => {
 ipcMain.handle('init-db', async (event) => {
   try {
     const response = await axios.post('http://localhost:5000/init_db')
-    return "Initialized!"
+    return 'Initialized!'
   } catch (error) {
     console.error('Error in main init-db:', error)
     throw error
   }
 })
 
-// Add_master_password.
-// All the python print statements?
-ipcMain.handle('add-master-password', async (event, { username, masterPassword }) => {
+// Non-async.
+ipcMain.on('test-master-pass-out', async (event) => {
+  const data = {
+    master_pass: 'password123A!',
+    username: 'testUser;'
+  }
   try {
-    const response = await axios.post('https://localhost:5000/add_master_password', {
-      username,
-      masterPassword
-    })
+    // Not in win win.setTitle('test-master-pass-IN')
+    const response = await axios.post('https://localhost:5000/add_master_password', data)
+    return 'Done!'
   } catch (error) {
-    console.error('Error in main add-master-password:', error)
+    console.error('Error in main test-m-p:', error)
+    throw error
+  }
+})
+
+ipcMain.handle('test-master-pass-OLD', async (event) => {
+  const data = {
+    master_pass: 'password123A!',
+    username: 'testUser;'
+  }
+  try {
+    // Not in win win.setTitle('test-master-pass-IN')
+    const response = await axios.post('http://localhost:5000/amp_test', data)
+    return 'Done!'
+  } catch (error) {
+    console.error('Error in main test-m-p:', error)
     throw error
   }
 })

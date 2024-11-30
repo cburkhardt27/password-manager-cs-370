@@ -1,5 +1,5 @@
 import sqlite3
-from flask import Flask, request, jsonify
+from flask import Flask, json, request, jsonify
 
 # Same folder so irrelevant.
 
@@ -71,6 +71,39 @@ def create_master_password_table(conn):
 def test_get():
   return jsonify({"username": "name", "password": "pass"})
 
+
+@app.route('/amp_test', methods=['POST'])
+def test_post():
+    data = json.loads(request.data)
+    username = data.get("username")
+    hashed_mp = data.get("master_pass")
+
+    '''
+    hashed_mp = data.get('master_pass')
+    username = data.get('username')
+    # hashed_mp, username = setup_user_master_pass(master_pass, user)
+    '''
+    insert_query = """
+    INSERT INTO master_password (username, hashed_mp)
+    VALUES (?, ?);
+    """
+
+    conn, cur = connect_db()
+    if conn is None or cur is None:
+        return jsonify({"error": "Failed to connect to the database"}), 500
+
+    try:
+        cur.execute(insert_query, (username, hashed_mp))
+        conn.commit()
+        return get_master_password()
+        # return jsonify({"message": "Master password stored successfully"}), 200
+    except Exception as e:
+        print('add master password test done')
+        return jsonify({"error": f"Error adding master password: {e}"}), 500
+    finally:
+        cur.close()
+        conn.close()
+
 # Initialize tables API
 @app.route('/init_db', methods=['POST'])
 def init_db():
@@ -86,12 +119,15 @@ def init_db():
         return jsonify({"error": f"Error initializing tables: {e}"}), 500
     finally:
         conn.close()
-
-
+        
 # Store the master password
 @app.route('/add_master_password', methods=['POST'])
 def add_master_password():
-    hashed_mp, username = setup_user_master_pass()
+    # Get the json, pass through setup.
+    data = request.get_json()
+    master_pass = data.get('master_pass')
+    user = data.get('username')
+    hashed_mp, username = setup_user_master_pass(master_pass, user)
     insert_query = """
     INSERT INTO master_password (username, hashed_mp)
     VALUES (?, ?);
@@ -105,11 +141,11 @@ def add_master_password():
         conn.commit()
         return jsonify({"message": "Master password stored successfully"}), 200
     except Exception as e:
+        print('add master password test done')
         return jsonify({"error": f"Error adding master password: {e}"}), 500
     finally:
         cur.close()
         conn.close()
-
 
 # Retrieve the master password
 @app.route('/get_master_password', methods=['GET'])
@@ -145,7 +181,6 @@ def get_master_password():
     finally:
         cur.close()
         conn.close()
-
 
 # Add a new password entry
 @app.route('/add_password', methods=['POST'])
