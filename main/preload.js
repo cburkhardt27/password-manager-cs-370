@@ -3,7 +3,7 @@ const { contextBridge, ipcRenderer } = require('electron')
 // Overlap?
 /*
 contextBridge.exposeInMainWorld('api', {
-  test: () => ipcRenderer.send('test'),
+  'set-title': () => ipcRenderer.send('set-title'),
   initDB: () => ipcRenderer.invoke('init-db'),
   addMasterPassword: () => ipcRenderer.invoke('add-master-password')
 })

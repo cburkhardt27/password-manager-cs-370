@@ -2,10 +2,12 @@
   "name": "sprint-final",
   "version": "1.0.0",
   "description": "Password manager final sprint",
-  "main": "./main/main.js",
+  "main": "./out/main.js",
   "scripts": {
     "start:electron": "electron .",
     "start:forge": "electron-forge start",
+    "pack:main": "webpack --config webpack.main.prod.config.js",
+    "pack:renderer": "webpack --config webpack.renderer.prod.config.js", 
     "package": "electron-forge package",
     "make": "electron-forge make"
   },

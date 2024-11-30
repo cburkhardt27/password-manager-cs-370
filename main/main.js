@@ -1,7 +1,17 @@
-const { app, BrowserWindow, ipcMain } = require('electron/main')
+const { app, BrowserWindow, ipcMain } = require('electron')
 const path = require('node:path')
 const { spawn } = require('child_process');
 const axios = require('axios');
+
+ipcMain.handle('load-dependencies', async (_event) => {
+  const dependencies = require('../package.json').devDependencies
+  return Object.entries(dependencies).map(([key, value]) => {
+    return {
+      name: key,
+      version: value
+    }
+  })
+})
 
 const createWindow = async () => {
   const win = new BrowserWindow({
@@ -19,7 +29,7 @@ const createWindow = async () => {
   })
 
   // await win.loadFile('main/index.html')
-  await win.loadURL(`file://${path.join(__dirname, '../renderer', 'index.html')}`)
+  await win.loadURL(`file://${path.join(__dirname, '../out', 'index.html')}`)
 }
 
 let flaskProcess
