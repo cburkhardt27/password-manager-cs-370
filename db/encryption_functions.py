@@ -40,7 +40,7 @@ def validate_master_password(submitted_username, submitted_password, act_usernam
 
     # Check if the password matches the stored hash
     if bcrypt.checkpw(submitted_password_bytes, act_mp):
-        print("Login successful.")
+        # print("Login successful.")
         return True
 
     # If username matches but password does not

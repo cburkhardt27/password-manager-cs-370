@@ -1,2 +1,0 @@
-username: testUser;
-hashed_mp: $2b$12$EzKdxHv2XGsunf16QryZ0.7EoGewlNVtlrldXfX324HxvUmiVsjpW

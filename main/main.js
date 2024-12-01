@@ -35,6 +35,7 @@ const createWindow = async () => {
     }
     try {
       const response = await axios.post('http://localhost:5000/add_master_password', data)
+      //const response = await axios.get('http://localhost:5000/api/test')
       console.log(response.data)
     } catch (error) {
       throw error
@@ -72,6 +73,7 @@ const startFlaskPython = () => {
   const pythonPath = path.join(venvPath, 'Scripts', 'python.exe') // Windows.
   const flaskPath = path.join(__dirname, '../db/db_flask_server.py')
 
+  console.log(".py")
   // Py.
   flaskProcess = spawn(pythonPath, ['-u', flaskPath])
 
