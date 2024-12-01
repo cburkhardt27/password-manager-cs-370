@@ -3,6 +3,12 @@ const path = require('node:path')
 const { spawn } = require('child_process');
 const axios = require('axios');
 
+/*
+Notes
+No print functions in servers. Messes with flask API.
+Still an UnhandledPromiseRejectionWarning somewhere.
+*/
+
 ipcMain.handle('load-dependencies', async (_event) => {
   const dependencies = require('../package.json').devDependencies
   return Object.entries(dependencies).map(([key, value]) => {
@@ -50,6 +56,16 @@ const createWindow = async () => {
     try {
       const response = await axios.post('http://localhost:5000/validate_login', data)
       console.log(response.data)
+    } catch (error) {
+      throw error
+    }
+  })
+
+  ipcMain.handle('get-master-password', async (event) => {
+    try {
+      const response = await axios.get('http://localhost:5000/get_master_password')
+      console.log(response.data.username) // Works!
+      return response.data
     } catch (error) {
       throw error
     }

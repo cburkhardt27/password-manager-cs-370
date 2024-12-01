@@ -32,7 +32,7 @@ def validate_master_password(submitted_username, submitted_password, act_usernam
 
     # Check if the username matches
     if act_username != submitted_username:
-        print("Username not recognized.")
+        # print("Username not recognized.")
         return False
 
     # Encode the submitted password to bytes
@@ -44,7 +44,7 @@ def validate_master_password(submitted_username, submitted_password, act_usernam
         return True
 
     # If username matches but password does not
-    print("Incorrect password.")
+    # print("Incorrect password.")
     return False
 
 def encode_new_password(plaintext, act_username, act_mp):
@@ -94,7 +94,7 @@ def encode_new_password(plaintext, act_username, act_mp):
 
     except Exception as e:
         # Log and raise error for debugging
-        print(f"Error in encode_new_password: {e}")
+        # print(f"Error in encode_new_password: {e}")
         raise ValueError("Failed to encode password.") from e
 
 # debug and manage error handling
@@ -143,12 +143,12 @@ def decode_vault_password(db_ciphertext, act_username, act_mp):
 
     except (ValueError, KeyError, b64decode.binascii.Error) as e:
         # Catch known errors and provide feedback
-        print(f"Decryption failed: {e}")
+        # print(f"Decryption failed: {e}")
         return None
 
     except Exception as e:
         # Catch any unexpected errors
-        print(f"An unexpected error occurred: {e}")
+        # print(f"An unexpected error occurred: {e}")
         return None
 
 

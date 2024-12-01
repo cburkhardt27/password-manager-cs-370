@@ -151,10 +151,10 @@ def get_master_password():
             return jsonify({"username": username, "hashed_mp": hashed_mp}), 200
             # return username, hashed_mp
         else:
-            return None, None
+            return jsonify({"error": "no profile"})
     except Exception as e:
-        print(f"Error retrieving master password: {e}")
-        return None, None
+        # print(f"Error retrieving master password: {e}")
+        return jsonify({"error": "no profile"})
     finally:
         cur.close()
         conn.close()
@@ -178,7 +178,7 @@ def get_master_password_():
         else:
             return None, None
     except Exception as e:
-        print(f"Error retrieving master password: {e}")
+        # print(f"Error retrieving master password: {e}")
         return None, None
     finally:
         cur.close()
