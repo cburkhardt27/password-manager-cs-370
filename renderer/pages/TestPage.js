@@ -17,6 +17,7 @@ export default function TestPage() {
       </Button>
       <Button onClick={() => { window.ipc.invoke('get-master-password')}}>
         Verify Profile
-      </Button>    </>
+      </Button>
+    </>
   )
 }

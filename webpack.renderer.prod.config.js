@@ -19,7 +19,11 @@ module.exports = {
     module: {
         rules: [{
             test: /\.(js|jsx)$/,
-            exclude: /node_modules/,
+            exclude: [
+                /node_modules/,  // Always exclude node_modules
+                path.resolve(__dirname, 'db'),  // Exclude 'db' folder
+                path.resolve(__dirname, 'win_venv'),  // Exclude 'win_venv'
+            ],
             use: [{
                 loader: 'babel-loader',
                 options: { presets: ['@babel/preset-env', '@babel/preset-react'] }

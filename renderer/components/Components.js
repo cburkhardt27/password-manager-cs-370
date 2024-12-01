@@ -12,8 +12,8 @@ const GradientBackground = styled(Box)({
 
 // Icons
 const StyledAvatar = styled(Avatar)({
-  width: '100px',
-  height: '100px',
+  width: '120px !important',
+  height: '120px !important',
   backgroundColor: '#ffffff33',
   color: '#FFFFFF',
 })
