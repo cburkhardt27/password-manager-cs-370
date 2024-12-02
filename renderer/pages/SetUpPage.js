@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom'
 
 import { GradientBackground, StyledAvatar, StyledTextField } from '../components/Components.js'
 
+// Need to figure out edge cases, no username after first check.
+
 export default function SetUpPage() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -13,6 +15,11 @@ export default function SetUpPage() {
   const handlePasswordChange = (event) => setPassword(event.target.value)
 
   const handleSetUp = async () => {
+    if (username === "" || password === "") {
+      alert("Username and password cannot be.")
+      return
+    }
+
     if (/\s/.test(username)) {
       alert("Username cannot contain spaces.")
       return
@@ -25,7 +32,7 @@ export default function SetUpPage() {
 
     window.ipc.invoke('test-master-pass', username, password)
 
-    // NAVIGATE TO PASSWORD PAGE.
+    // Navigate to app.
   }
 
   return (
@@ -52,7 +59,17 @@ export default function SetUpPage() {
             onChange={handlePasswordChange}
             fullWidth
           />
-          <Button variant="contained" color="primary" onClick={handleSetUp}>
+          <Button 
+            variant="contained" 
+            color="primary" 
+            onClick={handleSetUp}
+            sx={{
+              textTransform: 'none',
+              height: '50px',
+              borderRadius: '50px',
+              backgroundColor: '#36343A'
+            }}
+          >
             Set Up Account
           </Button>
           </Box>
