@@ -11,13 +11,6 @@ No print functions in servers. Messes with Flask API.
 Improved error handling for Axios requests.
 */
 
-ipcMain.handle('load-dependencies', async (_event) => {
-  const dependencies = require('../package.json').devDependencies;
-  return Object.entries(dependencies).map(([key, value]) => {
-    return { name: key, version: value };
-  });
-});
-
 const createWindow = async () => {
   const win = new BrowserWindow({
     width: 800,
@@ -140,15 +133,23 @@ const startFlaskPython = () => {
   let pythonPath;
   let flaskPath;
 
-  if (process.platform !== 'darwin') {
-    venvPath = path.join(__dirname, '../win_venv') // Windows.
-    pythonPath = path.join(venvPath, 'Scripts', 'python.exe') // Windows.
-    flaskPath = path.join(__dirname, '../db/db_flask_server.py')
+  if (app.isPackaged) {
+    if (process.platform !== 'darwin') {
+      venvPath = path.join(process.resourcesPath, 'win_venv') // Windows.
+      pythonPath = path.join(venvPath, 'Scripts', 'python.exe') // Windows.
+      flaskPath = path.join(process.resourcesPath, 'db/db_flask_server.py')
+    }
   } else {
-    venvPath = path.join(__dirname, '../mac_venv'); // Mac
-    pythonPath = path.join(venvPath, 'bin', 'python'); // Mac
-    flaskPath = path.join(__dirname, '../db/db_flask_server.py');
-  
+    if (process.platform !== 'darwin') {
+      venvPath = path.join(__dirname, '../win_venv') // Windows.
+      pythonPath = path.join(venvPath, 'Scripts', 'python.exe') // Windows.
+      flaskPath = path.join(__dirname, '../db/db_flask_server.py')
+    } else {
+      venvPath = path.join(__dirname, '../mac_venv'); // Mac
+      pythonPath = path.join(venvPath, 'bin', 'python'); // Mac
+      flaskPath = path.join(__dirname, '../db/db_flask_server.py');
+    
+    }
   }
 
   console.log('.py');
@@ -188,11 +189,7 @@ const startFlaskExe = () => {
 };
 
 app.whenReady().then(() => {
-  if (app.isPackaged) {
-    startFlaskExe();
-  } else {
-    startFlaskPython();
-  }
+  startFlaskPython();
   createWindow();
 
   app.on('activate', () => {
@@ -208,10 +205,10 @@ app.on('before-quit', () => {
   }
 });
 
-app.on('window-all-closed', () => {
+app.on('window-all-closed', async () => {
   if (process.platform !== 'darwin') {
-    app.quit();
     flaskProcess.kill();
+    app.quit();
   }
 });
 

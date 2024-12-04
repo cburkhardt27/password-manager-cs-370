@@ -25,5 +25,6 @@ TODO:
   Take out alerts, messes with inputs/rendering. REWERITE.
   Package again.
 
-Rewrite main?
-Delete hiding unless there is an evil fix.
+  Delete hiding unless there is a better fix.
+
+  Closing issue :(

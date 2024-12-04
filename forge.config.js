@@ -5,8 +5,8 @@ module.exports = {
   packagerConfig: {
     asar: true,
     extraResource: [
-      "./db/dist/db_flask_server.exe",
-      "./pswdDB.sqlite"
+      "./win_venv",
+      "./db"
     ]
   },
   rebuildConfig: {},

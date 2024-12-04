@@ -30,7 +30,7 @@ export default function SetUpPage() {
     }
 
     window.ipc.invoke('init-db')
-    window.ipc.invoke('add-master-pass', username, password)
+    window.ipc.invoke('add-master-password', username, password)
 
     navigate("/Dashboard")
   }

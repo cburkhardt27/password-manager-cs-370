@@ -1,3 +1,9 @@
+# Out
+sprint-final-win32-x64
+
+# Pack
+pack*
+
 # Logs
 logs
 *.log
@@ -7,9 +13,6 @@ yarn-error.log*
 lerna-debug.log*
 .pnpm-debug.log*
 full_errors.log
-
-# Out
-sprint-final-win32-x64
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
