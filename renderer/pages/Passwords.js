@@ -34,7 +34,7 @@ const ModalButton = styled(Button)({
 
 export default function Passwords() {
   const [data, setData] = useState([]);
-  const [openModals, setOpenModals] = useState({}); // Track open state for each modal using entry id
+  const [refresh, setRefresh] = useState(false);
 
   // Fetch passwords
   useEffect(() => {
@@ -48,56 +48,34 @@ export default function Passwords() {
     };
 
     checkPasswords();
-  }, []);
+  }, [refresh]);
 
-  // Open modal for a specific entry
-  const openModal = (id) => {
-    setOpenModals((prevState) => ({
-      ...prevState,
-      [id]: true,  // Set the modal for the specific entry id to open
-    }));
-  };
-
-  // Close modal for a specific entry
-  const closeModal = (id) => {
-    setOpenModals((prevState) => ({
-      ...prevState,
-      [id]: false,  // Set the modal for the specific entry id to closed
-    }));
-  };
-
-  // Modal for each entry
-  const Modal = (entry) => (
-    <PassModal>
-      <Box>
-        <Typography variant="body1">Username: {entry.username}</Typography>
-        <Typography variant="body1">Password: {entry.password}</Typography>
-      </Box>
-      <Box>
-        <ModalButton onClick={() => closeModal(entry.id)}>Edit</ModalButton>
-        <ModalButton onClick={() => closeModal(entry.id)}>Delete</ModalButton>
-        <ModalButton onClick={() => closeModal(entry.id)}>Close</ModalButton>
-      </Box>
-    </PassModal>
-  );
+  const handleDelete = async (entry) => {
+    const data = {
+      username: entry.username,
+      url: entry.url
+    };
+    await window.ipc.invoke('delete-password', data);
+    setRefresh((prev) => !prev);
+  }
 
   return (
     <Box sx={{ justifyContent: 'center' }}>
       {data.length > 0 ? (
         data.map((entry) => (
           <PassBox key={entry.id}>
-            <Typography variant="subtitle1">{entry.url}</Typography>
-            {/* Show the View button if the modal for this entry is not open */}
-            {!openModals[entry.id] && (
-              <ModalButton
+            <Typography variant="subtitle1">Username: {entry.username}</Typography>
+            <Typography variant="subtitle1">Website: {entry.url}</Typography>
+            <Typography variant="subtitle1">Password: {entry.password}</Typography>
+              <Button
+                onClick={() => handleDelete(entry)}
                 variant="contained"
-                onClick={() => openModal(entry.id)}
-              >
-                View
-              </ModalButton>
-            )}
-            {/* Show the modal only if openModals[entry.id] is true */}
-            {openModals[entry.id] && Modal(entry)}
+                sx={{
+                  textTransform: 'none',
+                  borderRadius: '50px',
+                  backgroundColor: '#36343A'
+                }}    
+              >Delete</Button>
           </PassBox>
         ))
       ) : (

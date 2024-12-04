@@ -9,7 +9,7 @@ export default function TestPage() {
       <Button onClick={() => { window.ipc.send('set-title', 'test-page-var') }}>
         Test
       </Button>
-      <Button onClick={() => { window.ipc.invoke('test-master-pass', 'testUserFront', 'password123A!Front')}}>
+      <Button onClick={() => { window.ipc.invoke('add-master-pass', 'testUserFront', 'password123A!Front')}}>
         Add Master Password
       </Button>
       <Button onClick={() => { window.ipc.invoke('test-login', 'testUserFront', 'password123A!Front')}}>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import styled from 'styled-components'
 import { Button, Box, InputAdornment, TextField, Typography } from '@mui/material'
@@ -37,26 +37,21 @@ export default function AddPassword() {
     url: ''
   })
 
-  // none of this is updating correctly.
-
   const handleChange = (e) => {
     const { name, value } = e.target
     setFormData({ ...formData, [name]: value })
   }
 
   const handleSave = async () => {
-    // try to pass formData?
-    /*
-    const testData = {
-      username: 'mokahat',
-      password: 'testpass123!A',
-      url: 'michi.com'
-    }
-    */
     try {
       const response = await window.ipc.invoke('add-password', formData)
       const added = response?.message
       console.log(added)
+      setFormData({
+        username: '',
+        password: '',
+        url: ''
+      })
       return
     } catch (error) {
       console.error('Error adding password:', error)
@@ -99,8 +94,6 @@ export default function AddPassword() {
     else if (!checkSpecialChars(password)) setRecommend('Add special characters')
     else setRecommend('Secure!')
   }
-
-  // Back button?
 
   {/* Form Section */}
   return (

@@ -1,16 +1,14 @@
-import React, { useState, useEffect } from 'react'
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
+import React, { useState, useEffect } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
 
 // Pages
 import TestPage from './pages/TestPage.js'
 import SetUpPage from './pages/SetUpPage.js'
 import LoginPage from './pages/LoginPage.js'
 import Dashboard from './components/Sidebar.js'
-
 import AddPassword from './pages/AddPassword.js'
 import Passwords from './pages/Passwords.js'
-
-import ViewPassword from './pages/ViewPasswords.js'
+import Settings from './pages/Settings.js'
 
 // TODO:
   // Dev mode only works for renderer.
@@ -49,18 +47,16 @@ export default function App() {
     checkProfile()
   }, []) // Runs once.
 
-  // Everything except login/setup has sidebar, make that a layout 
-  //{isProfile ? <LoginPage /> : <SetUpPage />} 
-  //{<Navigate to="/Dashboard" />}
   return (
     <Routes>
-      <Route path="/" element={isProfile ? <ViewPassword/> : <SetUpPage />} />
+      <Route path="/" element={isProfile ? <LoginPage /> : <SetUpPage />} />
       <Route path="/SetUpPage" element={<SetUpPage />} />
       <Route path="/LoginPage" element={<LoginPage />} />
       <Route path="/Dashboard" element={<Dashboard />}>
         <Route index element={<Passwords />} />
         <Route path="/Dashboard/Passwords" element={<Passwords />} />
         <Route path="/Dashboard/AddPassword" element={<AddPassword />} />
+        <Route path="/Dashboard/Settings" element={<Settings />} />
       </Route>
     </Routes>
   )

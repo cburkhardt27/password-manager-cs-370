@@ -34,7 +34,7 @@ export default function Dashboard() {
                 <ListItemText primary="Checkup" sx={{ color: 'white' }}/>
               </ListItem>
             </NavLink>
-            <NavLink to="/TestPage" style={{ textDecoration: 'none' }}>
+            <NavLink to="/Dashboard/Settings" style={{ textDecoration: 'none' }}>
               <ListItem button>
                 <Settings sx={{ mr: 2, color: '#8B8B8B' }} />
                 <ListItemText primary="Settings" sx={{ color: 'white' }}/>
