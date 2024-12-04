@@ -15,7 +15,6 @@ export default function LoginPage() {
   // Probably need useEffect and login/setLogin
   const handleLogin = async () => {
     if (username === '' || password === '') {
-      alert('Incorrect username or password.')
       return
     }
 
@@ -24,10 +23,8 @@ export default function LoginPage() {
       const valid = response?.login
 
       if (valid) {
-        alert('In')
         navigate('/Dashboard')
       } else {
-        alert('Incorrect username or password.')
         return
       }
     } catch (error) {

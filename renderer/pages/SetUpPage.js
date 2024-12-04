@@ -16,23 +16,23 @@ export default function SetUpPage() {
 
   const handleSetUp = async () => {
     if (username === "" || password === "") {
-      alert("Username and password cannot be.")
+      // alert("Username and password cannot be blank.")
       return
     }
 
     if (/\s/.test(username)) {
-      alert("Username cannot contain spaces.")
+      // ("Username cannot contain spaces.")
       return
     }
 
     if (password.length <= 8 || !/\d/.test(password) || !/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
-      alert("Password must be longer than 8 characters, include a number, and a special character.")
+      // ("Password must be longer than 8 characters, include a number, and a special character.")
       return
     }
 
     window.ipc.invoke('test-master-pass', username, password)
 
-    // Navigate to app.
+    navigate("/Dashboard")
   }
 
   return (

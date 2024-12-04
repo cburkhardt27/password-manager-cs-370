@@ -10,6 +10,8 @@ import Dashboard from './components/Sidebar.js'
 import AddPassword from './pages/AddPassword.js'
 import Passwords from './pages/Passwords.js'
 
+import ViewPassword from './pages/ViewPasswords.js'
+
 // TODO:
   // Dev mode only works for renderer.
   // BUT dashboard thing works!
@@ -21,6 +23,8 @@ import Passwords from './pages/Passwords.js'
     // Build :)
 
     // Search needs to first go to passwords? or after query.
+
+  // Sign in errror (at least for the terminal) 404, display all, might be related to rendering password.
 
 export default function App() {
   const [isProfile, setProfile] = useState(null)
@@ -50,11 +54,11 @@ export default function App() {
   //{<Navigate to="/Dashboard" />}
   return (
     <Routes>
-      <Route path="/" element={isProfile ? <LoginPage/> : <SetUpPage />} />
+      <Route path="/" element={isProfile ? <ViewPassword/> : <SetUpPage />} />
       <Route path="/SetUpPage" element={<SetUpPage />} />
       <Route path="/LoginPage" element={<LoginPage />} />
       <Route path="/Dashboard" element={<Dashboard />}>
-        <Route index element={<TestPage />} />
+        <Route index element={<Passwords />} />
         <Route path="/Dashboard/Passwords" element={<Passwords />} />
         <Route path="/Dashboard/AddPassword" element={<AddPassword />} />
       </Route>

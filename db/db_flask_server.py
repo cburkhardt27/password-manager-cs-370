@@ -9,7 +9,7 @@ logging.basicConfig(filename="full_errors.log", level=logging.ERROR, format="%(m
 
 app = Flask(__name__)
 
-DB_NAME = "pswdDB.sqlite"
+DB_NAME = "pswdDB.sqlite" # Ask about connection issues? Here.
 
 # Helper function to connect to the SQLite database
 def connect_db():

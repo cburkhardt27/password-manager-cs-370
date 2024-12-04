@@ -4,6 +4,9 @@ module.exports = {
     mode: 'production',
     devtool: 'source-map',
     target: 'electron-main',
+    node: {
+        __dirname: false, // Preserve Node.js behavior
+    },
 
     entry: {
         main: './main/main.js',

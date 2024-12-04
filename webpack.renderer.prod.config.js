@@ -5,6 +5,9 @@ module.exports = {
     mode: 'production',
     devtool: 'source-map',
     target: ['web', 'electron-renderer'],
+    node: {
+        __dirname: false, // Preserve Node.js behavior
+    },
 
     entry: './renderer/index.js',
 

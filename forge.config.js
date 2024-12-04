@@ -5,14 +5,15 @@ module.exports = {
   packagerConfig: {
     asar: true,
     extraResource: [
-      "./db/dist/db_flask_server.exe"
+      "./db/dist/db_flask_server.exe",
+      "./pswdDB.sqlite"
     ]
   },
   rebuildConfig: {},
   makers: [
     {
       name: '@electron-forge/maker-squirrel',
-      config: {},
+      config: {}
     },
     {
       name: '@electron-forge/maker-zip',

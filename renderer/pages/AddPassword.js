@@ -57,7 +57,6 @@ export default function AddPassword() {
       const response = await window.ipc.invoke('add-password', formData)
       const added = response?.message
       console.log(added)
-      alert("Password added!")
       return
     } catch (error) {
       console.error('Error adding password:', error)
