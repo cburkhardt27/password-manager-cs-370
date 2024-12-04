@@ -4,6 +4,12 @@ Scripts:
   then package
 
 TODO:
+  Minimum version of the app
+
+  Can add, edit, and delete. Settings to delete all/reset.
+
+  Edit can be stolen from add?
+
   Documentation for win_min_install.
     Pull from github.
     npm install.
@@ -20,3 +26,4 @@ TODO:
   Package again.
 
 Rewrite main?
+Delete hiding unless there is an evil fix.
