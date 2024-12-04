@@ -1,4 +1,5 @@
 import sqlite3
+import os
 from flask import Flask, request, json, jsonify
 
 from encryption_functions import encode_new_password, decode_vault_password, validate_master_password
@@ -188,7 +189,7 @@ def get_master_password_():
 # Add a new password entry
 @app.route('/add_password', methods=['POST'])
 def add_password_entry():
-    data = request.json
+    data = request.get_json()
     username = data.get('username')
     url = data.get('url')
     plaintext_password = data.get('password')
@@ -268,7 +269,7 @@ def get_password():
 # Delete a password entry by username and URL
 @app.route('/delete_password', methods=['DELETE'])
 def delete_password():
-    data = request.json
+    data = request.get_json()
     username = data.get('username')
     url = data.get('url')
 
@@ -359,6 +360,17 @@ def get_repeated_passwords():
     except Exception as e:
         return jsonify({"error": f"Error finding repeated passwords: {e}"}), 500
 
+# Delete database
+@app.route('/delete_database', methods=['DELETE'])
+def delete_database():
+    try:
+        if os.path.exists(DB_NAME):
+            os.remove(DB_NAME)
+            return jsonify({"message": "Database deleted successfully"}), 200
+        else:
+            return jsonify({"error": "Database not found"}), 404
+    except Exception as e:
+        return jsonify({"error": f"An error occurred: {e}"}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)

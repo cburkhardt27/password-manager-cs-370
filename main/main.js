@@ -33,13 +33,13 @@ const createWindow = async () => {
     win.setTitle(title);
   });
 
-  ipcMain.handle('test-master-pass', async (_event, username, master_pass) => {
+  ipcMain.handle('add-master-password', async (_event, username, master_pass) => {
     const data = { master_pass, username };
     try {
       const response = await axios.post(`${SERVER_BASE_URL}/add_master_password`, data);
       console.log(response.data);
     } catch (error) {
-      console.error('Error in test-master-pass:', error.message);
+      console.error('Error in add-master-password:', error.message);
       return { error: error.message };
     }
   });
@@ -80,6 +80,20 @@ const createWindow = async () => {
     }
   });
 
+  ipcMain.handle('delete-password', async (_event, data) => {
+    try {
+      const response = await axios.delete(`${SERVER_BASE_URL}/delete_password`, {
+        headers: {
+          'Content-Type': 'application/json'
+        }, 
+        data
+    });
+      console.log(response.data);
+    } catch (error) {
+      console.error('Error in delete-password:', error.message);
+    }
+  });
+
   ipcMain.handle('display-all-passwords', async () => {
     try {
       const response = await axios.get(`${SERVER_BASE_URL}/display_all_passwords`);
@@ -87,6 +101,23 @@ const createWindow = async () => {
       return response.data;
     } catch (error) {
       console.error('Error in display-all-passwords:', error.message);
+      return { error: error.message };
+    }
+  });
+
+  ipcMain.handle('delete-database', async () => {
+    try {
+      const response = await axios.delete(`${SERVER_BASE_URL}/delete_database`);
+      console.log(response.data)
+    } catch (error) {
+      return { error: error.message };
+    }
+  });
+
+  ipcMain.handle('init-db', async () => {
+    try {
+      await axios.post(`${SERVER_BASE_URL}/init_db`);
+    } catch (error) {
       return { error: error.message };
     }
   });
@@ -123,12 +154,10 @@ const startFlaskPython = () => {
   console.log('.py');
   flaskProcess = spawn(pythonPath, ['-u', flaskPath]);
 
+  // Don't change this, important for delete DB on windows.
   flaskProcess.stdout.on('data', (data) => {
-    const output = data.toString();
-    console.log(`Flask: ${output}`);
-    if (output.includes('* Running on')) {
-      console.log('Flask is ready. Initializing database...');
-      initDB();
+    if (data.includes('* Serving Flask app \'db_flask_server\'')) {
+      initDB()
     }
   });
 
@@ -194,13 +223,3 @@ const initDB = async () => {
     console.error('Error initializing database:', error.message);
   }
 };
-
-ipcMain.handle('init-db', async () => {
-  try {
-    await axios.post(`${SERVER_BASE_URL}/init_db`);
-    return 'Initialized!';
-  } catch (error) {
-    console.error('Error in init-db IPC handler:', error.message);
-    return { error: error.message };
-  }
-});
