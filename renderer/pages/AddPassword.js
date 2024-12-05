@@ -68,7 +68,7 @@ export default function AddPassword() {
     checkStrength(event.target.value)
     checkRecommend(event.target.value)
     handleChange(event)
-  };
+  }
 
   const checkLength = (password) => password.length >= 8
   const checkUppercase = (password) => /[A-Z]/.test(password)
@@ -84,7 +84,7 @@ export default function AddPassword() {
     if (checkNumbers(password)) s += 1
     if (checkSpecialChars(password)) s += 1
     setStrength(s / 6)
-  };
+  }
 
   const checkRecommend = (password) => {
     if (!checkLength(password)) setRecommend('At least 8 characters')
