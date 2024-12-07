@@ -6,7 +6,7 @@ import { GradientBackground } from './Components';
 
 export default function Dashboard() {
   return (
-    <GradientBackground>
+    <GradientBackground minHeight="100vh">
       <Drawer 
       variant='permanent' 
       anchor='left'
@@ -28,7 +28,7 @@ export default function Dashboard() {
                 <ListItemText primary="Passwords" sx={{ color: 'white' }}/>
               </ListItem>
             </NavLink>
-            <NavLink to="/TestPage" style={{ textDecoration: 'none' }}>
+            <NavLink to="/Dashboard/CheckUp" style={{ textDecoration: 'none' }}>
               <ListItem button>
                 <Security sx={{ mr: 2, color: '#8B8B8B' }} />
                 <ListItemText primary="Checkup" sx={{ color: 'white' }}/>
@@ -51,31 +51,7 @@ export default function Dashboard() {
       }}>
         {/* search bar AND add password here*/}
         <AppBar position="static" sx={{ background: 'transparent', boxShadow: 'none' }}>
-          <Box sx={{ display: 'flex', width: '100%', justifyContent: 'space-between', alignItems: 'center' }}>
-            <TextField
-              variant="outlined"
-              placeholder="Search passwords by URL"
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton edge="end">
-                      <Search />
-                    </IconButton>
-                  </InputAdornment>
-                )
-              }}
-              sx={{
-                backgroundColor: '#FFFFFFCC',
-                borderRadius: '50px',
-                width: '50%',
-                height: '50px', // Set a fixed height for the search bar
-                '& .MuiOutlinedInput-root': {
-                  height: '50px', // Ensures the input area also has the correct height
-                }      
-              }}
-            >
-              {/* Figure out search logic */}
-            </TextField>
+          <Box sx={{ display: 'flex', width: '100%', justifyContent: 'space-between', alignItems: 'right' }}>
             <NavLink to="/Dashboard/AddPassword">
               <Button
                 startIcon={<Add />}

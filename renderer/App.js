@@ -9,6 +9,9 @@ import Dashboard from './components/Sidebar.js'
 import AddPassword from './pages/AddPassword.js'
 import Passwords from './pages/Passwords.js'
 import Settings from './pages/Settings.js'
+import CheckUp from './pages/CheckUp.js'
+import CheckUpStrength from './pages/CheckUpStrength.js';
+import CheckUpUnique from './pages/CheckUpUnique.js';
 
 // TODO:
   // Dev mode only works for renderer.
@@ -57,6 +60,9 @@ export default function App() {
         <Route path="/Dashboard/Passwords" element={<Passwords />} />
         <Route path="/Dashboard/AddPassword" element={<AddPassword />} />
         <Route path="/Dashboard/Settings" element={<Settings />} />
+        <Route path="/Dashboard/CheckUp" element={<CheckUp />} />
+        <Route path="/Dashboard/CheckUpStrength" element={<CheckUpStrength />} />
+        <Route path="/Dashboard/CheckUpUnique" element={<CheckUpUnique />} />
       </Route>
     </Routes>
   )

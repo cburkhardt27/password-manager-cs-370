@@ -11,8 +11,11 @@ const FormBox = styled(Box)({
   maxWidth: '898px',
   margin: 'auto',
   marginTop: '20px',
-  height: 'auto',  
+  height: 'auto',
+  justifyContent: 'space-between',
+  alignItems: 'center',
 })
+
 
 const SettingsButton = styled(Button)({
   backgroundColor: '#36343A',
@@ -38,13 +41,13 @@ export default function Settings() {
   }  
 
   return (
-    <FormBox mt={1}>
+    <FormBox>
       <Box display="flex" alignItems="center">
         <Box>
           <Typography variant="h5" sx={{ mb: 3, color: 'white' }} align="left">
             Delete all Password Manager data
           </Typography>
-          <Typography variant="h6" sx={{ mb: 0, color: '#DDDDDD' }} align="left">
+          <Typography variant="body1" sx={{ mb: 0, color: '#DDDDDD' }} align="left">
             Passwords and other data will be permanently deleted
           </Typography>
         </Box>

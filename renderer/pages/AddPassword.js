@@ -83,7 +83,7 @@ export default function AddPassword() {
     if (checkLowercase(password)) s += 1
     if (checkNumbers(password)) s += 1
     if (checkSpecialChars(password)) s += 1
-    setStrength(s / 6)
+    setStrength(s / 5)
   }
 
   const checkRecommend = (password) => {

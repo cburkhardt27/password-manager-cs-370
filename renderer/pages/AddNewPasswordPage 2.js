@@ -3,11 +3,13 @@ import { AppBar, TextField, InputAdornment, IconButton, Box, Button, Typography,
 import { Search, ArrowBack } from '@mui/icons-material'
 import { styled } from '@mui/system'
 import { useNavigate } from 'react-router-dom'
+
 const GradientBackground = styled(Box)({
   height: '100vh',
   display: 'flex',
   background: 'linear-gradient(210deg, #A472CB, #5883F2)',
 })
+
 const FormBox = styled(Box)({
   backgroundColor: '#564E5B',
   padding: '20px',
@@ -16,6 +18,7 @@ const FormBox = styled(Box)({
   margin: 'auto',
   marginTop: '100px',
 })
+
 const SaveButton = styled(Button)({
   backgroundColor: '#5A83F2',
   color: '#fff',
@@ -23,6 +26,7 @@ const SaveButton = styled(Button)({
     backgroundColor: '#5A83F2',
   },
 })
+
 const CancelButton = styled(Button)({
   backgroundColor: '#36343A',
   color: '#fff',
@@ -30,6 +34,7 @@ const CancelButton = styled(Button)({
     backgroundColor: '#333',
   },
 })
+
 const AddNewPasswordPage = () => {
   const [formData, setFormData] = useState({
     username: '',
@@ -37,18 +42,23 @@ const AddNewPasswordPage = () => {
     website: '',
     note: '',
   })
+
   const navigate = useNavigate()
+
   const handleChange = (e) => {
     const { name, value } = e.target
     setFormData({ ...formData, [name]: value })
   }
+
   const handleSave = async () => {
     const { username, password, website, note } = formData
+
     // Validation
     if (!username || !password || !website) {
       alert('All fields except note are required!')
       return
     }
+
     try {
       // Sending data to the backend
       const response = await window.ipc.invoke('add-password', { username, password, website, note })
@@ -63,13 +73,16 @@ const AddNewPasswordPage = () => {
       alert('An error occurred while saving the password.')
     }
   }
+
   const handleCancel = () => {
     navigate('/HomePage') // Navigate back to the homepage
   }
+
   const handleBack = () => {
     // Navigate back to HomePage if no data is saved
     navigate('/HomePage');
   }
+
   return (
     <GradientBackground>
       {/* App Bar */}
@@ -83,6 +96,7 @@ const AddNewPasswordPage = () => {
           </Typography>
         </Toolbar>
       </AppBar>
+
       {/* Form Section */}
       <FormBox>
         <Typography variant="h5" align="center" sx={{ color: 'white', mb: 3 }}>
@@ -137,4 +151,5 @@ const AddNewPasswordPage = () => {
     </GradientBackground>
   )
 }
+
 export default AddNewPasswordPage

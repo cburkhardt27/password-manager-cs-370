@@ -11,7 +11,7 @@
       ]
     }
   },
-  "name": "password-manager-mac",
+  "name": "dec-7-password-manager-mac",
   "version": "1.0.0",
   "description": "Password manager final sprint",
   "main": "pack/main.js",

@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom'
 import styled from 'styled-components'
 import { Box, Typography, Button, IconButton } from '@mui/material'
 import { Cached, CheckCircle } from '@mui/icons-material'
+
 const FormBox = styled(Box)({
   display: 'flex',
   backgroundColor: '#564E5B',
@@ -15,6 +16,7 @@ const FormBox = styled(Box)({
   justifyContent: 'space-between',
   alignItems: 'center',
 })
+
 const CheckupButton = styled(Button)({
   backgroundColor: '#36343A',
   color: '#fff',
@@ -22,6 +24,7 @@ const CheckupButton = styled(Button)({
     backgroundColor: '#333',
   },
 })
+
 const NavigationButton = styled(Button)({
   backgroundColor: '#A472CB',
   color: '#fff',
@@ -31,6 +34,7 @@ const NavigationButton = styled(Button)({
     backgroundColor: '#8B72CB',
   },
 })
+
 export default function CheckUp() {
   const [passwordData, setPasswordData] = useState({
     total: 0,
@@ -38,6 +42,7 @@ export default function CheckUp() {
     weak: 0,
   })
   const [lastChecked, setLastChecked] = useState('Never')
+
   const fetchCheckupData = async () => {
     try {
       const result = await window.ipc.invoke('check-passwords') // Not sure backend logic exists??
@@ -51,9 +56,11 @@ export default function CheckUp() {
       console.error('Error fetching password checkup data:', error)
     }
   }
+
   useEffect(() => {
     fetchCheckupData()
   }, [])
+
   return (
     <Box>
       {/* Password Checkup Summary */}
@@ -73,6 +80,7 @@ export default function CheckUp() {
           <Cached sx={{ color: '#FFFFFF' }} />
         </IconButton>
       </FormBox>
+
       {/* Reused Passwords Section */}
       <FormBox>
         <Box>
@@ -89,6 +97,7 @@ export default function CheckUp() {
         </Box>
         <CheckCircle sx={{ color: passwordData.reused > 0 ? '#F39C12' : '#27AE60' }} />
       </FormBox>
+
       {/* Weak Passwords Section */}
       <FormBox>
         <Box>
@@ -105,21 +114,16 @@ export default function CheckUp() {
         </Box>
         <CheckCircle sx={{ color: passwordData.weak > 0 ? '#F39C12' : '#27AE60' }} />
       </FormBox>
+
       {/* Navigation Buttons */}
       <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-        <NavLink to="/CheckupUnique" style={{ textDecoration: 'none' }}>
+        <NavLink to="/CheckUpUnique" style={{ textDecoration: 'none' }}>
           <NavigationButton variant="contained">View Reused Passwords</NavigationButton>
         </NavLink>
-        <NavLink to="/CheckupStrength" style={{ textDecoration: 'none' }}>
+        <NavLink to="/CheckUpStrength" style={{ textDecoration: 'none' }}>
           <NavigationButton variant="contained">View Weak Passwords</NavigationButton>
         </NavLink>
       </Box>
-      {/* Go to Settings */}
-      <NavLink to="/Settings" style={{ textDecoration: 'none', marginTop: '20px', display: 'block', textAlign: 'center' }}>
-        <CheckupButton variant="contained" sx={{ borderRadius: '50px' }}>
-          Go to Settings
-        </CheckupButton>
-      </NavLink>
     </Box>
   )
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Modal, Box, Typography, Button } from '@mui/material';
 import { styled } from '@mui/system';
+
 const ModalBox = styled(Box)({
   backgroundColor: '#564E5B',
   borderRadius: '20px',
@@ -8,6 +9,7 @@ const ModalBox = styled(Box)({
   width: '400px',
   textAlign: 'center',
 });
+
 const CancelButton = styled(Button)({
   backgroundColor: '#424242',
   color: '#fff',
@@ -15,6 +17,7 @@ const CancelButton = styled(Button)({
     backgroundColor: '#333',
   },
 });
+
 const DeleteButton = styled(Button)({
   backgroundColor: '#E53935',
   color: '#fff',
@@ -22,6 +25,7 @@ const DeleteButton = styled(Button)({
     backgroundColor: '#D32F2F',
   },
 });
+
 const DeleteAllPasswordsModal = ({ isOpen, handleCancel, handleConfirm }) => {
   return (
     <Modal
@@ -50,4 +54,6 @@ const DeleteAllPasswordsModal = ({ isOpen, handleCancel, handleConfirm }) => {
     </Modal>
   );
 };
+
 export default DeleteAllPasswordsModal;
+
