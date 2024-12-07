@@ -31,3 +31,39 @@ win_venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
+### Install Front-End Dependencies
+```bash
+npm install
+```
+### Package the Application Pages and Main Process
+```bash
+npm pack:r
+npm pack:m
+```
+### Start the Application
+```bash
+npm start:e
+```
+### Build the Application for Desktop
+```bash
+npm run make
+```
+*Note: The output files will be in the /out directory.  Navigate through the `make` folder to locate the .dmg file, then install it.*  
+
+# Advanced Instructions / Installation
+
+## Build and Setup Scripts
+
+Scripts are managed through package.json, which uses Electron Forge for building the desktop application.  
+To view other build/setup scripts:  
+`npm run`  
+
+These include:  
+`build:dev` & `start:dev`: Development environment for React/Electron renderer. Not recommended for pages interacting with backend.  
+`start:e`: Starts Electron.  
+`pack:m`: Webpack for main.js and preload.js. Outputs to the pack folder.  
+`pack:r`: Webpack for React/renderer pages. Outputs to the pack folder.  
+`package`: Creates an Electron executable.  
+`make`: Builds the installer.  
+
+
