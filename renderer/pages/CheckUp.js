@@ -117,20 +117,13 @@ export default function CheckUp() {
 
       {/* Navigation Buttons */}
       <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-        <NavLink to="/CheckupUnique" style={{ textDecoration: 'none' }}>
+        <NavLink to="/CheckUpUnique" style={{ textDecoration: 'none' }}>
           <NavigationButton variant="contained">View Reused Passwords</NavigationButton>
         </NavLink>
-        <NavLink to="/CheckupStrength" style={{ textDecoration: 'none' }}>
+        <NavLink to="/CheckUpStrength" style={{ textDecoration: 'none' }}>
           <NavigationButton variant="contained">View Weak Passwords</NavigationButton>
         </NavLink>
       </Box>
-
-      {/* Go to Settings */}
-      <NavLink to="/Settings" style={{ textDecoration: 'none', marginTop: '20px', display: 'block', textAlign: 'center' }}>
-        <CheckupButton variant="contained" sx={{ borderRadius: '50px' }}>
-          Go to Settings
-        </CheckupButton>
-      </NavLink>
     </Box>
   )
 }
