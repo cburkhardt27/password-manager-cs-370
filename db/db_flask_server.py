@@ -337,28 +337,75 @@ def display_all_passwords():
 
 
 # Find and return repeated passwords
-# connection to database?
+# this works now
 @app.route('/get_repeated_passwords', methods=['GET'])
 def get_repeated_passwords():
+    query = """
+    SELECT username, password, url FROM passwords;
+    """
+    conn, cur = connect_db()
+    if conn is None or cur is None:
+        return jsonify({"error": "Failed to connect to the database"}), 500
+
     try:
-        allPasswords = display_all_passwords().get_json()['passwords']
+        # Fetch data from the database
+        cur.execute(query)
+        results = cur.fetchall()
+        
+        if not results:
+            return jsonify({"repeated_passwords": [], "message": "No passwords found in the database."}), 404
+
+        # Retrieve master password for decryption
+        response, status = get_master_password()
+        if not response or not response.is_json:
+            raise ValueError("Failed to fetch master password for decryption")
+        
+        response_data = response.get_json()
+        username_master = response_data.get('username')
+        hashed_mp = response_data.get('hashed_mp')
+        
+        if not username_master or not hashed_mp:
+            raise ValueError("Invalid master password response")
+
+        # Process and decrypt the passwords
+        password_details = []  # To store decrypted passwords with details
+        for username, encrypted_pswd, url in results:
+            decrypted_pswd = decode_vault_password(encrypted_pswd, username_master, hashed_mp)
+            password_details.append({
+                "username": username,
+                "password": decrypted_pswd,
+                "url": url
+            })
+
+        # Count occurrences of each password
         password_counts = {}
-        repeated_passwords = []
-        for passwordTuple in allPasswords:
-            if passwordTuple[1] in password_counts:
-                password_counts[passwordTuple[1]] += 1
+        for detail in password_details:
+            password = detail["password"]
+            if password in password_counts:
+                password_counts[password].append(detail)
             else:
-                password_counts[passwordTuple[1]] = 1
+                password_counts[password] = [detail]
 
-        # Filter out the repeated passwords
-        for password, count in password_counts.items():
-            if count > 1:
-                repeated_passwords.append(password)
+        # Filter repeated passwords and include associated details
+        repeated_passwords = [
+            {
+                "password": password,
+                "details": password_counts[password]
+            }
+            for password, details in password_counts.items() if len(details) > 1
+        ]
 
+        # Return repeated passwords with details
         return jsonify({"repeated_passwords": repeated_passwords}), 200
 
     except Exception as e:
-        return jsonify({"error": f"Error finding repeated passwords: {e}"}), 500
+        import traceback
+        traceback.print_exc()  # Log stack trace for debugging
+        return jsonify({"error": f"Error finding repeated passwords: {str(e)}"}), 500
+
+    finally:
+        cur.close()
+        conn.close()
 
 # Delete database
 @app.route('/delete_database', methods=['DELETE'])
@@ -371,6 +418,12 @@ def delete_database():
             return jsonify({"error": "Database not found"}), 404
     except Exception as e:
         return jsonify({"error": f"An error occurred: {e}"}), 500
+
+# Confirm server is running
+@app.route('/ping', methods=['GET'])
+def ping():
+    return jsonify({"status": "ok"}), 200
+
 
 if __name__ == '__main__':
     app.run(debug=True)
