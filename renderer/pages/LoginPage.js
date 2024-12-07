@@ -34,7 +34,7 @@ export default function LoginPage() {
   }
 
   return (
-    <GradientBackground display="flex" justifyContent="center" alignItems="center">
+    <GradientBackground height="100vh" display="flex" justifyContent="center" alignItems="center">
       <Container maxWidth="sm">
         <Box display="flex" justifyContent="center" mb={4}>
           <StyledAvatar>

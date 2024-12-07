@@ -22,10 +22,6 @@ const createWindow = async () => {
     },
   });
 
-  ipcMain.on('set-title', (event, title) => {
-    win.setTitle(title);
-  });
-
   ipcMain.handle('add-master-password', async (_event, username, master_pass) => {
     const data = { master_pass, username };
     try {
@@ -94,6 +90,17 @@ const createWindow = async () => {
       return response.data;
     } catch (error) {
       console.error('Error in display-all-passwords:', error.message);
+      return { error: error.message };
+    }
+  });
+
+  ipcMain.handle('check-passwords', async () => {
+    try {
+      const response = await axios.get(`${SERVER_BASE_URL}/get_repeated_passwords`);
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error in check-passwords:', error.message);
       return { error: error.message };
     }
   });

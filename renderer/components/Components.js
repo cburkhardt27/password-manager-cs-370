@@ -4,7 +4,6 @@ import styled from 'styled-components'
 // Background
 const GradientBackground = styled(Box)({
   width: '100%',
-  height: '100vh',
   display: 'flex',
   background: 'linear-gradient(248.88deg, #A472CB 33.63%, #5883F2 81.72%)',
 })
