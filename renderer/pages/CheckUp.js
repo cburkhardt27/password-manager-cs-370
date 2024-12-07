@@ -46,17 +46,12 @@ export default function CheckUp() {
   const fetchCheckupData = async () => {
     try {
       const result = await window.ipc.invoke('check-passwords') // Not sure backend logic exists??
-      setPasswordData({
-        total: result?.total || 0,
-        reused: result?.reused || 0,
-        weak: result?.weak || 0,
-      })
-      setLastChecked(new Date().toLocaleString())
+       setLastChecked(new Date().toLocaleString())
     } catch (error) {
       console.error('Error fetching password checkup data:', error)
     }
   }
-
+a
   useEffect(() => {
     fetchCheckupData()
   }, [])
@@ -117,10 +112,10 @@ export default function CheckUp() {
 
       {/* Navigation Buttons */}
       <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-        <NavLink to="/CheckUpUnique" style={{ textDecoration: 'none' }}>
+        <NavLink to="/Dashboard/CheckUpUnique" style={{ textDecoration: 'none' }}>
           <NavigationButton variant="contained">View Reused Passwords</NavigationButton>
         </NavLink>
-        <NavLink to="/CheckUpStrength" style={{ textDecoration: 'none' }}>
+        <NavLink to="/Dashboard/CheckUpStrength" style={{ textDecoration: 'none' }}>
           <NavigationButton variant="contained">View Weak Passwords</NavigationButton>
         </NavLink>
       </Box>

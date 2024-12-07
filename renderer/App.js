@@ -13,6 +13,9 @@ import CheckUp from './pages/CheckUp.js'
 import CheckUpStrength from './pages/CheckUpStrength.js';
 import CheckUpUnique from './pages/CheckUpUnique.js';
 
+import HomePage from './pages/HomePage 2.js'
+
+
 // TODO:
   // Dev mode only works for renderer.
   // BUT dashboard thing works!
@@ -26,6 +29,9 @@ import CheckUpUnique from './pages/CheckUpUnique.js';
     // Search needs to first go to passwords? or after query.
 
   // Sign in errror (at least for the terminal) 404, display all, might be related to rendering password.
+
+  // No search implementation
+  // Checkup page is brokens
 
 export default function App() {
   const [isProfile, setProfile] = useState(null)

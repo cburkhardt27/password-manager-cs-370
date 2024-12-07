@@ -28,10 +28,16 @@ export default function Dashboard() {
                 <ListItemText primary="Passwords" sx={{ color: 'white' }}/>
               </ListItem>
             </NavLink>
-            <NavLink to="/Dashboard/CheckUp" style={{ textDecoration: 'none' }}>
+            <NavLink to="/Dashboard/CheckUpStrength" style={{ textDecoration: 'none' }}>
               <ListItem button>
                 <Security sx={{ mr: 2, color: '#8B8B8B' }} />
-                <ListItemText primary="Checkup" sx={{ color: 'white' }}/>
+                <ListItemText primary="Check Strength" sx={{ color: 'white' }}/>
+              </ListItem>
+            </NavLink>
+            <NavLink to="/Dashboard/CheckUpUnique" style={{ textDecoration: 'none' }}>
+              <ListItem button>
+                <Security sx={{ mr: 2, color: '#8B8B8B' }} />
+                <ListItemText primary="Check Repeated" sx={{ color: 'white' }}/>
               </ListItem>
             </NavLink>
             <NavLink to="/Dashboard/Settings" style={{ textDecoration: 'none' }}>
