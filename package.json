@@ -1,5 +1,17 @@
 {
-  "name": "sprint-final",
+  "config": {
+    "forge": {
+      "makers": [
+        {
+          "name": "@electron-forge/maker-dmg",
+          "config": {
+            "format": "ULFO"
+          }
+        }
+      ]
+    }
+  },
+  "name": "password-manager-mac",
   "version": "1.0.0",
   "description": "Password manager final sprint",
   "main": "pack/main.js",

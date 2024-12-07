@@ -2,11 +2,19 @@ const { FusesPlugin } = require('@electron-forge/plugin-fuses');
 const { FuseV1Options, FuseVersion } = require('@electron/fuses');
 
 module.exports = {
+  makers: [
+    {
+      name: '@electron-forge/maker-dmg',
+      config: {
+        format: 'ULFO', // Optional: Customize DMG format
+      },
+    },
+  ],  
   packagerConfig: {
     asar: true,
     extraResource: [
     //  "./win_venv",
-      "./mac_venv"
+      "./mac_venv",
       "./db"
     ]
   },
