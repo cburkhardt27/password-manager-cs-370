@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 
 // Pages
-import TestPage from './pages/TestPage.js'
 import SetUpPage from './pages/SetUpPage.js'
 import LoginPage from './pages/LoginPage.js'
 import Dashboard from './components/Sidebar.js'
@@ -12,8 +11,6 @@ import Settings from './pages/Settings.js'
 import CheckUp from './pages/CheckUp.js'
 import CheckUpStrength from './pages/CheckUpStrength.js';
 import CheckUpUnique from './pages/CheckUpUnique.js';
-
-import HomePage from './pages/HomePage 2.js'
 
 
 // TODO:
