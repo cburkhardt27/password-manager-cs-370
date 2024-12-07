@@ -2,12 +2,13 @@
 
 PLEASE DO THE TECHNICAL DOCUMENATATION FOR THE CODEBASE (CLEANING UP DEVELOPMENT/DEBUG COMMENTS AND DOCUMETNATING FUNCTIONS) IN THE CODEBASE FOR WINDOWS AND MAC.
 
+YOU CAN DELETE THIS PART OF THE README WHEN DOCUMENTATION IS DONE.
+
 # Password Manager (a CS 370 Project)
 Presented by the Password People - a locally-hosted, containerized, sql-based password manager.
 
 This main branch provides the download executable versions of our code, as well as documetnation and installation instructions. The downloads include:
 1) a DMG file for MacOS
-2) a .app file for MacOS
 3) an executable for Windows OS
 
 Please refer to the branches 'windows' and 'mac_download' for the most current working editions of our codebase. These codebases are nearly identical, but they rely on different Python environment variables due to OS differences and have different configuration settings in the front end in order to make the application run properly on each operating system. The differences and setup instructionsa are documented in each branch.
