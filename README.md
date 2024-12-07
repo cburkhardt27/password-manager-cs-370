@@ -1,30 +1,9 @@
-Scripts:
-  pack:main and pack:renderer
-  then start:electron
-  then package
+Notes for documentation.
 
-TODO:
-  Minimum version of the app
-
-  Can add, edit, and delete. Settings to delete all/reset.
-
-  Edit can be stolen from add?
-
-  Documentation for win_min_install.
-    Pull from github.
-    npm install.
-    mac/win_venv set up.
-    npm run pack:m
-    npm run pack:r
-    npm run make
-    OR 
-    npm run package
-    Move to program files. Shortcut/exe.
-  
-  Reroute exe for package.
-  Take out alerts, messes with inputs/rendering. REWERITE.
-  Package again.
-
-  Delete hiding unless there is a better fix.
-
-  Closing issue :(
+Scripts (package.json): npm run 'name'
+build:dev & start:dev: Development environment for React/Electron renderer. Not recommended for pages that work with the back end.
+start:e: Starts electron.
+pack:m: Webpack for main.js and preload.js. Outputs to the pack folder.
+pack:r: Webpack for React/renderer pages. Outputs to the pack folder.
+package: Electron exe.
+make: Installer.
