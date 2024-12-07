@@ -155,6 +155,19 @@ const setupIPCHandlers = (win) => {
     }
   });
 
+  ipcMain.handle('get-repeated-passwords', async () => {
+    try {
+      const response = await axios.get(`${SERVER_BASE_URL}/get_repeated_passwords`);
+      console.log("repeated");
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error in get-repeated-passwords:', error.message);
+      return { error: error.message };
+    }
+  });
+
+
   ipcMain.handle('add-password', async (_event, data) => {
     try {
       const response = await axios.post(`${SERVER_BASE_URL}/add_password`, data);

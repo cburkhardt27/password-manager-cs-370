@@ -1,74 +1,423 @@
-import bcrypt
+import sqlite3
+import os
+from flask import Flask, request, json, jsonify
 
-def digit_in_string(string_check): 
-    """Checks if a string contains at least one digit."""
-    return any(i.isdigit() for i in string_check)
+from encryption_functions import encode_new_password, decode_vault_password, validate_master_password
+from gen_master_password_profile_script import setup_user_master_pass
 
+import logging
+logging.basicConfig(filename="full_errors.log", level=logging.ERROR, format="%(message)s")
 
-def setup_user_master_pass(master_pass, username):
+app = Flask(__name__)
+
+DB_NAME = "pswdDB.sqlite" # Ask about connection issues? Here.
+
+# Helper function to connect to the SQLite database
+def connect_db():
+    try:
+        conn = sqlite3.connect(DB_NAME)
+        cur = conn.cursor()
+        return conn, cur
+    except sqlite3.Error as e:
+        return None, None
+
+# Helper function to create passwords table
+def create_passwords_table(conn):
+    create_table_query = """
+    CREATE TABLE IF NOT EXISTS passwords (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT NOT NULL,
+        url TEXT NOT NULL,
+        password TEXT NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
     """
-    Username and master password setup should be done in react.js
-    """
-    """
-    Sets up the user master password by:
-    - Prompting for a username and password.
-    - Validating the password against defined rules.
-    - Hashing the password securely using bcrypt.
+    try:
+        cur = conn.cursor()
+        cur.execute(create_table_query)
+        conn.commit()
+    except Exception as e:
+        print(f"Error creating table: {e}")
+    finally:
+        cur.close()
 
-    Returns:
-        tuple: A tuple containing the hashed master password as a string and the username.
+
+# Helper function to create master password table
+def create_master_password_table(conn):
+    master_query = """
+    CREATE TABLE IF NOT EXISTS master_password (
+        username TEXT NOT NULL,
+        hashed_mp TEXT NOT NULL
+    );
+    """
+    try:
+        cur = conn.cursor()
+        cur.execute(master_query)
+        conn.commit()
+    except Exception as e:
+        print(f"Error creating table: {e}")
+    finally:
+        cur.close()
+
+# Test
+@app.route('/api/test', methods=['GET'])
+def test_get():
+  return jsonify({"username": "name", "password": "pass"})
+
+# Initialize tables API
+@app.route('/init_db', methods=['POST'])
+def init_db():
+    conn, cur = connect_db()
+    if conn is None or cur is None:
+        return jsonify({"error": "Failed to connect to the database"}), 500
+
+    try:
+        create_master_password_table(conn)
+        create_passwords_table(conn)
+        return jsonify({"message": "Tables initialized successfully"}), 200
+    except Exception as e:
+        return jsonify({"error": f"Error initializing tables: {e}"}), 500
+    finally:
+        conn.close()
+        
+# Store the master password. Fixed. Works once.
+@app.route('/add_master_password', methods=['POST'])
+def add_master_password():
+    data = request.get_json()
+    master_pass = data.get("master_pass")
+    user = data.get("username")
+    hashed_mp, username = setup_user_master_pass(master_pass, user)
+    insert_query = """
+    INSERT INTO master_password (username, hashed_mp)
+    VALUES (?, ?);
     """
 
-    """
-    alphanumer_set = ['@', '!', '#', '$', '%', '^', '&', '*', '(', ')', '_', '-', '?']
+    conn, cur = connect_db()
+    if conn is None or cur is None:
+        return jsonify({"error": "Failed to connect to the database"}), 500
 
-    # Input and validate username
-    while True:
-        try:
-            username = input("Enter your username: \n")
-        except ValueError:
-            print("Sorry. Please use only standard keyboard input.\n")
-            continue
-        if ' ' in username:
-            print("Sorry. Please input a username without spaces.\n")
-            continue
+    try:
+        cur.execute(insert_query, (username, hashed_mp))
+        conn.commit()
+        # return get_master_password()
+        return jsonify({"message": "Master password stored successfully"}), 200
+    except Exception as e:
+        return jsonify({"error": f"Error adding master password: {e}"}), 500
+    finally:
+        cur.close()
+        conn.close()
+
+# Validate login
+@app.route('/validate_login', methods=['POST'])
+def validate_login():
+    input_data = request.get_json()
+    input_master_pass = input_data.get("master_pass")
+    input_username = input_data.get("username")
+    valid_data = get_master_password_()
+    valid_master_pass = valid_data.get("hashed_mp")
+    valid_username = valid_data.get("username")
+
+    valid = validate_master_password(input_username, input_master_pass, valid_username, valid_master_pass)
+    # valid = validate_master_password('testUserFront', 'password123A!Front', 'testUserFront', '$2b$12$LJSfoIUM8/0FiuujxPeYyeEUPhlrgqI0D0v2JUjkPjH7jsKkdKcMi')
+
+    return jsonify({"login": valid})
+
+# Retrieve the master password.
+@app.route('/get_master_password', methods=['GET'])
+def get_master_password():
+    retrieve_query = """
+    SELECT username, hashed_mp
+    FROM master_password;
+    """
+    conn, cur = connect_db()
+    if conn is None or cur is None:
+        return jsonify({"error": "Failed to connect to the database"}), 500
+
+    try:
+        cur.execute(retrieve_query)
+        result = cur.fetchone()
+        if result:
+            '''
+            print("RESULT DEBUG\n")
+            username, password = result
+            print(username)
+            print(type(username))
+            print(password)
+            print(type(password))
+
+            print("leaving original function")
+            '''
+            username, hashed_mp = result # username == bytestream // hashed_mp == 200
+            return jsonify({"username": username, "hashed_mp": hashed_mp}), 200
+            # return username, hashed_mp
         else:
-            break
+            return jsonify({"error": "no profile"})
+    except Exception as e:
+        # print(f"Error retrieving master password: {e}")
+        return jsonify({"error": "no profile"})
+    finally:
+        cur.close()
+        conn.close()
 
-    # Input and validate master password
-    while True:
-        try:
-            master_pass = input(
-                "Enter your master password.\nThis should be larger than 8 characters, include a number, and a special character: \n"
-            )
-        except ValueError:
-            print("Sorry. Please use only standard keyboard input.\n")
-            continue
-        if ' ' in master_pass:
-            print("Sorry. Please input a password without spaces.\n")
-        if len(master_pass) <= 8:
-            print("Sorry. Please enter a password longer than 8 characters.\n")
-            continue
-        if not digit_in_string(master_pass):
-            print("Please include a number in your password.\n")
-            continue
-        if not any(char in alphanumer_set for char in master_pass):
-            print("Please include an expected special character in your password.\n")
-            continue
-        else:
-            break
+def get_master_password_():
+    retrieve_query = """
+    SELECT username, hashed_mp
+    FROM master_password;
     """
-    
-    # Hash master password securely with salt using bcrypt
-    master_pass = master_pass.encode()
-    pass_salt = bcrypt.gensalt()
-    hashed_mp = bcrypt.hashpw(master_pass, pass_salt).decode('utf-8')  # Decode bytes to string
-    # print(f"Username: {username}, Hashed Password: {hashed_mp}")
-    # print(type(username))
-    # print(type(hashed_mp))
-    
-    # Return hashed password as a string and the username
-    return hashed_mp, username
+    conn, cur = connect_db()
+    if conn is None or cur is None:
+        return jsonify({"error": "Failed to connect to the database"}), 500
 
-if __name__ == "__main__":
-    setup_user_master_pass("test_pass", "test_user")
+    try:
+        cur.execute(retrieve_query)
+        result = cur.fetchone()
+        if result:
+            username, hashed_mp = result # username == bytestream // hashed_mp == 200
+            return {"username": username, "hashed_mp": hashed_mp}
+            # return username, hashed_mp
+        else:
+            return None, None
+    except Exception as e:
+        # print(f"Error retrieving master password: {e}")
+        return None, None
+    finally:
+        cur.close()
+        conn.close()
+
+
+# Add a new password entry
+@app.route('/add_password', methods=['POST'])
+def add_password_entry():
+    data = request.get_json()
+    username = data.get('username')
+    url = data.get('url')
+    plaintext_password = data.get('password')
+
+    response, status = get_master_password()
+    
+    response_data = response.get_json()  # Get JSON data
+    username_master = response_data.get('username')
+    hashed_mp = response_data.get('hashed_mp')
+
+    encrypted_password = encode_new_password(plaintext_password, username_master, hashed_mp)
+
+    check_query = """
+    SELECT COUNT(*) FROM passwords WHERE url = ?;
+    """
+    insert_query = """
+    INSERT INTO passwords (username, url, password)
+    VALUES (?, ?, ?);
+    """
+    conn, cur = connect_db()
+    if conn is None or cur is None:
+        return jsonify({"error": "Failed to connect to the database"}), 500
+
+    try:
+        # Check if the URL already exists
+        cur.execute(check_query, (url,))
+        count = cur.fetchone()[0]
+        if count > 0:
+            return jsonify({"error": "A password entry for this URL already exists."}), 400
+
+        # Insert the new password entry
+        cur.execute(insert_query, (username, url, encrypted_password))
+        conn.commit()
+        return jsonify({"message": "Password entry added successfully"}), 200
+    except Exception as e:
+        return jsonify({"error": f"Error adding password entry: {e}"}), 500
+    finally:
+        cur.close()
+        conn.close()
+
+
+# Retrieve a password by URL
+@app.route('/get_password', methods=['GET'])
+def get_password():
+    url = request.args.get('url')
+    query = """
+    SELECT username, password FROM passwords
+    WHERE url = ?;
+    """
+    conn, cur = connect_db()
+    if conn is None or cur is None:
+        return jsonify({"error": "Failed to connect to the database"}), 500
+
+    try:
+        cur.execute(query, (url,))
+        result = cur.fetchone()
+        if result:
+            username, encrypted_pswd = result
+            
+            response, status = get_master_password()
+
+            response_data = response.get_json()  # Get JSON data
+            username_master = response_data.get('username')
+            hashed_mp = response_data.get('hashed_mp')
+
+            decrypted_pswd = decode_vault_password(encrypted_pswd, username_master, hashed_mp)
+            return jsonify({"username": username, "password": decrypted_pswd}), 200
+        else:
+            return jsonify({"error": "Password not found for the given URL"}), 404
+    except Exception as e:
+        return jsonify({"error": f"Error retrieving password: {e}"}), 500
+    finally:
+        cur.close()
+        conn.close()
+
+
+# Delete a password entry by username and URL
+@app.route('/delete_password', methods=['DELETE'])
+def delete_password():
+    data = request.get_json()
+    username = data.get('username')
+    url = data.get('url')
+
+    query = """
+    DELETE FROM passwords
+    WHERE username = ? AND url = ?;
+    """
+    conn, cur = connect_db()
+    if conn is None or cur is None:
+        return jsonify({"error": "Failed to connect to the database"}), 500
+
+    try:
+        cur.execute(query, (username, url))
+        conn.commit()
+        return jsonify({"message": "Password entry deleted successfully"}), 200
+    except Exception as e:
+        return jsonify({"error": f"Error deleting password entry: {e}"}), 500
+    finally:
+        cur.close()
+        conn.close()
+
+
+# Display all passwords
+@app.route('/display_all_passwords', methods=['GET'])
+def display_all_passwords():
+    query = """
+    SELECT username, password, url FROM passwords;
+    """
+    conn, cur = connect_db()
+    if conn is None or cur is None:
+        return jsonify({"error": "Failed to connect to the database"}), 500
+
+    try:
+        cur.execute(query)
+        results = cur.fetchall()
+        if results:
+            passwords = []
+            response, status = get_master_password()
+
+            response_data = response.get_json()  # Get JSON data
+            username_master = response_data.get('username')
+            hashed_mp = response_data.get('hashed_mp')
+
+            '''
+            for username, encrypted_pswd in results:
+                decrypted_pswd = decode_vault_password(encrypted_pswd, username_master, hashed_mp)
+                passwords.append((username, decrypted_pswd))
+            return jsonify({"passwords": passwords}), 200
+            '''
+            for username, encrypted_pswd, url in results:  # Assuming each result also contains a `url`
+                decrypted_pswd = decode_vault_password(encrypted_pswd, username_master, hashed_mp)
+                passwords.append({
+                    "username": username,
+                    "url": url,
+                    "password": decrypted_pswd
+                })
+            return jsonify(passwords), 200
+        else:
+            return jsonify({"message": "No passwords found in the database."}), 404
+    except Exception as e:
+        return jsonify({"error": f"Error retrieving passwords: {e}"}), 500
+    finally:
+        cur.close()
+        conn.close()
+
+
+# Find and return repeated passwords
+@app.route('/get_repeated_passwords', methods=['GET'])
+def get_repeated_passwords():
+    query = """
+    SELECT username, password, url FROM passwords;
+    """
+    conn, cur = connect_db()
+
+    if conn is None or cur is None:
+        return jsonify({"error": "Failed to connect to the database"}), 500
+
+    try:
+        # Fetch data from the database
+        cur.execute(query)
+        results = cur.fetchall()
+
+        if not results:
+            return jsonify({"repeated_passwords": [], "message": "No passwords found in the database."}), 404
+
+        # Retrieve master password for decryption
+        response, status = get_master_password()
+        if not response or not response.is_json:
+            raise ValueError("Failed to fetch master password for decryption")
+
+        response_data = response.get_json()
+        username_master = response_data.get('username')
+        hashed_mp = response_data.get('hashed_mp')
+
+        if not username_master or not hashed_mp:
+            raise ValueError("Invalid master password response")
+        
+        # Process and decrypt the passwords
+        password_details = []  # To store decrypted passwords with details
+        for username, encrypted_pswd, url in results:
+            decrypted_pswd = decode_vault_password(encrypted_pswd, username_master, hashed_mp)
+            password_details.append({
+                "username": username,
+                "password": decrypted_pswd,
+                "url": url
+            })
+
+        # Count occurrences of each password
+        password_counts = {}
+        for detail in password_details:
+            password = detail["password"]
+            if password in password_counts:
+                password_counts[password].append(detail)
+            else:
+                password_counts[password] = [detail]
+
+        # Filter repeated passwords and include associated details
+        repeated_passwords = [
+            {
+                "password": password,
+                "details": password_counts[password]
+            }
+            for password, details in password_counts.items() if len(details) > 1
+        ]
+
+        # Return repeated passwords with details
+        return jsonify({"repeated_passwords": repeated_passwords}), 200
+    
+    except Exception as e:
+        import traceback
+        traceback.print_exc()  # Log stack trace for debugging
+        return jsonify({"error": f"Error finding repeated passwords: {str(e)}"}), 500
+    finally:
+        cur.close()
+        conn.close()
+
+# Delete database
+@app.route('/delete_database', methods=['DELETE'])
+def delete_database():
+    try:
+        if os.path.exists(DB_NAME):
+            os.remove(DB_NAME)
+            return jsonify({"message": "Database deleted successfully"}), 200
+        else:
+            return jsonify({"error": "Database not found"}), 404
+    except Exception as e:
+        return jsonify({"error": f"An error occurred: {e}"}), 500
+
+if __name__ == '__main__':
+    app.run(debug=True)
+    app.run(port=5000)
