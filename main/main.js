@@ -133,7 +133,11 @@ const startFlaskPython = () => {
   let pythonPath;
   let flaskPath;
 
-  if (app.isPackaged) {
+  venvPath = path.join(__dirname, '../mac_venv'); // Mac
+  pythonPath = path.join(venvPath, 'bin', 'python'); // Mac
+  flaskPath = path.join(__dirname, '../db/db_flask_server.py');
+  /*
+  if (app.isPackaged) {    
     if (process.platform !== 'darwin') {
       venvPath = path.join(process.resourcesPath, 'win_venv') // Windows.
       pythonPath = path.join(venvPath, 'Scripts', 'python.exe') // Windows.
@@ -151,6 +155,11 @@ const startFlaskPython = () => {
     
     }
   }
+  */
+  
+  console.log(`Python Path: ${pythonPath}`);
+  console.log(`Flask Path: ${flaskPath}`);
+
 
   console.log('.py');
   flaskProcess = spawn(pythonPath, ['-u', flaskPath]);

@@ -25,7 +25,8 @@ module.exports = {
             exclude: [
                 /node_modules/,  // Always exclude node_modules
                 path.resolve(__dirname, 'db'),  // Exclude 'db' folder
-                path.resolve(__dirname, 'win_venv'),  // Exclude 'win_venv'
+                path.resolve(__dirname, 'mac_venv') // exclude mac_venv instead
+                //    path.resolve(__dirname, 'win_venv'),  // Exclude 'win_venv'
             ],
             use: [{
                 loader: 'babel-loader',

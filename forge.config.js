@@ -5,7 +5,8 @@ module.exports = {
   packagerConfig: {
     asar: true,
     extraResource: [
-      "./win_venv",
+    //  "./win_venv",
+      "./mac_venv"
       "./db"
     ]
   },
