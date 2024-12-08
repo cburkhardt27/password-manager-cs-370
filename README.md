@@ -34,11 +34,6 @@ Start the Application
 ```bash
 npm start:e
 ```
-Build the Application for Desktop
-```bash
-npm run make
-```
-*Note: The output files will be in the /out directory.  Navigate through the `make` folder to locate the .dmg file, then install it.*  
 
 # Advanced Instructions / Installation
 
