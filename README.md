@@ -47,6 +47,12 @@ npm run start:e
 ```bash
 npm run make
 ```
+### Additional Information
+
+Once completing the last step, the terminal should print a message of the directory of where the excutable 
+file can be found. To open the app through the executable, go to this directory in your files and and open
+the file. The exectuable file should be named 'sprint-final-1.0.0 Setup'. You might have to go through a 
+squirrel.windows folder and then a x64 folder to get to this file.
 
 # Advanced Instructions / Installation
 
