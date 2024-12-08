@@ -37,12 +37,11 @@ npm install
 ```
 ### Package the Application Pages and Main Process
 ```bash
-npm pack:r
-npm pack:m
+npm run pack:m
 ```
 ### Start the Application
 ```bash
-npm start:e
+npm run start:e
 ```
 ### Build the Application for Desktop
 ```bash
