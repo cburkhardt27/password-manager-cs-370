@@ -77,7 +77,7 @@ export default function CheckUpStrength() {
           </Typography>
         </Box>
       </FormBox>
-      {data.length > 0 ? (
+      {(Array.isArray(data) && data.length > 0) ? (
         data.map((entry, entryIndex) => (
           <PassBox key={entryIndex}>
             <Typography variant="subtitle1">Password: {entry.password}</Typography>

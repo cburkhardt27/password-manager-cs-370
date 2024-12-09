@@ -82,7 +82,6 @@ export default function CheckUpStrength() {
       }
     };
     
-
     checkPasswords();
   }, [refresh]);
 
@@ -108,7 +107,7 @@ export default function CheckUpStrength() {
         </Box>
       </FormBox>
 
-      {data.length > 0 ? (
+      {(data.length > 0) ? (
         data.map((entry) => (
           <PassBox key={entry.id}>
             <Typography variant="subtitle1">Username: {entry.username}</Typography>

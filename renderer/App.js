@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 
 // Pages
-import TestPage from './pages/TestPage.js'
 import SetUpPage from './pages/SetUpPage.js'
 import LoginPage from './pages/LoginPage.js'
 import Dashboard from './components/Sidebar.js'
@@ -12,26 +11,6 @@ import Settings from './pages/Settings.js'
 import CheckUp from './pages/CheckUp.js'
 import CheckUpStrength from './pages/CheckUpStrength.js';
 import CheckUpUnique from './pages/CheckUpUnique.js';
-
-import HomePage from './pages/HomePage 2.js'
-
-
-// TODO:
-  // Dev mode only works for renderer.
-  // BUT dashboard thing works!
-    // Figure out minimum version.
-      // Figure out posting to the db
-    // Figure out components.
-    // Figure out pages.
-    // Figure out functions.
-    // Build :)
-
-    // Search needs to first go to passwords? or after query.
-
-  // Sign in errror (at least for the terminal) 404, display all, might be related to rendering password.
-
-  // No search implementation
-  // Checkup page is brokens
 
 export default function App() {
   const [isProfile, setProfile] = useState(null)
