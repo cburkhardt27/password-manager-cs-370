@@ -27,8 +27,8 @@ npm install
 ```
 Package the Application Pages and Main Process
 ```bash
-npm pack:r
-npm pack:m
+npm run pack:r
+npm run pack:m
 ```
 Start the Application
 ```bash
