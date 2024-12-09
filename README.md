@@ -32,7 +32,7 @@ npm run pack:m
 ```
 Start the Application
 ```bash
-npm start:e
+npm run start:e
 ```
 
 # Advanced Instructions / Installation
