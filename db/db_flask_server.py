@@ -14,6 +14,19 @@ DB_NAME = "pswdDB.sqlite" # Ask about connection issues? Here.
 
 # Helper function to connect to the SQLite database
 def connect_db():
+    '''
+    Establishes a connection to the SQLite database and returns the connection object and cursor.
+
+    Returns:
+        tuple:
+            - conn (sqlite3.Connection): A connection object to interact with the SQLite database.
+            - cur (sqlite3.Cursor): A cursor object to execute SQL commands.
+            - (None, None): Returned if an error occurs while connecting to the database.
+
+    Raises:
+        sqlite3.Error: If an error occurs during the connection attempt, such as an invalid database file or access issues.
+    '''
+    
     try:
         conn = sqlite3.connect(DB_NAME)
         cur = conn.cursor()
@@ -23,6 +36,25 @@ def connect_db():
 
 # Helper function to create passwords table
 def create_passwords_table(conn):
+    '''
+    Creates a `passwords` table in the database if it does not already exist.
+
+    The table includes the following columns:
+        - id (INTEGER): Primary key, auto-incremented.
+        - username (TEXT): The username associated with the password. Cannot be null.
+        - url (TEXT): The URL or domain associated with the password. Cannot be null.
+        - password (TEXT): The stored password. Cannot be null.
+        - created_at (DATETIME): Timestamp of when the record was created. Defaults to the current timestamp.
+        - updated_at (DATETIME): Timestamp of when the record was last updated. Defaults to the current timestamp.
+
+    Args:
+        conn (sqlite3.Connection): The database connection object to execute the query.
+        
+     Raises:
+        sqlite3.Error: If an error occurs while executing the SQL query, such as a syntax issue or database corruption.
+        AttributeError: If the provided `conn` object does not support the required operations.
+    '''
+    
     create_table_query = """
     CREATE TABLE IF NOT EXISTS passwords (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -45,6 +77,21 @@ def create_passwords_table(conn):
 
 # Helper function to create master password table
 def create_master_password_table(conn):
+    '''
+    Creates a `master_password` table in the database if it does not already exist.
+
+    The table includes the following columns:
+        - username (TEXT): The username associated with the master password. Cannot be null.
+        - hashed_mp (TEXT): The hashed version of the master password. Cannot be null.
+
+    Args:
+        conn (sqlite3.Connection): The database connection object to execute the query.
+        
+    Raises:
+        sqlite3.Error: If an error occurs while executing the SQL query, such as syntax errors or database corruption.
+        AttributeError: If the provided `conn` object does not support the required operations.
+    '''
+    
     master_query = """
     CREATE TABLE IF NOT EXISTS master_password (
         username TEXT NOT NULL,
@@ -63,11 +110,35 @@ def create_master_password_table(conn):
 # Test
 @app.route('/api/test', methods=['GET'])
 def test_get():
+  '''
+  A test function that returns a sample JSON response.
+
+    Returns:
+        flask.Response: A JSON response with the following structure:
+            {
+                "username": "name",
+                "password": "pass"
+            }
+  '''
+  
   return jsonify({"username": "name", "password": "pass"})
 
 # Initialize tables API
 @app.route('/init_db', methods=['POST'])
 def init_db():
+    '''
+    Initializes the database by creating required tables.
+
+    Returns:
+        flask.Response: A JSON response with:
+            - A success message and HTTP 200 status code if tables are created successfully.
+            - An error message and HTTP 500 status code if the database connection fails or table initialization encounters an error.
+            
+    Raises:
+        sqlite3.Error: If there are issues executing the SQL commands for table creation.
+        AttributeError: If the `conn` object is improperly configured or does not support the required operations.
+    '''
+    
     conn, cur = connect_db()
     if conn is None or cur is None:
         return jsonify({"error": "Failed to connect to the database"}), 500
@@ -84,6 +155,20 @@ def init_db():
 # Store the master password. Fixed. Works once.
 @app.route('/add_master_password', methods=['POST'])
 def add_master_password():
+    '''
+    Adds a new master password to the database.
+
+    Returns:
+        flask.Response: A JSON response with:
+            - A success message and HTTP 200 status code if the master password is added successfully.
+            - An error message and HTTP 500 status code if database connection fails or insertion encounters an error.
+            
+    Raises:
+        KeyError: If the expected `master_pass` or `username` keys are missing from the JSON payload.
+        sqlite3.Error: If an error occurs while executing the SQL insert query.
+        AttributeError: If the `conn` object is improperly configured or does not support the required operations.
+    '''
+    
     data = request.get_json()
     master_pass = data.get("master_pass")
     user = data.get("username")
@@ -111,6 +196,21 @@ def add_master_password():
 # Validate login
 @app.route('/validate_login', methods=['POST'])
 def validate_login():
+    '''
+    Validates a user's login credentials by comparing the input username and master password with the stored values.
+
+    This function performs the following steps:
+        1. Retrieves the JSON payload from the incoming request.
+        2. Extracts the `master_pass` and `username` fields from the payload.
+        3. Fetches the stored `hashed_mp` and `username` using `get_master_password_`.
+        4. Validates the input credentials by calling `validate_master_password`.
+
+    Returns:
+        flask.Response: A JSON response containing:
+            - `{"login": True}` if the credentials are valid.
+            - `{"login": False}` if the credentials are invalid.
+    '''
+    
     input_data = request.get_json()
     input_master_pass = input_data.get("master_pass")
     input_username = input_data.get("username")
@@ -126,6 +226,21 @@ def validate_login():
 # Retrieve the master password.
 @app.route('/get_master_password', methods=['GET'])
 def get_master_password():
+    '''
+    Retrieves the stored master password and associated username from the database.
+
+    Returns:
+        dict:
+            - On Success:
+                A dictionary containing the master password details:
+                {
+                    "username": <username>,
+                    "hashed_mp": <hashed_master_password>
+                }
+            - On Failure or if no profile exists:
+                None, None.
+    '''
+    
     retrieve_query = """
     SELECT username, hashed_mp
     FROM master_password;
@@ -161,6 +276,21 @@ def get_master_password():
         conn.close()
 
 def get_master_password_():
+    '''
+    Retrieves the stored master password and associated username from the database.
+
+    Returns:
+        dict:
+            - On Success:
+                A dictionary containing the master password details:
+                {
+                    "username": <username>,
+                    "hashed_mp": <hashed_master_password>
+                }
+            - On Failure or if no profile exists:
+                None, None.
+    '''
+    
     retrieve_query = """
     SELECT username, hashed_mp
     FROM master_password;
@@ -189,6 +319,26 @@ def get_master_password_():
 # Add a new password entry
 @app.route('/add_password', methods=['POST'])
 def add_password_entry():
+    '''
+    Adds a new password entry to the database, encrypting the plaintext password before storage.
+
+    Returns:
+        flask.Response:
+            - On Success:
+                A JSON response with HTTP 200 status:
+                {
+                    "message": "Password entry added successfully"
+                }
+            - If the URL already exists:
+                {
+                    "error": "A password entry for this URL already exists."
+                } with HTTP 400 status.
+            - On Error:
+                {
+                    "error": "Error adding password entry: <error details>"
+                } with HTTP 500 status.
+    '''
+    
     data = request.get_json()
     username = data.get('username')
     url = data.get('url')
@@ -234,6 +384,27 @@ def add_password_entry():
 # Retrieve a password by URL
 @app.route('/get_password', methods=['GET'])
 def get_password():
+    '''
+    Retrieves and decrypts the password associated with a given URL.
+
+    Returns:
+        flask.Response:
+            - On Success:
+                A JSON response with HTTP 200 status containing the username and decrypted password:
+                {
+                    "username": <username>,
+                    "password": <decrypted_password>
+                }
+            - If the URL does not exist in the database:
+                {
+                    "error": "Password not found for the given URL"
+                } with HTTP 404 status.
+            - On Error:
+                {
+                    "error": "Error retrieving password: <error details>"
+                } with HTTP 500 status.
+    '''
+    
     url = request.args.get('url')
     query = """
     SELECT username, password FROM passwords
@@ -269,6 +440,23 @@ def get_password():
 # Delete a password entry by username and URL
 @app.route('/delete_password', methods=['DELETE'])
 def delete_password():
+    '''
+    Deletes a password entry from the database based on the provided username and URL.
+
+    Returns:
+        flask.Response:
+            - On Success:
+                A JSON response with HTTP 200 status:
+                {
+                    "message": "Password entry deleted successfully"
+                }
+            - On Error:
+                A JSON response with HTTP 500 status containing an error message:
+                {
+                    "error": "Error deleting password entry: <error details>"
+                }
+    '''
+    
     data = request.get_json()
     username = data.get('username')
     url = data.get('url')
@@ -295,6 +483,31 @@ def delete_password():
 # Display all passwords
 @app.route('/display_all_passwords', methods=['GET'])
 def display_all_passwords():
+    '''
+    Retrieves and decrypts all stored passwords from the database.
+
+    Returns:
+        flask.Response:
+            - On Success:
+                A JSON response with HTTP 200 status containing a list of all stored passwords in the format:
+                [
+                    {
+                        "username": <username>,
+                        "url": <url>,
+                        "password": <decrypted_password>
+                    },
+                    ...
+                ]
+            - If no passwords are found:
+                {
+                    "message": "No passwords found in the database."
+                } with HTTP 404 status.
+            - On Error:
+                {
+                    "error": "Error retrieving passwords: <error details>"
+                } with HTTP 500 status.
+    '''
+    
     query = """
     SELECT username, password, url FROM passwords;
     """
@@ -339,6 +552,21 @@ def display_all_passwords():
 # Find and return repeated passwords
 @app.route('/get_repeated_passwords', methods=['GET'])
 def get_repeated_passwords():
+    '''
+    Identifies and returns a list of passwords that are repeated across stored user accounts.
+
+    Returns:
+        flask.Response:
+            - A JSON response containing:
+                {
+                    "repeated_passwords": [<password1>, <password2>, ...]
+                } with HTTP 200 status if successful.
+            - A JSON response containing:
+                {
+                    "error": "Error finding repeated passwords: <error details>"
+                } with HTTP 500 status if an error occurs.
+    '''
+    
     query = """
     SELECT username, password, url FROM passwords;
     """
@@ -409,6 +637,29 @@ def get_repeated_passwords():
 # Delete database
 @app.route('/delete_database', methods=['DELETE'])
 def delete_database():
+    """
+Deletes the SQLite database file if it exists.
+
+Returns:
+    tuple:
+        - (flask.Response, int): A JSON response indicating the result of the operation and the corresponding HTTP status code.
+        - If the database is successfully deleted, returns:
+            {
+                "message": "Database deleted successfully"
+            }, 200
+        - If the database file does not exist, returns:
+            {
+                "error": "Database not found"
+            }, 404
+        - If an unexpected error occurs, returns:
+            {
+                "error": "An error occurred: <error_message>"
+            }, 500
+
+Raises:
+    Exception: If an unexpected error occurs while attempting to delete the database file.
+    """
+    
     try:
         if os.path.exists(DB_NAME):
             os.remove(DB_NAME)
