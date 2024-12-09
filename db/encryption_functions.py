@@ -153,6 +153,23 @@ def decode_vault_password(db_ciphertext, act_username, act_mp):
 
 
 def generate_random_password(length=12):
+    '''
+    Generates a secure random password using a combination of letters, digits, and special characters.
+
+    Args:
+        length (int, optional): The length of the password to generate. Defaults to 12.
+            - Must be a positive integer.
+
+    Returns:
+        str: A randomly generated password containing `length` characters, including a mix of:
+             - Uppercase and lowercase letters
+             - Digits
+             - Special characters
+
+    Raises:
+        ValueError: If the specified length is not a positive integer.
+    '''
+    
     # Define the characters to choose from
     alphabet = string.ascii_letters + string.digits + string.punctuation
     # Generate random password
@@ -160,6 +177,22 @@ def generate_random_password(length=12):
     return password    
 
 def main():
+    '''
+    The main function for debugging and validating various password management functionalities.
+
+    This function demonstrates the following:
+        1. Validating a master password using `validate_master_password`.
+        2. Generating a random password with `generate_random_password`.
+        3. Encoding a new password with `encode_new_password`.
+        4. Decoding the encoded password using `decode_vault_password`.
+
+    Actions:
+        - Validates a given master password.
+        - Generates a secure random password and prints it.
+        - Encodes a sample password into an encrypted format and prints it.
+        - Decodes the encrypted password back into plaintext and prints it.
+    '''
+    
 # debug generate_random_pass
     validate_master_password("caburkh", "Password1!", act_username, act_mp)
 

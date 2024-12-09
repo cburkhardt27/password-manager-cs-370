@@ -1,7 +1,18 @@
 import bcrypt
 
 def digit_in_string(string_check): 
-    """Checks if a string contains at least one digit."""
+    """
+Checks if a given string contains at least one digit.
+
+Args:
+    string_check (str): The string to be checked for the presence of digits.
+
+Returns:
+    bool:
+        - True: If the string contains at least one digit.
+        - False: If the string does not contain any digits.
+    """
+    
     return any(i.isdigit() for i in string_check)
 
 
