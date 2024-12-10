@@ -29,7 +29,9 @@ _Refer to our Documentation.pdf for reference photos._
 
 
 # Documentation
-Refer to this `main` branch for our demonstration video and a PDF of our documentation. Installation instructions are listed in the PDF and in the branches for both Windows and Mac. 
+Refer to this `main` branch for our demonstration video, a PDF of our documentation, and Windows executable-based installation. Terminal-based launch and build instructions are included in the respective brancehs for both Windows and Mac.
+
+Please view our demo video here: https://drive.google.com/file/d/1xfpRVzLdIrgiL7-KqrAZGQQNOAesEvBj/view?usp=sharing
 
 # Version Control & History
 Other branches on this repo represent prior iterations of the codebase. Unless you're interested in history for posterity's sake, you should ignore them. If you're trying to track version history of this project, we started with main and eventually branched into `built-new`. Then we refactored our database into sqlite, prompting the `sqlite` branch and eventually `sqlite-new`. We added `another-one` during integration. When we decided to redo the front end, this got hosted on a spike in this [github repository ]([url](https://github.com/michi-okahata/toy-password-manager)) (https://github.com/michi-okahata/toy-password-manager). We integrated those changes back into this repo under `windows` and `mac_download`. In an attempt at cleaning up a now hopelessly out of date main page, we decided to make the main branch our documentation page. :).
