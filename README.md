@@ -1,18 +1,25 @@
-Notes for documentation.
+## Installation From Downloadable Windows Installer
+Download version 4 of our password-manager release on the github: https://github.com/cburkhardt27/password-manager-cs-370/releases  
+1. Follow the installer’s setup installation steps.  
+_(You may need to instruct your computer to “Trust This File” prior to installation. This is not necessarily due to security design problems in the executable, but rather because we have not signed our code with a recognized code certificate that Windows might be expecting.)_  
+2. Launch the program from Desktop.  
+3. Run the file as an administrator. The password manager should launch!  
 
-Scripts (package.json): npm run 'name'
-build:dev & start:dev: Development environment for React/Electron renderer. Not recommended for pages that work with the back end.
-start:e: Starts electron.
-pack:m: Webpack for main.js and preload.js. Outputs to the pack folder.
-pack:r: Webpack for React/renderer pages. Outputs to the pack folder.
-package: Electron exe.
-make: Installer.
+If the program window does not launch, this may be due to the file permissions configuration of your individual Windows computer. Our program launches an API server (Flask) that connects the UI to the SQLite database. Depending on the individual Windows version your computer runs on, Windows may or may not give the user permissions automatically to simultaneously launch the server alongside the front end.  
+
+There are a variety of fixes:  
+1. Make sure you are running the password-manager program as administrator. This should ensure all components have the correct permissions to launch.	  
+2. Manually launch the Flask Server executable stored in App Data.  
+Navigate to
+`:C:Users/<YourUserAccount>/AppData/Roaming/password-manager/db_flask_server.exe`
+Double click on the db_flask_server.exe file. While this server is running, re-launch the password-manager desktop application. The password manager should launch!  
+_Refer to our Documentation.pdf for reference photos._    
+
+3. If your password manager still does not launch out, please reach out to our friendly and accessible support team! You can reach us at claire.burkhardt@emory.edu and @michi.okahata@emory.edu. We provide speedy customer service responses and real-time debugging :)  
 
 
-# Password Manager - Build Instructions for Windows
 
-
-## Instructions
+## Build and Terminal-Based Launch Instructions
 
 ### Clone the Repository
 #### Option 1: Clone this GitHub repository and checkout the proper branch:  
@@ -35,6 +42,7 @@ pip install -r requirements.txt
 ```bash
 npm install
 ```
+_If necessary, install Node.js on your computer_  
 ### Package the Application Pages and Main Process
 ```bash
 npm run pack:r
