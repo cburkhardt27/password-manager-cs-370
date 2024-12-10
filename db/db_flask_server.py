@@ -1,6 +1,6 @@
 import sqlite3
 import os
-from flask import Flask, request, json, jsonify
+from flask import Flask, request, jsonify
 
 from encryption_functions import encode_new_password, decode_vault_password, validate_master_password
 from gen_master_password_profile_script import setup_user_master_pass
@@ -10,7 +10,9 @@ logging.basicConfig(filename="full_errors.log", level=logging.ERROR, format="%(m
 
 app = Flask(__name__)
 
-DB_NAME = "pswdDB.sqlite" # Ask about connection issues? Here.
+# DB_NAME = "pswdDB.sqlite"
+# Write to app data instead of program files.
+DB_NAME = os.path.join(os.path.expanduser('~'), 'AppData', 'Roaming', 'password-manager', 'pswdDB.sqlite')
 
 # Helper function to connect to the SQLite database
 def connect_db():
@@ -121,7 +123,7 @@ def test_get():
             }
   '''
   
-  return jsonify({"username": "name", "password": "pass"})
+  return jsonify({"username": "name", "password": "pass"}), 200
 
 # Initialize tables API
 @app.route('/init_db', methods=['POST'])

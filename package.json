@@ -1,7 +1,7 @@
 {
-  "name": "sprint-final",
+  "name": "password-manager",
   "version": "1.0.0",
-  "description": "Password manager final sprint",
+  "description": "Locally-hosted password manager.",
   "main": "pack/main.js",
   "scripts": {
     "build:dev": "cross-env NODE_ENV=development webpack serve --config webpack.renderer.dev.config.js",
@@ -48,10 +48,12 @@
     "axios": "^1.7.8",
     "electron-builder": "^25.1.8",
     "electron-forge-maker-nsis": "^25.1.8",
+    "clean-modules": "^3.1.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^7.0.1",
     "react-scripts": "^5.0.1",
-    "styled-components": "^6.1.13"
+    "styled-components": "^6.1.13",
+    "tree-kill": "^1.2.2"
   }
 }

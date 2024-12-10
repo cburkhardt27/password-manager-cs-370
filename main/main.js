@@ -1,15 +1,10 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('node:path');
-const { spawn } = require('child_process');
+const { spawn, execFile } = require('child_process');
 const axios = require('axios');
+const kill = require('tree-kill');
 
 const SERVER_BASE_URL = 'http://127.0.0.1:5000';
-
-/*
-Notes
-No print functions in servers. Messes with Flask API.
-Improved error handling for Axios requests.
-*/
 
 const createWindow = async () => {
   const win = new BrowserWindow({
@@ -20,107 +15,6 @@ const createWindow = async () => {
       contextIsolation: true,
       preload: path.join(__dirname, 'preload.js'),
     },
-  });
-
-  ipcMain.handle('add-master-password', async (_event, username, master_pass) => {
-    const data = { master_pass, username };
-    try {
-      const response = await axios.post(`${SERVER_BASE_URL}/add_master_password`, data);
-      console.log(response.data);
-    } catch (error) {
-      console.error('Error in add-master-password:', error.message);
-      return { error: error.message };
-    }
-  });
-
-  ipcMain.handle('validate-login', async (_event, username, master_pass) => {
-    const data = { master_pass, username };
-    try {
-      const response = await axios.post(`${SERVER_BASE_URL}/validate_login`, data);
-      console.log(response.data);
-      return response.data;
-    } catch (error) {
-      console.error('Error in validate-login:', error.message);
-      return { error: error.message };
-    }
-  });
-
-  ipcMain.handle('get-master-password', async () => {
-    try {
-      const response = await axios.get(`${SERVER_BASE_URL}/get_master_password`, {
-        headers: { 'Content-Type': 'application/json' },
-      });
-      console.log(response.data.username);
-      return response.data;
-    } catch (error) {
-      console.error('Error in get-master-password:', error.message);
-      return { error: error.message };
-    }
-  });
-
-  ipcMain.handle('add-password', async (_event, data) => {
-    try {
-      const response = await axios.post(`${SERVER_BASE_URL}/add_password`, data);
-      console.log(response.data);
-      return response.data;
-    } catch (error) {
-      console.error('Error in add-password:', error.message);
-      return { error: error.message };
-    }
-  });
-
-  ipcMain.handle('delete-password', async (_event, data) => {
-    try {
-      const response = await axios.delete(`${SERVER_BASE_URL}/delete_password`, {
-        headers: {
-          'Content-Type': 'application/json'
-        }, 
-        data
-    });
-      console.log(response.data);
-    } catch (error) {
-      console.error('Error in delete-password:', error.message);
-    }
-  });
-
-  ipcMain.handle('display-all-passwords', async () => {
-    try {
-      const response = await axios.get(`${SERVER_BASE_URL}/display_all_passwords`);
-      console.log(response.data);
-      return response.data;
-    } catch (error) {
-      console.error('Error in display-all-passwords:', error.message);
-      return { error: error.message };
-    }
-  });
-
-  ipcMain.handle('get-repeated-passwords', async () => {
-    try {
-      const response = await axios.get(`${SERVER_BASE_URL}/get_repeated_passwords`);
-      console.log("repeated");
-      console.log(response.data);
-      return response.data;
-    } catch (error) {
-      console.error('Error in get-repeated-passwords:', error.message);
-      return { error: error.message };
-    }
-  });
-
-  ipcMain.handle('delete-database', async () => {
-    try {
-      const response = await axios.delete(`${SERVER_BASE_URL}/delete_database`);
-      console.log(response.data)
-    } catch (error) {
-      return { error: error.message };
-    }
-  });
-
-  ipcMain.handle('init-db', async () => {
-    try {
-      await axios.post(`${SERVER_BASE_URL}/init_db`);
-    } catch (error) {
-      return { error: error.message };
-    }
   });
 
   if (process.env.NODE_ENV === 'development') {
@@ -134,59 +28,124 @@ const createWindow = async () => {
   }
 };
 
+ipcMain.handle('add-master-password', async (_event, username, master_pass) => {
+  const data = { master_pass, username };
+  try {
+    const response = await axios.post(`${SERVER_BASE_URL}/add_master_password`, data);
+    console.log(response.data);
+  } catch (error) {
+    console.error('Error in add-master-password:', error.message);
+    return { error: error.message };
+  }
+});
+
+ipcMain.handle('validate-login', async (_event, username, master_pass) => {
+  const data = { master_pass, username };
+  try {
+    const response = await axios.post(`${SERVER_BASE_URL}/validate_login`, data);
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error in validate-login:', error.message);
+    return { error: error.message };
+  }
+});
+
+ipcMain.handle('get-master-password', async () => {
+  try {
+    const response = await axios.get(`${SERVER_BASE_URL}/get_master_password`, {
+      headers: { 'Content-Type': 'application/json' },
+    });
+    console.log(response.data.username);
+    return response.data;
+  } catch (error) {
+    console.error('Error in get-master-password:', error.message);
+    return { error: error.message };
+  }
+});
+
+ipcMain.handle('add-password', async (_event, data) => {
+  try {
+    const response = await axios.post(`${SERVER_BASE_URL}/add_password`, data);
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error in add-password:', error.message);
+    return { error: error.message };
+  }
+});
+
+ipcMain.handle('delete-password', async (_event, data) => {
+  try {
+    const response = await axios.delete(`${SERVER_BASE_URL}/delete_password`, {
+      headers: {
+        'Content-Type': 'application/json'
+      }, 
+      data
+  });
+    console.log(response.data);
+  } catch (error) {
+    console.error('Error in delete-password:', error.message);
+  }
+});
+
+ipcMain.handle('display-all-passwords', async () => {
+  try {
+    const response = await axios.get(`${SERVER_BASE_URL}/display_all_passwords`);
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error in display-all-passwords:', error.message);
+    return { error: error.message };
+  }
+});
+
+ipcMain.handle('get-repeated-passwords', async () => {
+  try {
+    const response = await axios.get(`${SERVER_BASE_URL}/get_repeated_passwords`);
+    console.log("repeated");
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error in get-repeated-passwords:', error.message);
+    return { error: error.message };
+  }
+});
+
+ipcMain.handle('delete-database', async () => {
+  try {
+    const response = await axios.delete(`${SERVER_BASE_URL}/delete_database`);
+    console.log(response.data)
+  } catch (error) {
+    return { error: error.message };
+  }
+});
+
+ipcMain.handle('init-db', async () => {
+  try {
+    await axios.post(`${SERVER_BASE_URL}/init_db`);
+  } catch (error) {
+    return { error: error.message };
+  }
+});
+
 let flaskProcess;
 
-const startFlaskPython = () => {
-  let venvPath;
-  let pythonPath;
-  let flaskPath;
+const appDataPath = app.getPath('appData');
 
-  if (app.isPackaged) {
-    if (process.platform !== 'darwin') {
-      venvPath = path.join(process.resourcesPath, 'win_venv') // Windows.
-      pythonPath = path.join(venvPath, 'Scripts', 'python.exe') // Windows.
-      flaskPath = path.join(process.resourcesPath, 'db/db_flask_server.py')
-    }
-  } else {
-    if (process.platform !== 'darwin') {
-      venvPath = path.join(__dirname, '../win_venv') // Windows.
-      pythonPath = path.join(venvPath, 'Scripts', 'python.exe') // Windows.
-      flaskPath = path.join(__dirname, '../db/db_flask_server.py')
-    } else {
-      venvPath = path.join(__dirname, '../mac_venv'); // Mac
-      pythonPath = path.join(venvPath, 'bin', 'python'); // Mac
-      flaskPath = path.join(__dirname, '../db/db_flask_server.py');
-    
-    }
-  }
-
-  console.log('.py');
-  flaskProcess = spawn(pythonPath, ['-u', flaskPath]);
-
-  // Don't change this, important for delete DB on windows.
-  flaskProcess.stdout.on('data', (data) => {
-    if (data.includes('* Serving Flask app \'db_flask_server\'')) {
-      initDB()
-    }
-  });
-
-  flaskProcess.stderr.on('data', (data) => {
-    console.error(`Flask error: ${data.toString()}`);
-  });
-};
-
-const exePath = app.isPackaged
-  ? path.join(process.resourcesPath, 'db_flask_server.exe')
-  : path.join(__dirname, '../db/dist/', 'db_flask_server.exe');
+const exePath = path.join(appDataPath, 'password-manager', 'db_flask_server.exe'); // Hard code packaged path.
 
 const startFlaskExe = () => {
-  flaskProcess = spawn(exePath);
+  flaskProcess = execFile(exePath, {
+    shell: true,
+    stdio: 'inherit',
+  });
 
   flaskProcess.stdout.on('data', (data) => {
     const output = data.toString();
     console.log(`Flask (exe): ${output}`);
-    if (output.includes('* Running on')) {
-      console.log('Flask exe is ready. Initializing database...');
+    if (output.includes('* Serving Flask app')) {
+      console.log('Flask exe is ready. Initializing database.');
       initDB();
     }
   });
@@ -196,10 +155,52 @@ const startFlaskExe = () => {
   });
 };
 
-app.whenReady().then(() => {
-  startFlaskPython();
-  createWindow();
+// Determines if the Flask API is up.
+async function isFlaskUp() {
+  try {
+    const response = await axios.get(`${SERVER_BASE_URL}/api/test`);
+    return response.status === 200;
+  } catch (err) {
+    return false;
+  }
+};
 
+async function waitForFlask() {
+  const timeout = 10000; // 10 seconds
+  const interval = 500; // Check every 500ms
+  let elapsed = 0;
+
+  return new Promise((resolve, reject) => {
+    const checkInterval = setInterval(async () => {
+      if (await isFlaskUp()) {
+        clearInterval(checkInterval);
+        resolve(true);
+      } else if (elapsed >= timeout) {
+        clearInterval(checkInterval);
+        reject(new Error('Flask server did not start within timeout'));
+      }
+      elapsed += interval;
+    }, interval);
+  });
+};
+
+app.whenReady().then(async () => {
+  startFlaskExe();
+
+  let flaskReady = false; // Track Flask's readiness
+
+  do {
+    try {
+      await waitForFlask(); // Wait for Flask to start
+      createWindow(); // Create the Electron window
+      flaskReady = true; // If no error, Flask is ready
+    } catch (err) {
+      console.error(`Error waiting for Flask: ${err.message}`);
+      console.log('Retrying...');
+      await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second before retrying
+    }
+  } while (!flaskReady); // Repeat until Flask is ready
+  
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
       createWindow();
@@ -208,14 +209,19 @@ app.whenReady().then(() => {
 });
 
 app.on('before-quit', () => {
+  console.log('App is quitting...');
   if (flaskProcess) {
-    flaskProcess.kill();
+    console.log(`Killing Flask process with PID: ${flaskProcess.pid}`);
+    kill(flaskProcess.pid, 'SIGTERM');
   }
 });
 
-app.on('window-all-closed', async () => {
+app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
-    flaskProcess.kill();
+    if (flaskProcess) {
+      console.log(`Killing Flask process with PID: ${flaskProcess.pid}`);
+      kill(flaskProcess.pid, 'SIGTERM');
+    }
     app.quit();
   }
 });
