@@ -35,6 +35,8 @@ Start the Application
 npm run start:e
 ```
 
+If the application does not launch correctly, there is likely a mis-synchronization of the inter-process commmunication between Flask and Electron We have provided another main file: `alternative_main.js` in the /main folder. To start debugging debug, consider copy-pasting `alternative_main.js` into `main.js`, repack your application  `npm run pack:m` `npm run pack:r` and relaunching the program.
+
 # Advanced Instructions / Installation
 
 ## Build and Setup Scripts
