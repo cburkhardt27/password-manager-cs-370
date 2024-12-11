@@ -1,8 +1,5 @@
 # Password Manager - Build Instructions for macOS
 
-Rather than downloading our conveniently-packaged DMG, you can build this project yourself on macOS.  
-You can launch the program from the terminal or package it into a desktop application.
-
 ---
 
 ## Instructions
@@ -38,6 +35,12 @@ npm run start:e
 ```
 
 If the application does not launch correctly, there is likely a mis-synchronization of the inter-process commmunication between Flask and Electron We have provided another main file: `alternative_main.js` in the /main folder. To start debugging debug, consider copy-pasting `alternative_main.js` into `main.js`, repack your application  `npm run pack:m` `npm run pack:r` and relaunching the program.
+
+Build the DMG File
+```bash
+npm run make
+```
+_**Note: this final build step is not fully debugged.** The .dmg file may contain errors. Refer to our 'Future Work' section of project documentation for more information._
 
 # Advanced Instructions / Installation
 
