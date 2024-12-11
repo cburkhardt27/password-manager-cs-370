@@ -12,10 +12,9 @@ There are a variety of fixes:
 2. Manually launch the Flask Server executable stored in App Data.  
 Navigate to
 `:C:Users/<YourUserAccount>/AppData/Roaming/password-manager/db_flask_server.exe`
-Double click on the db_flask_server.exe file. While this server is running, re-launch the password-manager desktop application. The password manager should launch!  
-_Refer to our Documentation.pdf for reference photos._    
+Double click on the db_flask_server.exe file. While this server is running, re-launch the password-manager desktop application. The password manager should launch!  _Please refer to our Documentation.pdf for reference photos._    
 
-3. If your password manager still does not launch out, please reach out to our friendly and accessible support team! You can reach us at claire.burkhardt@emory.edu and @michi.okahata@emory.edu. We provide speedy customer service responses and real-time debugging :)  
+3. If your password manager still does not launch out, please reach out to our friendly and accessible support team! You can reach us at claire.burkhardt@emory.edu and michi.okahata@emory.edu. We provide speedy customer service responses and real-time debugging :)  
 
 
 
@@ -42,7 +41,7 @@ pip install -r requirements.txt
 ```bash
 npm install
 ```
-_If necessary, install Node.js on your computer_  
+_If necessary, install Node.js on your computer. Refer to: https://nodejs.org/en_  
 ### Package the Application Pages and Main Process
 ```bash
 npm run pack:r
