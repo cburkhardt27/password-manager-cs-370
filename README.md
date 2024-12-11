@@ -26,6 +26,7 @@ Install Front-End Dependencies
 npm install
 ```
 _Note: you will need to download node.js if you have not already done so. Start here: https://nodejs.org/en_  
+
 Package the Application Pages and Main Process
 ```bash
 npm run pack:r
