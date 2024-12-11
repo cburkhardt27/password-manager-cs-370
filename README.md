@@ -25,6 +25,7 @@ Install Front-End Dependencies
 ```bash
 npm install
 ```
+_You will need to download node.js if you have not already done so_
 Package the Application Pages and Main Process
 ```bash
 npm run pack:r
